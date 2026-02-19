@@ -2,65 +2,94 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Sistema de Comprobantes</title>
+<title>Generador Comprobantes Yikun</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 
 body{
-    font-family: Arial, Helvetica, sans-serif;
-    background:#f4f4f4;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
     margin:0;
-    padding:20px;
+    padding:30px;
 }
 
-.formulario{
-    background:white;
-    padding:20px;
-    border-radius:8px;
-    max-width:600px;
+.contenedor{
+    max-width:900px;
     margin:auto;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    background:rgba(255,255,255,0.05);
+    padding:25px;
+    border-radius:15px;
+    backdrop-filter: blur(10px);
 }
 
-h2{
+h1{
     text-align:center;
+    margin-bottom:30px;
+}
+
+label{
+    font-size:14px;
 }
 
 input, select{
     width:100%;
     padding:8px;
-    margin-bottom:12px;
-    border:1px solid #ccc;
-    border-radius:4px;
+    margin:5px 0 15px 0;
+    border-radius:5px;
+    border:none;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:15px;
+}
+
+th, td{
+    border:1px solid rgba(255,255,255,0.2);
+    padding:8px;
+    text-align:center;
+}
+
+th{
+    background:rgba(255,255,255,0.1);
 }
 
 button{
-    background:#1f2937;
-    color:white;
-    border:none;
     padding:10px;
-    width:100%;
-    border-radius:4px;
+    border:none;
+    border-radius:6px;
     cursor:pointer;
+    margin-top:10px;
 }
 
-button:hover{
-    background:#111827;
+.btn{
+    background:#00c6ff;
+    color:white;
+    width:100%;
 }
 
-.print-area{
-    display:none;
+.btn:hover{
+    background:#0072ff;
+}
+
+.historial{
+    margin-top:40px;
+    background:rgba(255,255,255,0.05);
+    padding:20px;
+    border-radius:10px;
 }
 
 .recibo{
     width:148mm;
     height:210mm;
-    border:1px solid #000;
     padding:15mm;
     box-sizing:border-box;
     background:white;
+    color:black;
 }
 
 .logo{
@@ -69,41 +98,8 @@ button:hover{
     max-width:150px;
 }
 
-.header-recibo{
-    display:flex;
-    justify-content:space-between;
-    margin-top:10px;
-    font-weight:bold;
-}
-
-.total{
-    margin-top:20px;
-    text-align:right;
-    font-size:18px;
-    font-weight:bold;
-}
-
-.tabla{
-    margin-top:40px;
-    background:white;
-    padding:20px;
-    border-radius:8px;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th, td{
-    border:1px solid #ddd;
-    padding:8px;
-    text-align:center;
-}
-
-th{
-    background:#1f2937;
-    color:white;
+.print-area{
+    display:none;
 }
 
 </style>
@@ -111,8 +107,9 @@ th{
 
 <body>
 
-<div class="formulario">
-<h2>Generar Comprobante</h2>
+<div class="contenedor">
+
+<h1>Generador Comprobantes Yikun</h1>
 
 <label>Fecha</label>
 <input type="date" id="fecha">
@@ -122,16 +119,28 @@ th{
 
 <label>Vendedor</label>
 <select id="vendedor">
-<option>Juan</option>
-<option>María</option>
-<option>Pedro</option>
+<option>Osvaldo Castillo</option>
+<option>Agregá tus vendedores aquí</option>
 </select>
 
-<label>Detalle</label>
-<input type="text" id="detalle">
+<h3>Productos</h3>
 
-<label>Importe</label>
-<input type="number" id="importe">
+<table>
+<thead>
+<tr>
+<th>Detalle</th>
+<th>Cantidad</th>
+<th>Precio Unit.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><input type="text" id="detalle"></td>
+<td><input type="number" id="cantidad"></td>
+<td><input type="number" id="precio"></td>
+</tr>
+</tbody>
+</table>
 
 <label>Descuento</label>
 <select id="descuento">
@@ -147,21 +156,20 @@ th{
 <option>Transferencia</option>
 </select>
 
-<button onclick="generar()">Generar y Guardar PDF</button>
+<button class="btn" onclick="generar()">Generar y Guardar PDF</button>
 
 </div>
 
-<div class="tabla">
-<h2>Listado de Comprobantes</h2>
+<div class="historial">
+<h2>Historial de Comprobantes</h2>
 <table>
 <thead>
 <tr>
 <th>N°</th>
-<th>Fecha</th>
 <th>Cliente</th>
 <th>Total</th>
 <th>Pago</th>
-<th>Acción</th>
+<th>PDF</th>
 </tr>
 </thead>
 <tbody id="historial"></tbody>
@@ -172,11 +180,9 @@ th{
 
 <script>
 
-// ===== Numeración correlativa =====
 let numeroActual = localStorage.getItem("numeroRecibo") || 1;
 numeroActual = parseInt(numeroActual);
 
-// ===== Historial =====
 let historial = JSON.parse(localStorage.getItem("historialRecibos")) || [];
 
 function guardarHistorial(){
@@ -192,22 +198,13 @@ function renderHistorial(){
         tabla.innerHTML += `
         <tr>
         <td>${recibo.numero}</td>
-        <td>${recibo.fecha}</td>
         <td>${recibo.cliente}</td>
         <td>$${recibo.total}</td>
         <td>${recibo.pago}</td>
-        <td>
-        <button onclick="descargar(${index})">PDF</button>
-        <button onclick="eliminar(${index})">X</button>
-        </td>
+        <td><button onclick="descargar(${index})">PDF</button></td>
         </tr>
         `;
     });
-}
-
-function eliminar(index){
-    historial.splice(index,1);
-    guardarHistorial();
 }
 
 function descargar(index){
@@ -220,12 +217,14 @@ let fecha = document.getElementById("fecha").value;
 let cliente = document.getElementById("cliente").value;
 let vendedor = document.getElementById("vendedor").value;
 let detalle = document.getElementById("detalle").value;
-let importe = parseFloat(document.getElementById("importe").value);
+let cantidad = parseFloat(document.getElementById("cantidad").value);
+let precio = parseFloat(document.getElementById("precio").value);
 let descuento = parseFloat(document.getElementById("descuento").value);
 let pago = document.getElementById("pago").value;
 
-let descuentoCalculado = (importe * descuento) / 100;
-let total = (importe - descuentoCalculado).toFixed(2);
+let subtotal = cantidad * precio;
+let descuentoCalc = subtotal * (descuento/100);
+let total = (subtotal - descuentoCalc).toFixed(2);
 
 let numeroFormateado = numeroActual.toString().padStart(4,'0');
 
@@ -235,10 +234,10 @@ fecha,
 cliente,
 vendedor,
 detalle,
-importe,
-descuento,
-pago,
-total
+cantidad,
+precio,
+total,
+pago
 };
 
 historial.push(recibo);
@@ -256,15 +255,24 @@ function generarPDF(data){
 let contenido = `
 <div class="recibo">
 <img src="Logo.png" class="logo">
-<div class="header-recibo">
-<span>Comprobante N° ${data.numero}</span>
-<span>${data.fecha}</span>
-</div>
+<h2 style="text-align:center;">Comprobante N° ${data.numero}</h2>
+<p><strong>Fecha:</strong> ${data.fecha}</p>
 <p><strong>Cliente:</strong> ${data.cliente}</p>
 <p><strong>Vendedor:</strong> ${data.vendedor}</p>
-<p><strong>Detalle:</strong> ${data.detalle}</p>
+<table style="width:100%;border-collapse:collapse;">
+<tr>
+<th style="border:1px solid black;">Detalle</th>
+<th style="border:1px solid black;">Cant.</th>
+<th style="border:1px solid black;">Precio</th>
+</tr>
+<tr>
+<td style="border:1px solid black;">${data.detalle}</td>
+<td style="border:1px solid black;">${data.cantidad}</td>
+<td style="border:1px solid black;">$${data.precio}</td>
+</tr>
+</table>
 <p><strong>Método de Pago:</strong> ${data.pago}</p>
-<p><strong>Total:</strong> $${data.total}</p>
+<h3 style="text-align:right;">Total: $${data.total}</h3>
 </div>
 `;
 
