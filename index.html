@@ -56,7 +56,7 @@ th, td{
     text-align:center;
 }
 
-/* BOTONES PROFESIONALES */
+/* BOTONES */
 
 button{
     padding:9px 18px;
@@ -68,23 +68,13 @@ button{
     color:white;
 }
 
-.btn-agregar{
-    background:#6c757d;
-}
+.btn-agregar{ background:#6c757d; }
+.btn-generar{ background:#1e3a5f; }
+.btn-imprimir{ background:#343a40; }
 
-.btn-generar{
-    background:#1e3a5f;
-}
+button:hover{ opacity:0.9; }
 
-.btn-imprimir{
-    background:#343a40;
-}
-
-button:hover{
-    opacity:0.9;
-}
-
-/* COMPROBANTE */
+/* AREA IMPRESION */
 
 .area-impresion{
     display:flex;
@@ -94,7 +84,6 @@ button:hover{
 }
 
 .comprobante{
-    position:relative;
     width:210mm;
     height:148mm;
     border:2px solid #000;
@@ -102,6 +91,15 @@ button:hover{
     background:white;
     box-sizing:border-box;
     font-size:14px;
+}
+
+.logo-container{
+    text-align:center;
+    margin-bottom:10px;
+}
+
+.logo{
+    max-width:160px;
 }
 
 .header-recibo{
@@ -120,16 +118,12 @@ button:hover{
     margin-top:10px;
 }
 
-.logo-container{
-    text-align:center;
-    margin-bottom:10px;
+.datos-vendedor{
+    margin-top:15px;
+    font-size:13px;
 }
 
-.logo{
-    max-width:160px;
-}
-
-/* IMPRESIÓN A4 CON 2 A5 */
+/* IMPRESION A4 CON 2 A5 */
 
 @media print {
 
@@ -173,6 +167,12 @@ button:hover{
 
 <label>Cliente:</label><br>
 <input type="text" id="cliente"><br>
+
+<label>Vendedor:</label><br>
+<select id="vendedor">
+    <option value="03">03 Lucas A. Gráfica</option>
+    <option value="02">02 Analía A. Papelería</option>
+</select>
 
 <h3>Productos</h3>
 
@@ -252,7 +252,6 @@ function generar(){
         if(detalles[i].value.trim() !== ""){
             let cant = parseFloat(cantidades[i].value || 0);
             let precio = parseFloat(precios[i].value || 0);
-
             let subtotal = cant * precio;
             totalPedido += subtotal;
 
@@ -278,6 +277,26 @@ function generar(){
     let pendiente = totalFinal - sena;
 
     let fechaActual = new Date().toLocaleDateString("es-AR");
+
+    let vendedorSeleccionado = document.getElementById("vendedor").value;
+
+    let datosVendedor = "";
+
+    if(vendedorSeleccionado === "03"){
+        datosVendedor = `
+        Vendedor: 03 Lucas A. Gráfica<br>
+        Local: Salta Cap. - Ayacucho 1621<br>
+        Cel: 3875729428
+        `;
+    }
+
+    if(vendedorSeleccionado === "02"){
+        datosVendedor = `
+        Vendedor: 02 Analía A. Papelería<br>
+        Local: Salta Cap. - Ayacucho 1621<br>
+        Cel: 3872254054
+        `;
+    }
 
     let comprobanteHTML = `
     <div class="comprobante">
@@ -307,6 +326,10 @@ function generar(){
 
         <div class="total-pendiente">
             Total Pendiente: ${formatoARS(pendiente)}
+        </div>
+
+        <div class="datos-vendedor">
+            ${datosVendedor}
         </div>
     </div>
     `;
