@@ -2,292 +2,224 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Generador Comprobantes Yikun</title>
+<title>Sistema de Recibos</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
-
 body{
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-    color:white;
-    margin:0;
-    padding:30px;
-}
-
-.contenedor{
-    max-width:900px;
-    margin:auto;
-    background:rgba(255,255,255,0.05);
-    padding:25px;
-    border-radius:15px;
-    backdrop-filter: blur(10px);
-}
-
-h1{
-    text-align:center;
-    margin-bottom:30px;
-}
-
-label{
-    font-size:14px;
+    font-family: Arial;
+    margin:20px;
 }
 
 input, select{
-    width:100%;
-    padding:8px;
-    margin:5px 0 15px 0;
-    border-radius:5px;
-    border:none;
+    padding:5px;
+    margin:3px;
 }
 
 table{
     width:100%;
-    border-collapse:collapse;
-    margin-bottom:15px;
+    margin-top:10px;
+    border-collapse: collapse;
 }
 
 th, td{
-    border:1px solid rgba(255,255,255,0.2);
-    padding:8px;
+    border:1px solid #000;
+    padding:5px;
     text-align:center;
-}
-
-th{
-    background:rgba(255,255,255,0.1);
 }
 
 button{
     padding:10px;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
     margin-top:10px;
-}
-
-.btn{
-    background:#00c6ff;
+    background:#000;
     color:white;
-    width:100%;
+    border:none;
+    cursor:pointer;
 }
 
-.btn:hover{
-    background:#0072ff;
+#printArea{
+    position:absolute;
+    left:-9999px;
 }
-
-.historial{
-    margin-top:40px;
-    background:rgba(255,255,255,0.05);
-    padding:20px;
-    border-radius:10px;
-}
-
-.recibo{
-    width:148mm;
-    height:210mm;
-    padding:15mm;
-    box-sizing:border-box;
-    background:white;
-    color:black;
-}
-
-.logo{
-    display:block;
-    margin:auto;
-    max-width:150px;
-}
-
-.print-area{
-    display:none;
-}
-
 </style>
 </head>
 
 <body>
 
-<div class="contenedor">
+<h2>Generador de Comprobantes</h2>
 
-<h1>Generador Comprobantes Yikun</h1>
-
-<label>Fecha</label>
-<input type="date" id="fecha">
-
-<label>Cliente</label>
-<input type="text" id="cliente">
-
-<label>Vendedor</label>
+<label>Vendedor:</label>
 <select id="vendedor">
-<option>Osvaldo Castillo</option>
-<option>Agregá tus vendedores aquí</option>
+    <option value="03">03 Lucas A.Grafica</option>
+    <option value="02">02 Analia A.Papeleria</option>
 </select>
 
-<h3>Productos</h3>
+<br><br>
 
 <table>
-<thead>
 <tr>
-<th>Detalle</th>
-<th>Cantidad</th>
-<th>Precio Unit.</th>
+    <th>Detalle</th>
+    <th>Cantidad</th>
+    <th>Precio</th>
 </tr>
-</thead>
-<tbody>
+
 <tr>
-<td><input type="text" id="detalle"></td>
-<td><input type="number" id="cantidad"></td>
-<td><input type="number" id="precio"></td>
+    <td><input class="detalle"></td>
+    <td><input class="cantidad" type="number"></td>
+    <td><input class="precio" type="number"></td>
 </tr>
-</tbody>
+
+<tr>
+    <td><input class="detalle"></td>
+    <td><input class="cantidad" type="number"></td>
+    <td><input class="precio" type="number"></td>
+</tr>
+
+<tr>
+    <td><input class="detalle"></td>
+    <td><input class="cantidad" type="number"></td>
+    <td><input class="precio" type="number"></td>
+</tr>
 </table>
 
-<label>Descuento</label>
-<select id="descuento">
-<option value="0">Sin descuento</option>
-<option value="5">5%</option>
-<option value="10">10%</option>
-<option value="15">15%</option>
-</select>
+<br>
 
-<label>Método de Pago</label>
+<label>Descuento:</label>
+<input type="number" id="descuento">
+
+<label>Seña:</label>
+<input type="number" id="sena">
+
+<br><br>
+
+<label>Método de Pago:</label>
 <select id="pago">
 <option>Efectivo</option>
 <option>Transferencia</option>
 </select>
 
-<button class="btn" onclick="generar()">Generar y Guardar PDF</button>
+<br>
 
-</div>
+<button onclick="generar()">Generar PDF</button>
 
-<div class="historial">
-<h2>Historial de Comprobantes</h2>
-<table>
-<thead>
-<tr>
-<th>N°</th>
-<th>Cliente</th>
-<th>Total</th>
-<th>Pago</th>
-<th>PDF</th>
-</tr>
-</thead>
-<tbody id="historial"></tbody>
-</table>
-</div>
-
-<div id="printArea" class="print-area"></div>
+<div id="printArea"></div>
 
 <script>
 
 let numeroActual = localStorage.getItem("numeroRecibo") || 1;
 numeroActual = parseInt(numeroActual);
 
-let historial = JSON.parse(localStorage.getItem("historialRecibos")) || [];
-
-function guardarHistorial(){
-    localStorage.setItem("historialRecibos", JSON.stringify(historial));
-    renderHistorial();
-}
-
-function renderHistorial(){
-    let tabla = document.getElementById("historial");
-    tabla.innerHTML = "";
-
-    historial.forEach((recibo, index)=>{
-        tabla.innerHTML += `
-        <tr>
-        <td>${recibo.numero}</td>
-        <td>${recibo.cliente}</td>
-        <td>$${recibo.total}</td>
-        <td>${recibo.pago}</td>
-        <td><button onclick="descargar(${index})">PDF</button></td>
-        </tr>
-        `;
-    });
-}
-
-function descargar(index){
-    generarPDF(historial[index]);
-}
-
 function generar(){
 
-let fecha = document.getElementById("fecha").value;
-let cliente = document.getElementById("cliente").value;
-let vendedor = document.getElementById("vendedor").value;
-let detalle = document.getElementById("detalle").value;
-let cantidad = parseFloat(document.getElementById("cantidad").value);
-let precio = parseFloat(document.getElementById("precio").value);
-let descuento = parseFloat(document.getElementById("descuento").value);
-let pago = document.getElementById("pago").value;
+    let detalles = document.getElementsByClassName("detalle");
+    let cantidades = document.getElementsByClassName("cantidad");
+    let precios = document.getElementsByClassName("precio");
 
-let subtotal = cantidad * precio;
-let descuentoCalc = subtotal * (descuento/100);
-let total = (subtotal - descuentoCalc).toFixed(2);
+    let totalPedido = 0;
+    let filas = "";
 
-let numeroFormateado = numeroActual.toString().padStart(4,'0');
+    for(let i=0;i<detalles.length;i++){
 
-let recibo = {
-numero: numeroFormateado,
-fecha,
-cliente,
-vendedor,
-detalle,
-cantidad,
-precio,
-total,
-pago
-};
+        if(detalles[i].value !== ""){
 
-historial.push(recibo);
-guardarHistorial();
+            let cant = parseFloat(cantidades[i].value || 0);
+            let precio = parseFloat(precios[i].value || 0);
+            let subtotal = cant * precio;
 
-generarPDF(recibo);
+            totalPedido += subtotal;
 
-numeroActual++;
-localStorage.setItem("numeroRecibo", numeroActual);
+            filas += `
+            <tr>
+                <td>${detalles[i].value}</td>
+                <td>${cant}</td>
+                <td>$${precio.toLocaleString()}</td>
+            </tr>`;
+        }
+    }
 
+    let sena = parseFloat(document.getElementById("sena").value || 0);
+    let descuento = parseFloat(document.getElementById("descuento").value || 0);
+    let metodoPago = document.getElementById("pago").value;
+
+    let totalFinal = totalPedido - descuento;
+    let pendiente = totalFinal - sena;
+
+    let hoy = new Date();
+    let fechaActual = hoy.toLocaleDateString("es-AR");
+
+    let vendedorSeleccionado = document.getElementById("vendedor").value;
+    let datosVendedor = "";
+
+    if(vendedorSeleccionado === "03"){
+        datosVendedor = `
+        Vendedor: 03 Lucas A.Grafica<br>
+        Local: Salta Cap. - Ayacucho 1621<br>
+        Cel: 3875729428
+        `;
+    }
+
+    if(vendedorSeleccionado === "02"){
+        datosVendedor = `
+        Vendedor: 02 Analia A.Papeleria<br>
+        Local: Salta Cap. - Ayacucho 1621<br>
+        Cel: 3872254054
+        `;
+    }
+
+    let numeroFormateado = numeroActual.toString().padStart(4,'0');
+
+    let contenido = `
+    <div style="padding:20px; font-family:Arial;">
+
+        <div style="text-align:center;">
+            <img src="Logo.png" style="max-width:150px; opacity:0.15;">
+        </div>
+
+        <div style="display:flex; justify-content:space-between; font-weight:bold;">
+            <span>Comprobante N° ${numeroFormateado}</span>
+            <span>${fechaActual}</span>
+        </div>
+
+        <br>
+
+        ${datosVendedor}
+
+        <br>
+
+        <table style="width:100%; border-collapse:collapse;" border="1">
+            <tr>
+                <th>Detalle</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+            </tr>
+            ${filas}
+        </table>
+
+        <br>
+
+        <strong>Total Pedido:</strong> $${totalPedido.toLocaleString()}<br>
+        <strong>Descuento:</strong> $${descuento.toLocaleString()}<br>
+        <strong>Total Final:</strong> $${totalFinal.toLocaleString()}<br>
+        <strong>Seña:</strong> $${sena.toLocaleString()}<br>
+        <strong>Pendiente:</strong> $${pendiente.toLocaleString()}<br>
+        <strong>Método de Pago:</strong> ${metodoPago}
+
+    </div>
+    `;
+
+    document.getElementById("printArea").innerHTML = contenido + contenido;
+
+    html2pdf().from(document.getElementById("printArea")).set({
+        margin:0,
+        filename:Recibo_${numeroFormateado}.pdf,
+        html2canvas:{scale:2},
+        jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+    }).save();
+
+    numeroActual++;
+    localStorage.setItem("numeroRecibo", numeroActual);
 }
-
-function generarPDF(data){
-
-let contenido = `
-<div class="recibo">
-<img src="Logo.png" class="logo">
-<h2 style="text-align:center;">Comprobante N° ${data.numero}</h2>
-<p><strong>Fecha:</strong> ${data.fecha}</p>
-<p><strong>Cliente:</strong> ${data.cliente}</p>
-<p><strong>Vendedor:</strong> ${data.vendedor}</p>
-<table style="width:100%;border-collapse:collapse;">
-<tr>
-<th style="border:1px solid black;">Detalle</th>
-<th style="border:1px solid black;">Cant.</th>
-<th style="border:1px solid black;">Precio</th>
-</tr>
-<tr>
-<td style="border:1px solid black;">${data.detalle}</td>
-<td style="border:1px solid black;">${data.cantidad}</td>
-<td style="border:1px solid black;">$${data.precio}</td>
-</tr>
-</table>
-<p><strong>Método de Pago:</strong> ${data.pago}</p>
-<h3 style="text-align:right;">Total: $${data.total}</h3>
-</div>
-`;
-
-document.getElementById("printArea").innerHTML = contenido + contenido;
-
-html2pdf().from(document.getElementById("printArea")).set({
-margin:10,
-filename:Recibo_${data.numero}.pdf,
-html2canvas:{scale:2},
-jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
-}).save();
-
-}
-
-renderHistorial();
 
 </script>
 
