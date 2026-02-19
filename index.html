@@ -1,116 +1,32 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Sistema de Recibos</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-<style>
-body{
-    font-family: Arial;
-    margin:20px;
-}
-
-input, select{
-    padding:5px;
-    margin:3px;
-}
-
-table{
-    width:100%;
-    margin-top:10px;
-    border-collapse: collapse;
-}
-
-th, td{
-    border:1px solid #000;
-    padding:5px;
-    text-align:center;
-}
-
-button{
-    padding:10px;
-    margin-top:10px;
-    background:#000;
-    color:white;
-    border:none;
-    cursor:pointer;
-}
-
-#printArea{
-    position:absolute;
-    left:-9999px;
-}
-</style>
-</head>
-
-<body>
-
-<h2>Generador de Comprobantes</h2>
-
-<label>Vendedor:</label>
-<select id="vendedor">
-    <option value="03">03 Lucas A.Grafica</option>
-    <option value="02">02 Analia A.Papeleria</option>
-</select>
-
-<br><br>
-
-<table>
-<tr>
-    <th>Detalle</th>
-    <th>Cantidad</th>
-    <th>Precio</th>
-</tr>
-
-<tr>
-    <td><input class="detalle"></td>
-    <td><input class="cantidad" type="number"></td>
-    <td><input class="precio" type="number"></td>
-</tr>
-
-<tr>
-    <td><input class="detalle"></td>
-    <td><input class="cantidad" type="number"></td>
-    <td><input class="precio" type="number"></td>
-</tr>
-
-<tr>
-    <td><input class="detalle"></td>
-    <td><input class="cantidad" type="number"></td>
-    <td><input class="precio" type="number"></td>
-</tr>
-</table>
-
-<br>
-
-<label>Descuento:</label>
-<input type="number" id="descuento">
-
-<label>Seña:</label>
-<input type="number" id="sena">
-
-<br><br>
-
-<label>Método de Pago:</label>
-<select id="pago">
-<option>Efectivo</option>
-<option>Transferencia</option>
-</select>
-
-<br>
-
-<button onclick="generar()">Generar PDF</button>
-
-<div id="printArea"></div>
-
 <script>
 
-let numeroActual = localStorage.getItem("numeroRecibo") || 1;
-numeroActual = parseInt(numeroActual);
+let numero = localStorage.getItem("numeroYikun") || 3281;
+numero = parseInt(numero);
+
+function formatoARS(valor){
+    return valor.toLocaleString("es-AR", {
+        style:"currency",
+        currency:"ARS"
+    });
+}
+
+function agregarFila(){
+    let tabla = document.getElementById("tabla");
+    let fila = tabla.insertRow();
+    fila.innerHTML = `
+    <td><input type="text" class="detalle"></td>
+    <td><input type="number" class="cantidad" min="1"></td>
+    <td><input type="number" class="precio" min="0" step="0.01"></td>
+    `;
+}
 
 function generar(){
+
+    let cliente = document.getElementById("cliente").value.trim();
+    if(cliente === ""){
+        alert("Ingresá el nombre del cliente.");
+        return;
+    }
 
     let detalles = document.getElementsByClassName("detalle");
     let cantidades = document.getElementsByClassName("cantidad");
@@ -120,7 +36,6 @@ function generar(){
     let filas = "";
 
     for(let i=0;i<detalles.length;i++){
-
         if(detalles[i].value !== ""){
 
             let cant = parseFloat(cantidades[i].value || 0);
@@ -133,56 +48,63 @@ function generar(){
             <tr>
                 <td>${detalles[i].value}</td>
                 <td>${cant}</td>
-                <td>$${precio.toLocaleString()}</td>
+                <td>${formatoARS(precio)}</td>
             </tr>`;
         }
     }
 
+    if(totalPedido === 0){
+        alert("Agregá al menos un producto.");
+        return;
+    }
+
     let sena = parseFloat(document.getElementById("sena").value || 0);
-    let descuento = parseFloat(document.getElementById("descuento").value || 0);
+    let porcentaje = parseFloat(document.getElementById("descuento").value);
     let metodoPago = document.getElementById("pago").value;
 
-    let totalFinal = totalPedido - descuento;
+    let montoDescuento = totalPedido * (porcentaje / 100);
+    let totalFinal = totalPedido - montoDescuento;
     let pendiente = totalFinal - sena;
 
-    let hoy = new Date();
-    let fechaActual = hoy.toLocaleDateString("es-AR");
+    if(pendiente < 0) pendiente = 0;
+
+    let fechaActual = new Date().toLocaleDateString("es-AR");
+    let numeroFormateado = numero.toString().padStart(6,'0');
 
     let vendedorSeleccionado = document.getElementById("vendedor").value;
     let datosVendedor = "";
 
     if(vendedorSeleccionado === "03"){
         datosVendedor = `
-        Vendedor: 03 Lucas A.Grafica<br>
-        Local: Salta Cap. - Ayacucho 1621<br>
+        Vendedor: 03 Lucas A. Grafica<br>
+        Ayacucho 1621 - Salta Capital<br>
         Cel: 3875729428
         `;
     }
 
     if(vendedorSeleccionado === "02"){
         datosVendedor = `
-        Vendedor: 02 Analia A.Papeleria<br>
-        Local: Salta Cap. - Ayacucho 1621<br>
+        Vendedor: 02 Analia A. Papeleria<br>
+        Ayacucho 1621 - Salta Capital<br>
         Cel: 3872254054
         `;
     }
-
-    let numeroFormateado = numeroActual.toString().padStart(4,'0');
 
     let contenido = `
     <div style="padding:20px; font-family:Arial;">
 
         <div style="text-align:center;">
-            <img src="Logo.png" style="max-width:150px; opacity:0.15;">
+            <img src="logo.png" style="max-width:150px;">
         </div>
 
         <div style="display:flex; justify-content:space-between; font-weight:bold;">
-            <span>Comprobante N° ${numeroFormateado}</span>
+            <span>Recibo B - ${numeroFormateado}</span>
             <span>${fechaActual}</span>
         </div>
 
         <br>
 
+        <strong>Cliente:</strong> ${cliente}<br>
         ${datosVendedor}
 
         <br>
@@ -191,37 +113,35 @@ function generar(){
             <tr>
                 <th>Detalle</th>
                 <th>Cantidad</th>
-                <th>Precio</th>
+                <th>Precio Unit.</th>
             </tr>
             ${filas}
         </table>
 
         <br>
 
-        <strong>Total Pedido:</strong> $${totalPedido.toLocaleString()}<br>
-        <strong>Descuento:</strong> $${descuento.toLocaleString()}<br>
-        <strong>Total Final:</strong> $${totalFinal.toLocaleString()}<br>
-        <strong>Seña:</strong> $${sena.toLocaleString()}<br>
-        <strong>Pendiente:</strong> $${pendiente.toLocaleString()}<br>
+        <strong>Total Pedido:</strong> ${formatoARS(totalPedido)}<br>
+        <strong>Descuento (${porcentaje}%):</strong> ${formatoARS(montoDescuento)}<br>
+        <strong>Total Final:</strong> ${formatoARS(totalFinal)}<br>
+        <strong>Seña:</strong> ${formatoARS(sena)}<br>
+        <strong>Pendiente:</strong> ${formatoARS(pendiente)}<br>
         <strong>Método de Pago:</strong> ${metodoPago}
 
     </div>
     `;
 
-    document.getElementById("printArea").innerHTML = contenido + contenido;
+    let printArea = document.createElement("div");
+    printArea.innerHTML = contenido + contenido; // duplica para 2 por hoja
 
-    html2pdf().from(document.getElementById("printArea")).set({
+    html2pdf().from(printArea).set({
         margin:0,
         filename:Recibo_${numeroFormateado}.pdf,
         html2canvas:{scale:2},
         jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
     }).save();
 
-    numeroActual++;
-    localStorage.setItem("numeroRecibo", numeroActual);
+    numero++;
+    localStorage.setItem("numeroYikun", numero);
 }
 
 </script>
-
-</body>
-</html>
