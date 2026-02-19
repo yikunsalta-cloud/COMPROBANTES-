@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>YIKUN COMPROBANTE</title>
 <style>
-/* ====== ESTILO PÁGINA ====== */
 body { 
     font-family: Arial, sans-serif; 
     margin:20px; 
@@ -60,7 +59,6 @@ button:hover {
     color:#SAFE7;
 }
 
-/* ====== ESTILO COMPROBANTES GENERADOS ====== */
 .comprobante { 
     border:1px solid #333; 
     padding:15px; 
@@ -92,26 +90,39 @@ button:hover {
     text-align:left; 
     font-weight:bold;
 }
-.comprobante .totales {
-    margin-top:10px;
+
+/* ====== SECCIÓN SUPERIOR DEL CLIENTE + NOMBRE VENDEDOR ====== */
+.comprobante .superior {
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
 }
-.comprobante .totales p {
-    margin:2px 0;
+.comprobante .cliente-left {
+    width:50%;
 }
-.comprobante .totales-left {
-    float:left;
-    width:65%;
-}
-.comprobante .totales-right {
-    float:right;
-    width:30%;
+.comprobante .vendedor-right {
+    width:45%;
     text-align:right;
 }
-.comprobante .clear { clear:both; }
-.total-pendiente { 
+
+/* ====== SECCIÓN INFERIOR ====== */
+.comprobante .inferior {
+    display:flex;
+    justify-content:space-between;
+    margin-top:20px;
+}
+.comprobante .inferior-left {
+    width:45%;
+}
+.comprobante .inferior-right {
+    width:50%;
+    text-align:right;
+}
+.comprobante .total-pendiente { 
     font-weight:bold; 
     color:#DC2626; 
     font-size:28px; 
+    margin-top:10px;
 }
 @media print {
     body { background:white; }
@@ -165,7 +176,6 @@ button:hover {
 
 <div id="resultado"></div>
 
-<!-- Librería para PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
@@ -226,15 +236,16 @@ function generar(){
     let numeroFormateado = numero.toString().padStart(6,'0');
 
     let vendedorSeleccionado = document.getElementById("vendedor").value;
+    let nombreVendedor = "";
     let datosVendedor = "";
     if(vendedorSeleccionado === "03"){
+        nombreVendedor = "03 Lucas A.Grafica";
         datosVendedor = `
-        Vendedor: 03 Lucas A.Grafica<br>
         Local: Salta Cap. - Ayacucho 1621<br>
         Cel: 3875729428`;
     } else if(vendedorSeleccionado === "02"){
+        nombreVendedor = "02 Analia A.Papeleria";
         datosVendedor = `
-        Vendedor: 02 Analia A.Papeleria<br>
         Local: Salta Cap. - Ayacucho 1621<br>
         Cel: 3872254054`;
     }
@@ -248,12 +259,19 @@ function generar(){
             <div class="titulo-principal">YIKUN</div>
             <div class="subtitulo">COMPROBANTE DE PAGO</div>
 
+            <div class="superior">
+                <div class="cliente-left">
+                    <p><strong>Cliente/a:</strong> ${cliente}</p>
+                </div>
+                <div class="vendedor-right">
+                    <p><strong>Vendedor:</strong> ${nombreVendedor}</p>
+                </div>
+            </div>
+
             <div style="display:flex; justify-content:space-between;">
                 <div>Recibo B - ${numeroFormateado}</div>
                 <div>Fecha: ${fechaActual}</div>
             </div>
-
-            <p><strong>Cliente/a:</strong> ${cliente}</p>
 
             <table>
                 <tr>
@@ -264,17 +282,16 @@ function generar(){
                 ${filas}
             </table>
 
-            <div class="totales">
-                <div class="totales-left">
+            <div class="inferior">
+                <div class="inferior-left">
+                    <p>${datosVendedor}</p>
+                </div>
+                <div class="inferior-right">
                     <p>Total Pedido: ${formatoARS(totalPedido)}</p>
                     <p>Descuento (${porcentaje}%): ${formatoARS(montoDescuento)}</p>
                     <p>Seña realizada (${formaPago}): ${formatoARS(sena)}</p>
-                </div>
-                <div class="totales-right">
                     <div class="total-pendiente">Total Pendiente: ${formatoARS(pendiente)}</div>
-                    <p>${datosVendedor}</p>
                 </div>
-                <div class="clear"></div>
             </div>
         </div>
         `;
@@ -285,7 +302,6 @@ function generar(){
     localStorage.setItem("numeroYikun", numero);
 }
 
-// ====== GUARDAR PDF ======
 function guardarPDF() {
     const elemento = document.getElementById("resultado");
     if(elemento.innerHTML.trim() === ""){
@@ -303,4 +319,4 @@ function guardarPDF() {
 }
 </script>
 </body>
-</html>
+    </html>
