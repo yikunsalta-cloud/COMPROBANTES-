@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Comprobantes Yikun</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f2f2f2;
+    padding:20px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    background:white;
+    padding:20px;
+}
+
+h2{
+    text-align:center;
+}
+
+input{
+    padding:6px;
+    margin:4px 0;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+th, td{
+    border:1px solid #000;
+    padding:6px;
+    text-align:center;
+}
+
+button{
+    padding:8px 15px;
+    margin-top:10px;
+    cursor:pointer;
+}
+
+.total-pendiente{
+    font-size:26px;
+    color:red;
+    font-weight:bold;
+    text-align:right;
+    margin-top:10px;
+}
+
+.header-recibo{
+    display:flex;
+    justify-content:space-between;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.comprobante{
+    margin-top:20px;
+    border:2px solid black;
+    padding:15px;
+}
+
+/* ---------- IMPRESIÓN A5 HORIZONTAL ---------- */
+
+@media print {
+
+  @page {
+    size: A5 landscape;
+    margin: 5mm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .comprobante, .comprobante * {
+    visibility: visible;
+  }
+
+  .comprobante {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 210mm;
+    height: 148mm;
+    box-sizing: border-box;
+  }
+
+  button {
+    display: none;
+  }
+
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>Generador Comprobantes Yikun</h2>
+
+<label>Cliente:</label><br>
+<input type="text" id="cliente"><br>
+
+<h3>Productos</h3>
+
+<table id="tabla">
+<tr>
+<th>Detalle</th>
+<th>Cantidad</th>
+<th>Precio Unit.</th>
+</tr>
+<tr>
+<td><input type="text" class="detalle"></td>
+<td><input type="number" class="cantidad"></td>
+<td><input type="number" class="precio"></td>
+</tr>
+</table>
+
+<button onclick="agregarFila()">Agregar Producto</button>
+
+<br><br>
+
+<label>Seña:</label>
+<input type="number" id="sena" value="0">
+
+<label>Descuento:</label>
+<input type="number" id="descuento" value="0">
+
+<br><br>
+
+<button onclick="generar()">Generar</button>
+<button onclick="window.print()">Imprimir</button>
+
+<div id="resultado"></div>
+
+</div>
+
+<script>
+
+let numero = localStorage.getItem("numeroYikun");
+if(!numero){
+    numero = 3281;
+}else{
+    numero = parseInt(numero);
+}
+
+function agregarFila(){
+    let tabla = document.getElementById("tabla");
+    let fila = tabla.insertRow();
+    fila.innerHTML = `
+    <td><input type="text" class="detalle"></td>
+    <td><input type="number" class="cantidad"></td>
+    <td><input type="number" class="precio"></td>
+    `;
+}
+
+function generar(){
+
+    let detalles = document.getElementsByClassName("detalle");
+    let cantidades = document.getElementsByClassName("cantidad");
+    let precios = document.getElementsByClassName("precio");
+
+    let totalPedido = 0;
+    let filas = "";
+
+    for(let i=0;i<detalles.length;i++){
+        if(detalles[i].value !== ""){
+            let cant = parseFloat(cantidades[i].value || 0);
+            let precio = parseFloat(precios[i].value || 0);
+            let subtotal = cant * precio;
+            totalPedido += subtotal;
+
+            filas += `
+            <tr>
+            <td>${detalles[i].value}</td>
+            <td>${cant}</td>
+            <td>$${precio.toLocaleString()}</td>
+            </tr>`;
+        }
+    }
+
+    let sena = parseFloat(document.getElementById("sena").value || 0);
+    let descuento = parseFloat(document.getElementById("descuento").value || 0);
+
+    let totalFinal = totalPedido - descuento;
+    let pendiente = totalFinal - sena;
+
+    let hoy = new Date();
+    let fechaActual = hoy.toLocaleDateString("es-AR");
+
+    document.getElementById("resultado").innerHTML = `
+    <div class="comprobante">
+        <div class="header-recibo">
+            <div>Recibo B 99999 - ${numero.toString().padStart(6,'0')}</div>
+            <div>Fecha: ${fechaActual}</div>
+        </div>
+
+        <p><strong>Cliente:</strong> ${document.getElementById("cliente").value}</p>
+
+        <table>
+        <tr>
+        <th>Detalle</th>
+        <th>Cantidad</th>
+        <th>Precio Unit.</th>
+        </tr>
+        ${filas}
+        </table>
+
+        <p><strong>Total Pedido:</strong> $${totalPedido.toLocaleString()}</p>
+        <p><strong>Descuento:</strong> $${descuento.toLocaleString()}</p>
+        <p><strong>Seña:</strong> $${sena.toLocaleString()}</p>
+
+        <div class="total-pendiente">
+            Total Pendiente: $${pendiente.toLocaleString()}
+        </div>
+
+        <br>
+        Vendedor: 03 Lucas Vazquez<br>
+        Local: Salta Cap. - Ayacucho 1621<br>
+        Cel: 3875729428
+    </div>
+    `;
+
+    numero++;
+    localStorage.setItem("numeroYikun", numero);
+}
+
+</script>
+
+</body>
+</html>
