@@ -9,7 +9,7 @@ body {
     font-family: Arial, sans-serif; 
     margin:20px; 
     background:#212838; 
-    color:#FFFFFF;  /* Texto blanco legible en página principal */
+    color:#FFFFFF;  
     font-weight:bold;
 }
 h2 { color:#FFFFFF; } 
@@ -20,7 +20,7 @@ input, select {
     border: 1px solid #374658;
     border-radius:4px;
     background:#212838;
-    color:#FFFFFF; /* Texto de inputs blanco */
+    color:#FFFFFF; 
 }
 input::placeholder { color:#08C6AB; } 
 table { 
@@ -28,7 +28,7 @@ table {
     width:100%; 
     margin-top:10px;
     background:#374658;
-    color:#FFFFFF; /* Texto tabla blanco */
+    color:#FFFFFF; 
     font-weight:bold;
 }
 th, td { 
@@ -49,7 +49,7 @@ button {
 }
 button:hover { background:#726EFF; color:#FFFFFF; }
 
-/* Comprobante generado: colores originales sin tocar */
+/* Comprobante generado */
 .comprobante { 
     border:1px solid #333; 
     padding:15px; 
@@ -59,10 +59,20 @@ button:hover { background:#726EFF; color:#FFFFFF; }
     color:#333; 
     font-weight:bold;
 }
-.titulo-principal { text-align:center; font-size:28px; font-weight:bold; color:#726EFF; }
-.subtitulo { text-align:center; font-size:18px; margin-bottom:10px; color:#212838; }
-.comprobante table { width:100%; border-collapse:collapse; background:#ffffff; color:#333; font-weight:bold;}
-.comprobante th, .comprobante td { border:1px solid #333; padding:5px; text-align:left; font-weight:bold; }
+.titulo-principal { 
+    text-align:center; 
+    font-size:28px; 
+    font-weight:bold; 
+    color:#000; /* YIKUN en negro */
+}
+.subtitulo { 
+    text-align:center; 
+    font-size:18px; 
+    margin-bottom:10px; 
+    color:#212838; 
+}
+.comprobante table { width:100%; border-collapse:collapse; background:#ffffff; color:#000; font-weight:bold;}
+.comprobante th, .comprobante td { border:1px solid #333; padding:5px; text-align:left; font-weight:bold; color:#000; }
 
 /* Parte superior: número recibo izquierda, fecha derecha */
 .comprobante .top { display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold; }
@@ -70,18 +80,11 @@ button:hover { background:#726EFF; color:#FFFFFF; }
 /* Parte media: cliente izquierda, vendedor derecha */
 .comprobante .medio { display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold; }
 
-/* Parte inferior: datos vendedor y totales */
+/* Parte inferior: vendedor izquierda, totales derecha */
 .comprobante .inferior { display:flex; justify-content:space-between; margin-top:20px; }
 .inferior-left { width:45%; font-weight:bold; }
 .inferior-right { width:50%; text-align:right; font-weight:bold; }
 .total-pendiente { font-weight:bold; color:#DC2626; font-size:28px; margin-top:10px; }
-
-/* Duplicado solo visible al imprimir */
-.comprobante.duplicado { display:none; }
-@media print {
-    .comprobante { width:100%; page-break-after:always; }
-    .comprobante.duplicado { display:block; }
-}
 </style>
 </head>
 <body>
@@ -223,57 +226,27 @@ function generar(){
                 </div>
             </div>
         </div>
-
-        <div class="comprobante duplicado">
-            <div class="titulo-principal">YIKUN</div>
-            <div class="subtitulo">COMPROBANTE DE PAGO</div>
-            <div class="top">
-                <div>Recibo B - ${numeroFormateado}</div>
-                <div>Fecha: ${fechaActual}</div>
-            </div>
-            <div class="medio">
-                <div><strong>Cliente/a:</strong> ${cliente}</div>
-                <div><strong>Vendedor:</strong> ${nombreVendedor}</div>
-            </div>
-            <table>
-                <tr><th>Detalle</th><th>Cantidad</th><th>Precio Unit.</th></tr>
-                ${filas}
-            </table>
-            <div class="inferior">
-                <div class="inferior-left">
-                    <p><strong>Vendedor:</strong> ${nombreVendedor}</p>
-                    <p>${datosVendedor}</p>
-                </div>
-                <div class="inferior-right">
-                    <p>Total Pedido: ${formatoARS(totalPedido)}</p>
-                    <p>Descuento (${porcentaje}%): ${formatoARS(montoDescuento)}</p>
-                    <p>Seña realizada (${formaPago}): ${formatoARS(sena)}</p>
-                    <div class="total-pendiente">Total Pendiente: ${formatoARS(pendiente)}</div>
-                </div>
-            </div>
-        </div>
     `;
-
     document.getElementById("resultado").innerHTML = comprobanteHTML;
     numero++;
     localStorage.setItem("numeroYikun", numero);
 }
 
 function guardarPDF() {
-    const elemento = document.getElementById("resultado");
-    if(elemento.innerHTML.trim() === ""){
+    const elemento = document.querySelector(".comprobante"); // Solo 1 comprobante
+    if(!elemento){
         alert("Primero genere un comprobante");
         return;
     }
     var opt = {
-        margin:       0.5,
+        margin:       5,
         filename:     'Comprobante_Yikun.pdf',
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        jsPDF:        { unit: 'mm', format: 'a5', orientation: 'portrait' } // A5
     };
     html2pdf().set(opt).from(elemento).save();
 }
 </script>
 </body>
-    </html>
+                              </html>
