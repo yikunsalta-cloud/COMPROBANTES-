@@ -60,7 +60,6 @@ function generar(){
 
     let sena = parseFloat(document.getElementById("sena").value || 0);
     let porcentaje = parseFloat(document.getElementById("descuento").value);
-    let metodoPago = document.getElementById("pago").value;
 
     let montoDescuento = totalPedido * (porcentaje / 100);
     let totalFinal = totalPedido - montoDescuento;
@@ -71,45 +70,22 @@ function generar(){
     let fechaActual = new Date().toLocaleDateString("es-AR");
     let numeroFormateado = numero.toString().padStart(6,'0');
 
-    let vendedorSeleccionado = document.getElementById("vendedor").value;
-    let datosVendedor = "";
+    let comprobanteHTML = `
+    <div class="comprobante">
 
-    if(vendedorSeleccionado === "03"){
-        datosVendedor = `
-        Vendedor: 03 Lucas A. Grafica<br>
-        Ayacucho 1621 - Salta Capital<br>
-        Cel: 3875729428
-        `;
-    }
-
-    if(vendedorSeleccionado === "02"){
-        datosVendedor = `
-        Vendedor: 02 Analia A. Papeleria<br>
-        Ayacucho 1621 - Salta Capital<br>
-        Cel: 3872254054
-        `;
-    }
-
-    let contenido = `
-    <div style="padding:20px; font-family:Arial;">
-
-        <div style="text-align:center;">
-            <img src="logo.png" style="max-width:150px;">
+        <div style="text-align:center; margin-bottom:15px;">
+            <div style="font-size:28px; font-weight:bold;">Yikun</div>
+            <div style="font-size:14px;">Comprobante</div>
         </div>
 
-        <div style="display:flex; justify-content:space-between; font-weight:bold;">
-            <span>Recibo B - ${numeroFormateado}</span>
-            <span>${fechaActual}</span>
+        <div class="header-recibo">
+            <div>Recibo B - ${numeroFormateado}</div>
+            <div>Fecha: ${fechaActual}</div>
         </div>
 
-        <br>
+        <p><strong>Cliente:</strong> ${cliente}</p>
 
-        <strong>Cliente:</strong> ${cliente}<br>
-        ${datosVendedor}
-
-        <br>
-
-        <table style="width:100%; border-collapse:collapse;" border="1">
+        <table>
             <tr>
                 <th>Detalle</th>
                 <th>Cantidad</th>
@@ -118,27 +94,17 @@ function generar(){
             ${filas}
         </table>
 
-        <br>
+        <p><strong>Total Pedido:</strong> ${formatoARS(totalPedido)}</p>
+        <p><strong>Descuento (${porcentaje}%):</strong> ${formatoARS(montoDescuento)}</p>
+        <p><strong>Seña:</strong> ${formatoARS(sena)}</p>
 
-        <strong>Total Pedido:</strong> ${formatoARS(totalPedido)}<br>
-        <strong>Descuento (${porcentaje}%):</strong> ${formatoARS(montoDescuento)}<br>
-        <strong>Total Final:</strong> ${formatoARS(totalFinal)}<br>
-        <strong>Seña:</strong> ${formatoARS(sena)}<br>
-        <strong>Pendiente:</strong> ${formatoARS(pendiente)}<br>
-        <strong>Método de Pago:</strong> ${metodoPago}
-
+        <div class="total-pendiente">
+            Total Pendiente: ${formatoARS(pendiente)}
+        </div>
     </div>
     `;
 
-    let printArea = document.createElement("div");
-    printArea.innerHTML = contenido + contenido; // duplica para 2 por hoja
-
-    html2pdf().from(printArea).set({
-        margin:0,
-        filename:Recibo_${numeroFormateado}.pdf,
-        html2canvas:{scale:2},
-        jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
-    }).save();
+    document.getElementById("resultado").innerHTML = comprobanteHTML;
 
     numero++;
     localStorage.setItem("numeroYikun", numero);
