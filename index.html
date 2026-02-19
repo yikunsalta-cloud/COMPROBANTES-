@@ -5,9 +5,10 @@
 <title>Comprobantes Yikun</title>
 
 <style>
+
 body{
     font-family: Arial, sans-serif;
-    background:#f2f2f2;
+    background:#e9ecef;
     padding:20px;
 }
 
@@ -15,19 +16,27 @@ body{
     max-width:1000px;
     margin:auto;
     background:white;
-    padding:20px;
+    padding:25px;
     border-radius:8px;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
 }
 
 h2{
     text-align:center;
-    margin-bottom:20px;
+    margin-bottom:25px;
+    color:#1f1f1f;
+}
+
+label{
+    font-weight:bold;
+    color:#333;
 }
 
 input, select{
-    padding:6px;
+    padding:7px;
     margin:4px 0;
+    border:1px solid #ccc;
+    border-radius:4px;
 }
 
 table{
@@ -36,25 +45,63 @@ table{
     margin-top:10px;
 }
 
+th{
+    background:#1f1f1f;
+    color:white;
+}
+
 th, td{
-    border:1px solid #000;
-    padding:6px;
+    border:1px solid #bbb;
+    padding:7px;
     text-align:center;
 }
 
+/* BOTONES PROFESIONALES */
+
 button{
-    padding:8px 15px;
+    padding:9px 18px;
     margin-top:10px;
-    cursor:pointer;
     font-weight:bold;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+    color:white;
 }
 
-.total-pendiente{
-    font-size:22px;
-    color:red;
-    font-weight:bold;
-    text-align:right;
-    margin-top:10px;
+.btn-agregar{
+    background:#6c757d;
+}
+
+.btn-generar{
+    background:#1e3a5f;
+}
+
+.btn-imprimir{
+    background:#343a40;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+/* COMPROBANTE */
+
+.area-impresion{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+}
+
+.comprobante{
+    position:relative;
+    width:210mm;
+    height:148mm;
+    border:2px solid #000;
+    padding:20px;
+    background:white;
+    box-sizing:border-box;
+    font-size:14px;
 }
 
 .header-recibo{
@@ -65,42 +112,57 @@ button{
     font-size:16px;
 }
 
-.comprobante{
-    margin-top:20px;
-    border:2px solid black;
-    padding:15px;
-    font-size:14px;
+.total-pendiente{
+    font-size:22px;
+    color:#b00000;
+    font-weight:bold;
+    text-align:right;
+    margin-top:10px;
 }
 
-/* ---------- IMPRESIÓN A5 HORIZONTAL ---------- */
+.logo-container{
+    text-align:center;
+    margin-bottom:10px;
+}
+
+.logo{
+    max-width:160px;
+}
+
+/* IMPRESIÓN A4 CON 2 A5 */
+
 @media print {
 
   @page {
-    size: A5 landscape;
-    margin: 5mm;
+    size: A4 portrait;
+    margin: 10mm;
   }
 
   body * {
     visibility: hidden;
   }
 
-  .comprobante, .comprobante * {
+  .area-impresion, .area-impresion * {
     visibility: visible;
   }
 
-  .comprobante {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 200mm;
-    height: 138mm;
-    box-sizing: border-box;
+  .area-impresion{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
   }
 
-  button, select, input, h2 {
-    display: none;
+  .comprobante{
+    page-break-inside: avoid;
+    margin-bottom:10mm;
+  }
+
+  button, input, select, h2 {
+    display:none;
   }
 }
+
 </style>
 </head>
 <body>
@@ -111,12 +173,6 @@ button{
 
 <label>Cliente:</label><br>
 <input type="text" id="cliente"><br>
-
-<label>Vendedor:</label><br>
-<select id="vendedor">
-    <option value="03">03 Lucas A. Gráfica</option>
-    <option value="02">02 Analía A. Papelería</option>
-</select>
 
 <h3>Productos</h3>
 
@@ -133,7 +189,7 @@ button{
 </tr>
 </table>
 
-<button onclick="agregarFila()">Agregar Producto</button>
+<button class="btn-agregar" onclick="agregarFila()">Agregar Producto</button>
 
 <br><br>
 
@@ -141,14 +197,19 @@ button{
 <input type="number" id="sena" value="0" min="0">
 
 <label>Descuento:</label>
-<input type="number" id="descuento" value="0" min="0">
+<select id="descuento">
+    <option value="0">Sin descuento</option>
+    <option value="5">5%</option>
+    <option value="10">10%</option>
+    <option value="15">15%</option>
+</select>
 
 <br><br>
 
-<button onclick="generar()">Generar</button>
-<button onclick="window.print()">Imprimir</button>
+<button class="btn-generar" onclick="generar()">Generar</button>
+<button class="btn-imprimir" onclick="window.print()">Imprimir</button>
 
-<div id="resultado"></div>
+<div class="area-impresion" id="resultado"></div>
 
 </div>
 
@@ -192,11 +253,6 @@ function generar(){
             let cant = parseFloat(cantidades[i].value || 0);
             let precio = parseFloat(precios[i].value || 0);
 
-            if(cant <= 0 || precio < 0){
-                alert("Cantidad y precio deben ser válidos.");
-                return;
-            }
-
             let subtotal = cant * precio;
             totalPedido += subtotal;
 
@@ -215,43 +271,22 @@ function generar(){
     }
 
     let sena = parseFloat(document.getElementById("sena").value || 0);
-    let descuento = parseFloat(document.getElementById("descuento").value || 0);
+    let porcentaje = parseFloat(document.getElementById("descuento").value);
 
-    let totalFinal = totalPedido - descuento;
+    let montoDescuento = totalPedido * (porcentaje / 100);
+    let totalFinal = totalPedido - montoDescuento;
     let pendiente = totalFinal - sena;
 
-    if(totalFinal < 0){
-        alert("El descuento no puede ser mayor al total.");
-        return;
-    }
+    let fechaActual = new Date().toLocaleDateString("es-AR");
 
-    let hoy = new Date();
-    let fechaActual = hoy.toLocaleDateString("es-AR");
-
-    let vendedorSeleccionado = document.getElementById("vendedor").value;
-
-    let datosVendedor = "";
-
-    if(vendedorSeleccionado === "03"){
-        datosVendedor = `
-        Vendedor: 03 Lucas A. Gráfica<br>
-        Local: Salta Cap. - Ayacucho 1621<br>
-        Cel: 3875729428
-        `;
-    }
-
-    if(vendedorSeleccionado === "02"){
-        datosVendedor = `
-        Vendedor: 02 Analía A. Papelería<br>
-        Local: Salta Cap. - Ayacucho 1621<br>
-        Cel: 3872254054
-        `;
-    }
-
-    document.getElementById("resultado").innerHTML = `
+    let comprobanteHTML = `
     <div class="comprobante">
+        <div class="logo-container">
+            <img src="logo.png" class="logo">
+        </div>
+
         <div class="header-recibo">
-            <div>Recibo B 99999 - ${numero.toString().padStart(6,'0')}</div>
+            <div>Recibo B - ${numero.toString().padStart(6,'0')}</div>
             <div>Fecha: ${fechaActual}</div>
         </div>
 
@@ -267,17 +302,16 @@ function generar(){
         </table>
 
         <p><strong>Total Pedido:</strong> ${formatoARS(totalPedido)}</p>
-        <p><strong>Descuento:</strong> ${formatoARS(descuento)}</p>
+        <p><strong>Descuento (${porcentaje}%):</strong> ${formatoARS(montoDescuento)}</p>
         <p><strong>Seña:</strong> ${formatoARS(sena)}</p>
 
         <div class="total-pendiente">
             Total Pendiente: ${formatoARS(pendiente)}
         </div>
-
-        <br><br>
-        ${datosVendedor}
     </div>
     `;
+
+    document.getElementById("resultado").innerHTML += comprobanteHTML;
 
     numero++;
     localStorage.setItem("numeroYikun", numero);
