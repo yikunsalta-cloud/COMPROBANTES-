@@ -16,13 +16,16 @@ body{
     margin:auto;
     background:white;
     padding:20px;
+    border-radius:8px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
 h2{
     text-align:center;
+    margin-bottom:20px;
 }
 
-input{
+input, select{
     padding:6px;
     margin:4px 0;
 }
@@ -43,12 +46,11 @@ button{
     padding:8px 15px;
     margin-top:10px;
     cursor:pointer;
-    font-weight: bold;   /* texto en negrita */
-
+    font-weight:bold;
 }
 
 .total-pendiente{
-    font-size:26px;
+    font-size:22px;
     color:red;
     font-weight:bold;
     text-align:right;
@@ -60,16 +62,17 @@ button{
     justify-content:space-between;
     font-weight:bold;
     margin-bottom:10px;
+    font-size:16px;
 }
 
 .comprobante{
     margin-top:20px;
     border:2px solid black;
     padding:15px;
+    font-size:14px;
 }
 
 /* ---------- IMPRESIÓN A5 HORIZONTAL ---------- */
-
 @media print {
 
   @page {
@@ -89,15 +92,14 @@ button{
     position: absolute;
     left: 0;
     top: 0;
-    width: 210mm;
-    height: 148mm;
+    width: 200mm;
+    height: 138mm;
     box-sizing: border-box;
   }
 
-  button {
+  button, select, input, h2 {
     display: none;
   }
-
 }
 </style>
 </head>
@@ -110,6 +112,12 @@ button{
 <label>Cliente:</label><br>
 <input type="text" id="cliente"><br>
 
+<label>Vendedor:</label><br>
+<select id="vendedor">
+    <option value="03">03 Lucas A. Gráfica</option>
+    <option value="02">02 Analía A. Papelería</option>
+</select>
+
 <h3>Productos</h3>
 
 <table id="tabla">
@@ -120,8 +128,8 @@ button{
 </tr>
 <tr>
 <td><input type="text" class="detalle"></td>
-<td><input type="number" class="cantidad"></td>
-<td><input type="number" class="precio"></td>
+<td><input type="number" class="cantidad" min="1"></td>
+<td><input type="number" class="precio" min="0" step="0.01"></td>
 </tr>
 </table>
 
@@ -130,10 +138,10 @@ button{
 <br><br>
 
 <label>Seña:</label>
-<input type="number" id="sena" value="0">
+<input type="number" id="sena" value="0" min="0">
 
 <label>Descuento:</label>
-<input type="number" id="descuento" value="0">
+<input type="number" id="descuento" value="0" min="0">
 
 <br><br>
 
@@ -153,13 +161,20 @@ if(!numero){
     numero = parseInt(numero);
 }
 
+function formatoARS(valor){
+    return valor.toLocaleString("es-AR", {
+        style:"currency",
+        currency:"ARS"
+    });
+}
+
 function agregarFila(){
     let tabla = document.getElementById("tabla");
     let fila = tabla.insertRow();
     fila.innerHTML = `
     <td><input type="text" class="detalle"></td>
-    <td><input type="number" class="cantidad"></td>
-    <td><input type="number" class="precio"></td>
+    <td><input type="number" class="cantidad" min="1"></td>
+    <td><input type="number" class="precio" min="0" step="0.01"></td>
     `;
 }
 
@@ -173,9 +188,15 @@ function generar(){
     let filas = "";
 
     for(let i=0;i<detalles.length;i++){
-        if(detalles[i].value !== ""){
+        if(detalles[i].value.trim() !== ""){
             let cant = parseFloat(cantidades[i].value || 0);
             let precio = parseFloat(precios[i].value || 0);
+
+            if(cant <= 0 || precio < 0){
+                alert("Cantidad y precio deben ser válidos.");
+                return;
+            }
+
             let subtotal = cant * precio;
             totalPedido += subtotal;
 
@@ -183,9 +204,14 @@ function generar(){
             <tr>
                 <td>${detalles[i].value}</td>
                 <td>${cant}</td>
-                <td>$${precio.toLocaleString()}</td>
+                <td>${formatoARS(precio)}</td>
             </tr>`;
         }
+    }
+
+    if(totalPedido === 0){
+        alert("Agregá al menos un producto.");
+        return;
     }
 
     let sena = parseFloat(document.getElementById("sena").value || 0);
@@ -194,17 +220,21 @@ function generar(){
     let totalFinal = totalPedido - descuento;
     let pendiente = totalFinal - sena;
 
+    if(totalFinal < 0){
+        alert("El descuento no puede ser mayor al total.");
+        return;
+    }
+
     let hoy = new Date();
     let fechaActual = hoy.toLocaleDateString("es-AR");
 
-    // -------- VENDEDOR AUTOMÁTICO --------
     let vendedorSeleccionado = document.getElementById("vendedor").value;
 
     let datosVendedor = "";
 
     if(vendedorSeleccionado === "03"){
         datosVendedor = `
-        Vendedor: 03 Lucas A.Grafica<br>
+        Vendedor: 03 Lucas A. Gráfica<br>
         Local: Salta Cap. - Ayacucho 1621<br>
         Cel: 3875729428
         `;
@@ -212,7 +242,7 @@ function generar(){
 
     if(vendedorSeleccionado === "02"){
         datosVendedor = `
-        Vendedor: 02 Analia A.Papeleria<br>
+        Vendedor: 02 Analía A. Papelería<br>
         Local: Salta Cap. - Ayacucho 1621<br>
         Cel: 3872254054
         `;
@@ -236,12 +266,12 @@ function generar(){
             ${filas}
         </table>
 
-        <p><strong>Total Pedido:</strong> $${totalPedido.toLocaleString()}</p>
-        <p><strong>Descuento:</strong> $${descuento.toLocaleString()}</p>
-        <p><strong>Seña:</strong> $${sena.toLocaleString()}</p>
+        <p><strong>Total Pedido:</strong> ${formatoARS(totalPedido)}</p>
+        <p><strong>Descuento:</strong> ${formatoARS(descuento)}</p>
+        <p><strong>Seña:</strong> ${formatoARS(sena)}</p>
 
         <div class="total-pendiente">
-            Total Pendiente: $${pendiente.toLocaleString()}
+            Total Pendiente: ${formatoARS(pendiente)}
         </div>
 
         <br><br>
