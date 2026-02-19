@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Comprobante Yikun</title>
+<title>YIKUN COMPROBANTE</title>
 <style>
 /* ====== ESTILO PÁGINA ====== */
 body { 
@@ -60,7 +60,7 @@ button:hover {
     color:#SAFE7;
 }
 
-/* ====== ESTILO COMPROBANTES GENERADOS (MANTENER PALABRAJE ORIGINAL) ====== */
+/* ====== ESTILO COMPROBANTES GENERADOS ====== */
 .comprobante { 
     border:1px solid #333; 
     padding:10px; 
@@ -68,18 +68,31 @@ button:hover {
     width:700px; 
     background:#f5f5f5; 
     color:#333; 
-    font-weight:bold; /* letra negrita */
+    font-weight:bold;
 }
 .comprobante div[style*="font-weight:bold"] { 
     color:#000; 
     font-size:24px; 
     text-align:center; 
 }
+.comprobante table { 
+    width:100%; 
+    border-collapse:collapse; 
+    background:#ffffff; 
+    color:#333; 
+}
+.comprobante th, .comprobante td { 
+    border:1px solid #333; 
+    padding:5px; 
+    text-align:left; 
+    font-weight:bold;
+}
 .total-pendiente { 
     font-weight:bold; 
-    color:#8B0000; 
-    font-size:18px; 
-    margin-top:10px; 
+    color:#DC2626; 
+    font-size:32px; 
+    text-align:center;
+    margin-top:20px; 
 }
 @media print {
     body { background:white; }
@@ -89,7 +102,7 @@ button:hover {
 </head>
 <body>
 
-<h2>Generar Comprobante</h2>
+<h2>YIKUN COMPROBANTE</h2>
 
 <label>Cliente/a: <input type="text" id="cliente" placeholder="Ingrese nombre del cliente"></label>
 
@@ -128,8 +141,12 @@ button:hover {
 </label>
 
 <button onclick="generar()">Generar Comprobante</button>
+<button onclick="guardarPDF()">Guardar como PDF</button>
 
 <div id="resultado"></div>
+
+<!-- Librería para PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
 let numero = localStorage.getItem("numeroYikun") || 3281;
@@ -236,6 +253,23 @@ function generar(){
     numero++;
     localStorage.setItem("numeroYikun", numero);
 }
+
+// ====== GUARDAR PDF ======
+function guardarPDF() {
+    const elemento = document.getElementById("resultado");
+    if(elemento.innerHTML.trim() === ""){
+        alert("Primero genere un comprobante");
+        return;
+    }
+    var opt = {
+        margin:       0.5,
+        filename:     'Comprobante_Yikun.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(elemento).save();
+}
 </script>
 </body>
-    </html>
+        </html>
