@@ -2,230 +2,97 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Comprobantes Yikun</title>
-
+<title>Comprobante Yikun</title>
 <style>
+/* Estilo general */
+body { font-family: Arial, sans-serif; padding: 10px; }
+button { margin: 10px 0; padding: 10px 15px; font-size: 14px; }
 
-body{
-    font-family: Arial, sans-serif;
-    background:#e9ecef;
-    padding:20px;
-}
+/* Tabla del comprobante */
+table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+th, td { border: 1px solid #000; padding: 5px; text-align: center; }
+.comprobante { padding: 10px; border: 1px solid #333; margin-bottom: 20px; }
 
-.container{
-    max-width:1000px;
-    margin:auto;
-    background:white;
-    padding:25px;
-    border-radius:8px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.08);
-}
+/* Total pendiente destacado */
+.total-pendiente { font-weight: bold; font-size: 18px; margin-top: 10px; }
 
-h2{
-    text-align:center;
-    margin-bottom:25px;
-    color:#1f1f1f;
-}
-
-label{
-    font-weight:bold;
-    color:#333;
-}
-
-input, select{
-    padding:7px;
-    margin:4px 0;
-    border:1px solid #ccc;
-    border-radius:4px;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:10px;
-}
-
-th{
-    background:#1f1f1f;
-    color:white;
-}
-
-th, td{
-    border:1px solid #bbb;
-    padding:7px;
-    text-align:center;
-}
-
-/* BOTONES PROFESIONALES */
-
-button{
-    padding:9px 18px;
-    margin-top:10px;
-    font-weight:bold;
-    border:none;
-    border-radius:4px;
-    cursor:pointer;
-    color:white;
-}
-
-.btn-agregar{
-    background:#6c757d;
-}
-
-.btn-generar{
-    background:#1e3a5f;
-}
-
-.btn-imprimir{
-    background:#343a40;
-}
-
-button:hover{
-    opacity:0.9;
-}
-
-/* COMPROBANTE */
-
-.area-impresion{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    justify-content:center;
-}
-
-.comprobante{
-    position:relative;
-    width:210mm;
-    height:148mm;
-    border:2px solid #000;
-    padding:20px;
-    background:white;
-    box-sizing:border-box;
-    font-size:14px;
-}
-
-.header-recibo{
-    display:flex;
-    justify-content:space-between;
-    font-weight:bold;
-    margin-bottom:10px;
-    font-size:16px;
-}
-
-.total-pendiente{
-    font-size:22px;
-    color:#b00000;
-    font-weight:bold;
-    text-align:right;
-    margin-top:10px;
-}
-
-.logo-container{
-    text-align:center;
-    margin-bottom:10px;
-}
-
-.logo{
-    max-width:160px;
-}
-
-/* IMPRESIÓN A4 CON 2 A5 */
-
+/* Impresión A4 */
 @media print {
-
-  @page {
-    size: A4 portrait;
-    margin: 10mm;
-  }
-
-  body * {
-    visibility: hidden;
-  }
-
-  .area-impresion, .area-impresion * {
-    visibility: visible;
-  }
-
-  .area-impresion{
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-  }
-
-  .comprobante{
-    page-break-inside: avoid;
-    margin-bottom:10mm;
-  }
-
-  button, input, select, h2 {
-    display:none;
-  }
+    body { margin: 0; padding: 0; }
+    #resultado { width: 210mm; margin: 0 auto; }
+    .comprobante {
+        page-break-inside: avoid;
+        width: 100%;
+        min-height: 140mm; /* Aproximadamente la mitad de A4 vertical */
+        padding: 10mm;
+        box-sizing: border-box;
+        margin-bottom: 10mm;
+        border: 1px solid #000;
+    }
+    button { display: none; } /* Ocultar botón al imprimir */
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #000; padding: 3mm; text-align: center; }
 }
-
 </style>
 </head>
 <body>
 
-<div class="container">
+<h2>Generar Comprobante</h2>
 
-<h2>Generador Comprobantes Yikun</h2>
+<label>Cliente:</label>
+<input type="text" id="cliente"><br><br>
 
-<label>Cliente:</label><br>
-<input type="text" id="cliente"><br>
-
-<h3>Productos</h3>
-
-<table id="tabla">
-<tr>
-<th>Detalle</th>
-<th>Cantidad</th>
-<th>Precio Unit.</th>
-</tr>
-<tr>
-<td><input type="text" class="detalle"></td>
-<td><input type="number" class="cantidad" min="1"></td>
-<td><input type="number" class="precio" min="0" step="0.01"></td>
-</tr>
-</table>
-
-<button class="btn-agregar" onclick="agregarFila()">Agregar Producto</button>
-
+<label>Vendedor:</label>
+<select id="vendedor">
+    <option value="">Seleccioná un vendedor</option>
+    <option value="03">03 Lucas A.Grafica</option>
+    <option value="02">02 Analia A.Papeleria</option>
+</select>
 <br><br>
 
+<table id="tabla">
+    <tr>
+        <th>Detalle</th>
+        <th>Cantidad</th>
+        <th>Precio Unit.</th>
+    </tr>
+</table>
+<button onclick="agregarFila()">Agregar Producto</button><br><br>
+
 <label>Seña:</label>
-<input type="number" id="sena" value="0" min="0">
+<input type="number" id="sena" min="0" step="0.01" value="0"><br><br>
 
 <label>Descuento:</label>
 <select id="descuento">
-    <option value="0">Sin descuento</option>
+    <option value="0">0%</option>
     <option value="5">5%</option>
     <option value="10">10%</option>
     <option value="15">15%</option>
-</select>
+    <option value="20">20%</option>
+</select><br><br>
 
-<br><br>
+<button onclick="generar()">Generar Comprobante</button>
+<button onclick="imprimir()">Imprimir</button>
 
-<button class="btn-generar" onclick="generar()">Generar</button>
-<button class="btn-imprimir" onclick="window.print()">Imprimir</button>
-
-<div class="area-impresion" id="resultado"></div>
-
-</div>
+<div id="resultado"></div>
 
 <script>
-
-let numero = localStorage.getItem("numeroYikun");
-if(!numero){
-    numero = 3281;
-}else{
-    numero = parseInt(numero);
-}
+let numero = parseInt(localStorage.getItem("numeroYikun")) || 3281;
 
 function formatoARS(valor){
-    return valor.toLocaleString("es-AR", {
-        style:"currency",
-        currency:"ARS"
+    return valor.toLocaleString("es-AR", {style:"currency", currency:"ARS"});
+}
+
+// Escapar texto para evitar inyección HTML
+function escapeHTML(texto){
+    return texto.replace(/[&<>"']/g, function(match){
+        return {
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            '"':"&quot;",
+            "'":"&#39;"
+        }[match];
     });
 }
 
@@ -233,72 +100,40 @@ function agregarFila(){
     let tabla = document.getElementById("tabla");
     let fila = tabla.insertRow();
     fila.innerHTML = `
-    <td><input type="text" class="detalle"></td>
-    <td><input type="number" class="cantidad" min="1"></td>
-    <td><input type="number" class="precio" min="0" step="0.01"></td>
+        <td><input type="text" class="detalle"></td>
+        <td><input type="number" class="cantidad" min="1" value="1"></td>
+        <td><input type="number" class="precio" min="0" step="0.01" value="0"></td>
     `;
 }
 
-function generar(){
-
-    let detalles = document.getElementsByClassName("detalle");
-    let cantidades = document.getElementsByClassName("cantidad");
-    let precios = document.getElementsByClassName("precio");
-
-    let totalPedido = 0;
-    let filas = "";
-
-    for(let i=0;i<detalles.length;i++){
-        if(detalles[i].value.trim() !== ""){
-            let cant = parseFloat(cantidades[i].value || 0);
-            let precio = parseFloat(precios[i].value || 0);
-
-            let subtotal = cant * precio;
-            totalPedido += subtotal;
-
-            filas += `
-            <tr>
-                <td>${detalles[i].value}</td>
-                <td>${cant}</td>
-                <td>${formatoARS(precio)}</td>
-            </tr>`;
-        }
-    }
-
-    if(totalPedido === 0){
-        alert("Agregá al menos un producto.");
-        return;
-    }
-
-    let sena = parseFloat(document.getElementById("sena").value || 0);
-    let porcentaje = parseFloat(document.getElementById("descuento").value);
-
-    let montoDescuento = totalPedido * (porcentaje / 100);
-    let totalFinal = totalPedido - montoDescuento;
-    let pendiente = totalFinal - sena;
-
-    let fechaActual = new Date().toLocaleDateString("es-AR");
-
-    let comprobanteHTML = `
+function crearComprobanteHTML(cliente, datosVendedor, filas, totalPedido, porcentaje, montoDescuento, sena, pendiente, numeroFormateado, fechaActual){
+    return `
     <div class="comprobante">
-        <div class="logo-container">
-            <img src="logo.png" class="logo">
+        <div style="text-align:center; margin-bottom:15px;">
+            <div style="font-size:28px; font-weight:bold;">Yikun</div>
+            <div style="font-size:14px;">Comprobante</div>
         </div>
 
         <div class="header-recibo">
-            <div>Recibo B - ${numero.toString().padStart(6,'0')}</div>
+            <div>Recibo B - ${numeroFormateado}</div>
             <div>Fecha: ${fechaActual}</div>
         </div>
 
-        <p><strong>Cliente:</strong> ${document.getElementById("cliente").value}</p>
+        <p><strong>Cliente:</strong> ${escapeHTML(cliente)}</p>
+        <p>${datosVendedor}</p>
 
         <table>
-            <tr>
-                <th>Detalle</th>
-                <th>Cantidad</th>
-                <th>Precio Unit.</th>
-            </tr>
-            ${filas}
+            <thead>
+                <tr>
+                    <th>Detalle</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unit.</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${filas}
+            </tbody>
         </table>
 
         <p><strong>Total Pedido:</strong> ${formatoARS(totalPedido)}</p>
@@ -310,14 +145,104 @@ function generar(){
         </div>
     </div>
     `;
+}
 
-    document.getElementById("resultado").innerHTML += comprobanteHTML;
+function generar(){
+    let cliente = document.getElementById("cliente").value.trim();
+    if(cliente === ""){
+        alert("Ingresá el nombre del cliente.");
+        return;
+    }
 
-    numero++;
+    let vendedorSeleccionado = document.getElementById("vendedor").value;
+    if(vendedorSeleccionado === ""){
+        alert("Seleccioná un vendedor.");
+        return;
+    }
+
+    let datosVendedor = "";
+    if(vendedorSeleccionado === "03"){
+        datosVendedor = `
+        Vendedor: 03 Lucas A.Grafica<br>
+        Local: Salta Cap. - Ayacucho 1621<br>
+        Cel: 3875729428
+        `;
+    } else if(vendedorSeleccionado === "02"){
+        datosVendedor = `
+        Vendedor: 02 Analia A.Papeleria<br>
+        Local: Salta Cap. - Ayacucho 1621<br>
+        Cel: 3872254054
+        `;
+    }
+
+    let detalles = document.getElementsByClassName("detalle");
+    let cantidades = document.getElementsByClassName("cantidad");
+    let precios = document.getElementsByClassName("precio");
+
+    let totalPedido = 0;
+    let filas = "";
+
+    for(let i=0; i<detalles.length; i++){
+        let detalle = detalles[i].value.trim();
+        let cant = parseFloat(cantidades[i].value) || 0;
+        let precio = parseFloat(precios[i].value) || 0;
+
+        if(detalle !== "" && cant > 0){
+            if(precio <= 0){
+                alert(El precio de "${detalle}" debe ser mayor a 0);
+                return;
+            }
+
+            let subtotal = cant * precio;
+            totalPedido += subtotal;
+
+            filas += `
+                <tr>
+                    <td>${escapeHTML(detalle)}</td>
+                    <td>${cant}</td>
+                    <td>${formatoARS(precio)}</td>
+                    <td>${formatoARS(subtotal)}</td>
+                </tr>`;
+        }
+    }
+
+    if(totalPedido === 0){
+        alert("Agregá al menos un producto con cantidad mayor a 0.");
+        return;
+    }
+
+    let sena = parseFloat(document.getElementById("sena").value) || 0;
+    if(sena < 0){
+        alert("La seña no puede ser negativa.");
+        return;
+    }
+
+    let porcentaje = parseFloat(document.getElementById("descuento").value) || 0;
+    const descuentosValidos = [0,5,10,15,20];
+    if(!descuentosValidos.includes(porcentaje)){
+        alert("El descuento debe ser 0%, 5%, 10%, 15% o 20%");
+        return;
+    }
+
+    let montoDescuento = totalPedido * (porcentaje / 100);
+    let totalFinal = totalPedido - montoDescuento;
+    let pendiente = Math.max(totalFinal - sena, 0);
+
+    let fechaActual = new Date().toLocaleDateString("es-AR", {timeZone:"America/Argentina/Buenos_Aires"});
+    let numeroFormateado = numero.toString().padStart(6,'0');
+
+    let contenido = crearComprobanteHTML(cliente, datosVendedor, filas, totalPedido, porcentaje, montoDescuento, sena, pendiente, numeroFormateado, fechaActual);
+
+    // Duplicar para original y copia
+    document.getElementById("resultado").innerHTML = contenido + contenido;
+
+    // Incrementar número de comprobante y reiniciar si supera 999999
+    numero = (numero >= 999999) ? 1 : numero + 1;
     localStorage.setItem("numeroYikun", numero);
 }
 
+// Función para imprimir
+function imprimir(){
+    window.print();
+}
 </script>
-
-</body>
-</html>
