@@ -43,6 +43,8 @@ button{
     padding:8px 15px;
     margin-top:10px;
     cursor:pointer;
+    font-weight: bold;   /* texto en negrita */
+
 }
 
 .total-pendiente{
@@ -179,9 +181,9 @@ function generar(){
 
             filas += `
             <tr>
-            <td>${detalles[i].value}</td>
-            <td>${cant}</td>
-            <td>$${precio.toLocaleString()}</td>
+                <td>${detalles[i].value}</td>
+                <td>${cant}</td>
+                <td>$${precio.toLocaleString()}</td>
             </tr>`;
         }
     }
@@ -195,6 +197,27 @@ function generar(){
     let hoy = new Date();
     let fechaActual = hoy.toLocaleDateString("es-AR");
 
+    // -------- VENDEDOR AUTOMÁTICO --------
+    let vendedorSeleccionado = document.getElementById("vendedor").value;
+
+    let datosVendedor = "";
+
+    if(vendedorSeleccionado === "03"){
+        datosVendedor = `
+        Vendedor: 03 Lucas A.Grafica<br>
+        Local: Salta Cap. - Ayacucho 1621<br>
+        Cel: 3875729428
+        `;
+    }
+
+    if(vendedorSeleccionado === "02"){
+        datosVendedor = `
+        Vendedor: 02 Analia A.Papeleria<br>
+        Local: Salta Cap. - Ayacucho 1621<br>
+        Cel: 3872254054
+        `;
+    }
+
     document.getElementById("resultado").innerHTML = `
     <div class="comprobante">
         <div class="header-recibo">
@@ -205,12 +228,12 @@ function generar(){
         <p><strong>Cliente:</strong> ${document.getElementById("cliente").value}</p>
 
         <table>
-        <tr>
-        <th>Detalle</th>
-        <th>Cantidad</th>
-        <th>Precio Unit.</th>
-        </tr>
-        ${filas}
+            <tr>
+                <th>Detalle</th>
+                <th>Cantidad</th>
+                <th>Precio Unit.</th>
+            </tr>
+            ${filas}
         </table>
 
         <p><strong>Total Pedido:</strong> $${totalPedido.toLocaleString()}</p>
@@ -221,10 +244,8 @@ function generar(){
             Total Pendiente: $${pendiente.toLocaleString()}
         </div>
 
-        <br>
-        Vendedor: 03 Lucas Vazquez<br>
-        Local: Salta Cap. - Ayacucho 1621<br>
-        Cel: 3875729428
+        <br><br>
+        ${datosVendedor}
     </div>
     `;
 
