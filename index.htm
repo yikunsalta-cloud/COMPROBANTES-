@@ -8,35 +8,26 @@ body {
     font-family: Arial, sans-serif; 
     margin:20px; 
     background:#212838; 
-    color:#SAFE7; 
+    color:#FFFFFF;  /* Texto blanco legible en página principal */
     font-weight:bold;
 }
-h2 {
-    color:#726EFF;
-}
-label {
-    display:block;
-    margin-bottom:10px;
-    color:#SAFE7;
-    font-weight:bold;
-}
+h2 { color:#FFFFFF; } /* Título principal */
+label { display:block; margin-bottom:10px; color:#FFFFFF; font-weight:bold; }
 input, select {
     font-weight:bold;
     padding:5px;
     border: 1px solid #374658;
     border-radius:4px;
     background:#212838;
-    color:#SAFE7;
+    color:#FFFFFF; /* Texto de inputs blanco */
 }
-input::placeholder {
-    color:#08C6AB;
-}
+input::placeholder { color:#08C6AB; } /* Placeholder verde agua */
 table { 
     border-collapse: collapse; 
     width:100%; 
     margin-top:10px;
     background:#374658;
-    color:#SAFE7;
+    color:#FFFFFF; /* Texto de tabla blanco */
     font-weight:bold;
 }
 th, td { 
@@ -44,6 +35,7 @@ th, td {
     padding:5px; 
     text-align:left; 
     font-weight:bold;
+    color:#FFFFFF; /* Contenido de celdas visible */
 }
 button { 
     margin-top:10px; 
@@ -54,11 +46,9 @@ button {
     cursor:pointer;
     font-weight:bold;
 }
-button:hover {
-    background:#726EFF;
-    color:#SAFE7;
-}
+button:hover { background:#726EFF; color:#FFFFFF; }
 
+/* Comprobante */
 .comprobante { 
     border:1px solid #333; 
     padding:15px; 
@@ -68,73 +58,42 @@ button:hover {
     color:#333; 
     font-weight:bold;
 }
+.titulo-principal { text-align:center; font-size:28px; font-weight:bold; color:#726EFF; }
+.subtitulo { text-align:center; font-size:18px; margin-bottom:10px; color:#212838; }
+.comprobante table { width:100%; border-collapse:collapse; background:#ffffff; color:#333; font-weight:bold;}
+.comprobante th, .comprobante td { border:1px solid #333; padding:5px; text-align:left; font-weight:bold; }
 
-/* Títulos */
-.comprobante .titulo-principal { 
-    text-align:center; 
-    font-size:28px; 
-    font-weight:bold; 
-}
-.comprobante .subtitulo { 
-    text-align:center; 
-    font-size:18px; 
-    margin-bottom:10px; 
-}
-
-/* Tabla del comprobante */
-.comprobante table { 
-    width:100%; 
-    border-collapse:collapse; 
-    background:#ffffff; 
-    color:#333; 
-}
-.comprobante th, .comprobante td { 
-    border:1px solid #333; 
-    padding:5px; 
-    text-align:left; 
-    font-weight:bold;
-}
-
-/* Parte superior: Cliente y vendedor */
-.comprobante .superior {
+/* Parte superior: número recibo izquierda, fecha derecha */
+.comprobante .top {
     display:flex;
     justify-content:space-between;
     margin-bottom:10px;
-}
-.comprobante .cliente-left {
-    width:50%;
-}
-.comprobante .vendedor-right {
-    width:45%;
-    text-align:right;
+    font-weight:bold;
 }
 
-/* Parte inferior: Totales y datos del vendedor */
+/* Parte media: cliente izquierda, vendedor derecha */
+.comprobante .medio {
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+    font-weight:bold;
+}
+
+/* Parte inferior: datos vendedor y totales */
 .comprobante .inferior {
     display:flex;
     justify-content:space-between;
     margin-top:20px;
 }
-.comprobante .inferior-left {
-    width:45%;
-}
-.comprobante .inferior-right {
-    width:50%;
-    text-align:right;
-}
-.comprobante .total-pendiente { 
-    font-weight:bold; 
-    color:#DC2626; 
-    font-size:28px; 
-    margin-top:10px;
-}
+.inferior-left { width:45%; font-weight:bold; }
+.inferior-right { width:50%; text-align:right; font-weight:bold; }
+.total-pendiente { font-weight:bold; color:#DC2626; font-size:28px; margin-top:10px; }
 
-/* ======= Lógica de duplicado para impresión ======= */
-.comprobante.duplicado { display:none; } /* por defecto no se muestra */
-
+/* Duplicado solo visible al imprimir */
+.comprobante.duplicado { display:none; }
 @media print {
-    .comprobante { width:100%; page-break-after:always; display:block; }
-    .comprobante.duplicado { display:block; } /* mostrar duplicado al imprimir */
+    .comprobante { width:100%; page-break-after:always; }
+    .comprobante.duplicado { display:block; }
 }
 </style>
 </head>
@@ -185,14 +144,11 @@ button:hover {
 <div id="resultado"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 <script>
 let numero = localStorage.getItem("numeroYikun") || 3281;
 numero = parseInt(numero);
 
-function formatoARS(valor){
-    return "$" + valor.toLocaleString("es-AR", {minimumFractionDigits:0});
-}
+function formatoARS(valor){ return "$" + valor.toLocaleString("es-AR", {minimumFractionDigits:0}); }
 
 function agregarFila(){
     let tabla = document.getElementById("tabla");
@@ -215,14 +171,11 @@ function generar(){
 
     let totalPedido = 0;
     let filas = "";
-
     for(let i=0;i<detalles.length;i++){
         if(detalles[i].value.trim() !== ""){
             let cant = parseFloat(cantidades[i].value || 0);
             let precio = parseFloat(precios[i].value || 0);
-            let subtotal = cant * precio;
-            totalPedido += subtotal;
-
+            totalPedido += cant * precio;
             filas += `<tr>
                         <td>${detalles[i].value}</td>
                         <td>${cant} Uni.</td>
@@ -230,7 +183,6 @@ function generar(){
                     </tr>`;
         }
     }
-
     if(totalPedido === 0){ alert("Agregue al menos un producto"); return; }
 
     let sena = parseFloat(document.getElementById("sena").value || 0);
@@ -248,45 +200,33 @@ function generar(){
     let datosVendedor = "";
     if(vendedorSeleccionado === "03"){
         nombreVendedor = "03 Lucas A.Grafica";
-        datosVendedor = `
-        Local: Salta Cap. - Ayacucho 1621<br>
-        Cel: 3875729428`;
+        datosVendedor = `Local: Salta Cap. - Ayacucho 1621<br>Cel: 3875729428`;
     } else if(vendedorSeleccionado === "02"){
         nombreVendedor = "02 Analia A.Papeleria";
-        datosVendedor = `
-        Local: Salta Cap. - Ayacucho 1621<br>
-        Cel: 3872254054`;
+        datosVendedor = `Local: Salta Cap. - Ayacucho 1621<br>Cel: 3872254054`;
     }
-
     let formaPago = document.getElementById("formaPago").value;
 
-    // Solo se muestra un comprobante en pantalla, duplicado oculto
     let comprobanteHTML = `
+        <!-- Comprobante visible en pantalla -->
         <div class="comprobante">
             <div class="titulo-principal">YIKUN</div>
             <div class="subtitulo">COMPROBANTE DE PAGO</div>
-            <div class="superior">
-                <div class="cliente-left">
-                    <p><strong>Cliente/a:</strong> ${cliente}</p>
-                </div>
-                <div class="vendedor-right">
-                    <p><strong>Vendedor:</strong> ${nombreVendedor}</p>
-                </div>
-            </div>
-            <div style="display:flex; justify-content:space-between;">
+            <div class="top">
                 <div>Recibo B - ${numeroFormateado}</div>
                 <div>Fecha: ${fechaActual}</div>
             </div>
+            <div class="medio">
+                <div><strong>Cliente/a:</strong> ${cliente}</div>
+                <div><strong>Vendedor:</strong> ${nombreVendedor}</div>
+            </div>
             <table>
-                <tr>
-                    <th>Detalle</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unit.</th>
-                </tr>
+                <tr><th>Detalle</th><th>Cantidad</th><th>Precio Unit.</th></tr>
                 ${filas}
             </table>
             <div class="inferior">
                 <div class="inferior-left">
+                    <p><strong>Vendedor:</strong> ${nombreVendedor}</p>
                     <p>${datosVendedor}</p>
                 </div>
                 <div class="inferior-right">
@@ -297,32 +237,26 @@ function generar(){
                 </div>
             </div>
         </div>
+
+        <!-- Comprobante duplicado solo visible al imprimir -->
         <div class="comprobante duplicado">
-            <!-- duplicado oculto en pantalla, visible al imprimir -->
             <div class="titulo-principal">YIKUN</div>
             <div class="subtitulo">COMPROBANTE DE PAGO</div>
-            <div class="superior">
-                <div class="cliente-left">
-                    <p><strong>Cliente/a:</strong> ${cliente}</p>
-                </div>
-                <div class="vendedor-right">
-                    <p><strong>Vendedor:</strong> ${nombreVendedor}</p>
-                </div>
-            </div>
-            <div style="display:flex; justify-content:space-between;">
+            <div class="top">
                 <div>Recibo B - ${numeroFormateado}</div>
                 <div>Fecha: ${fechaActual}</div>
             </div>
+            <div class="medio">
+                <div><strong>Cliente/a:</strong> ${cliente}</div>
+                <div><strong>Vendedor:</strong> ${nombreVendedor}</div>
+            </div>
             <table>
-                <tr>
-                    <th>Detalle</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unit.</th>
-                </tr>
+                <tr><th>Detalle</th><th>Cantidad</th><th>Precio Unit.</th></tr>
                 ${filas}
             </table>
             <div class="inferior">
                 <div class="inferior-left">
+                    <p><strong>Vendedor:</strong> ${nombreVendedor}</p>
                     <p>${datosVendedor}</p>
                 </div>
                 <div class="inferior-right">
