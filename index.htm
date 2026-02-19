@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>YIKUN COMPROBANTE</title>
 <style>
+/* Página principal */
 body { 
     font-family: Arial, sans-serif; 
     margin:20px; 
@@ -11,7 +12,7 @@ body {
     color:#FFFFFF;  /* Texto blanco legible en página principal */
     font-weight:bold;
 }
-h2 { color:#FFFFFF; } /* Título principal */
+h2 { color:#FFFFFF; } 
 label { display:block; margin-bottom:10px; color:#FFFFFF; font-weight:bold; }
 input, select {
     font-weight:bold;
@@ -21,13 +22,13 @@ input, select {
     background:#212838;
     color:#FFFFFF; /* Texto de inputs blanco */
 }
-input::placeholder { color:#08C6AB; } /* Placeholder verde agua */
+input::placeholder { color:#08C6AB; } 
 table { 
     border-collapse: collapse; 
     width:100%; 
     margin-top:10px;
     background:#374658;
-    color:#FFFFFF; /* Texto de tabla blanco */
+    color:#FFFFFF; /* Texto tabla blanco */
     font-weight:bold;
 }
 th, td { 
@@ -35,7 +36,7 @@ th, td {
     padding:5px; 
     text-align:left; 
     font-weight:bold;
-    color:#FFFFFF; /* Contenido de celdas visible */
+    color:#FFFFFF; 
 }
 button { 
     margin-top:10px; 
@@ -48,7 +49,7 @@ button {
 }
 button:hover { background:#726EFF; color:#FFFFFF; }
 
-/* Comprobante */
+/* Comprobante generado: colores originales sin tocar */
 .comprobante { 
     border:1px solid #333; 
     padding:15px; 
@@ -64,27 +65,13 @@ button:hover { background:#726EFF; color:#FFFFFF; }
 .comprobante th, .comprobante td { border:1px solid #333; padding:5px; text-align:left; font-weight:bold; }
 
 /* Parte superior: número recibo izquierda, fecha derecha */
-.comprobante .top {
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:10px;
-    font-weight:bold;
-}
+.comprobante .top { display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold; }
 
 /* Parte media: cliente izquierda, vendedor derecha */
-.comprobante .medio {
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:10px;
-    font-weight:bold;
-}
+.comprobante .medio { display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold; }
 
 /* Parte inferior: datos vendedor y totales */
-.comprobante .inferior {
-    display:flex;
-    justify-content:space-between;
-    margin-top:20px;
-}
+.comprobante .inferior { display:flex; justify-content:space-between; margin-top:20px; }
 .inferior-left { width:45%; font-weight:bold; }
 .inferior-right { width:50%; text-align:right; font-weight:bold; }
 .total-pendiente { font-weight:bold; color:#DC2626; font-size:28px; margin-top:10px; }
@@ -208,7 +195,6 @@ function generar(){
     let formaPago = document.getElementById("formaPago").value;
 
     let comprobanteHTML = `
-        <!-- Comprobante visible en pantalla -->
         <div class="comprobante">
             <div class="titulo-principal">YIKUN</div>
             <div class="subtitulo">COMPROBANTE DE PAGO</div>
@@ -238,7 +224,6 @@ function generar(){
             </div>
         </div>
 
-        <!-- Comprobante duplicado solo visible al imprimir -->
         <div class="comprobante duplicado">
             <div class="titulo-principal">YIKUN</div>
             <div class="subtitulo">COMPROBANTE DE PAGO</div>
