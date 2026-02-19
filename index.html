@@ -2,343 +2,284 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Comprobantes Yikun</title>
+<title>Sistema de Comprobantes</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 
 body{
-    font-family: Arial, sans-serif;
-    background:#e9ecef;
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f4f4f4;
+    margin:0;
     padding:20px;
 }
 
-.container{
-    max-width:1000px;
-    margin:auto;
+.formulario{
     background:white;
-    padding:25px;
+    padding:20px;
     border-radius:8px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    max-width:600px;
+    margin:auto;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
 
 h2{
     text-align:center;
-    margin-bottom:25px;
-    color:#1f1f1f;
-}
-
-label{
-    font-weight:bold;
-    color:#333;
 }
 
 input, select{
-    padding:7px;
-    margin:4px 0;
+    width:100%;
+    padding:8px;
+    margin-bottom:12px;
     border:1px solid #ccc;
     border-radius:4px;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:10px;
-}
-
-th{
-    background:#1f1f1f;
-    color:white;
-}
-
-th, td{
-    border:1px solid #bbb;
-    padding:7px;
-    text-align:center;
-}
-
-/* BOTONES */
-
 button{
-    padding:9px 18px;
-    margin-top:10px;
-    font-weight:bold;
+    background:#1f2937;
+    color:white;
     border:none;
+    padding:10px;
+    width:100%;
     border-radius:4px;
     cursor:pointer;
-    color:white;
 }
 
-.btn-agregar{ background:#6c757d; }
-.btn-generar{ background:#1e3a5f; }
-.btn-imprimir{ background:#343a40; }
-
-button:hover{ opacity:0.9; }
-
-/* AREA IMPRESION */
-
-.area-impresion{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    justify-content:center;
+button:hover{
+    background:#111827;
 }
 
-.comprobante{
-    width:210mm;
-    height:148mm;
-    border:2px solid #000;
-    padding:20px;
-    background:white;
+.print-area{
+    display:none;
+}
+
+.recibo{
+    width:148mm;
+    height:210mm;
+    border:1px solid #000;
+    padding:15mm;
     box-sizing:border-box;
-    font-size:14px;
-}
-
-.logo-container{
-    text-align:center;
-    margin-bottom:10px;
+    background:white;
 }
 
 .logo{
-    max-width:160px;
+    display:block;
+    margin:auto;
+    max-width:150px;
 }
 
 .header-recibo{
     display:flex;
     justify-content:space-between;
-    font-weight:bold;
-    margin-bottom:10px;
-    font-size:16px;
-}
-
-.total-pendiente{
-    font-size:22px;
-    color:#b00000;
-    font-weight:bold;
-    text-align:right;
     margin-top:10px;
+    font-weight:bold;
 }
 
-.datos-vendedor{
-    margin-top:15px;
-    font-size:13px;
+.total{
+    margin-top:20px;
+    text-align:right;
+    font-size:18px;
+    font-weight:bold;
 }
 
-/* IMPRESION A4 CON 2 A5 */
+.tabla{
+    margin-top:40px;
+    background:white;
+    padding:20px;
+    border-radius:8px;
+}
 
-@media print {
-
-  @page {
-    size: A4 portrait;
-    margin: 10mm;
-  }
-
-  body * {
-    visibility: hidden;
-  }
-
-  .area-impresion, .area-impresion * {
-    visibility: visible;
-  }
-
-  .area-impresion{
-    position:absolute;
-    top:0;
-    left:0;
+table{
     width:100%;
-  }
+    border-collapse:collapse;
+}
 
-  .comprobante{
-    page-break-inside: avoid;
-    margin-bottom:10mm;
-  }
+th, td{
+    border:1px solid #ddd;
+    padding:8px;
+    text-align:center;
+}
 
-  button, input, select, h2 {
-    display:none;
-  }
+th{
+    background:#1f2937;
+    color:white;
 }
 
 </style>
 </head>
+
 <body>
 
-<div class="container">
+<div class="formulario">
+<h2>Generar Comprobante</h2>
 
-<h2>Generador Comprobantes Yikun</h2>
+<label>Fecha</label>
+<input type="date" id="fecha">
 
-<label>Cliente:</label><br>
-<input type="text" id="cliente"><br>
+<label>Cliente</label>
+<input type="text" id="cliente">
 
-<label>Vendedor:</label><br>
+<label>Vendedor</label>
 <select id="vendedor">
-    <option value="03">03 Lucas A. Gráfica</option>
-    <option value="02">02 Analía A. Papelería</option>
+<option>Juan</option>
+<option>María</option>
+<option>Pedro</option>
 </select>
 
-<h3>Productos</h3>
+<label>Detalle</label>
+<input type="text" id="detalle">
 
-<table id="tabla">
-<tr>
-<th>Detalle</th>
-<th>Cantidad</th>
-<th>Precio Unit.</th>
-</tr>
-<tr>
-<td><input type="text" class="detalle"></td>
-<td><input type="number" class="cantidad" min="1"></td>
-<td><input type="number" class="precio" min="0" step="0.01"></td>
-</tr>
-</table>
+<label>Importe</label>
+<input type="number" id="importe">
 
-<button class="btn-agregar" onclick="agregarFila()">Agregar Producto</button>
-
-<br><br>
-
-<label>Seña:</label>
-<input type="number" id="sena" value="0" min="0">
-
-<label>Descuento:</label>
+<label>Descuento</label>
 <select id="descuento">
-    <option value="0">Sin descuento</option>
-    <option value="5">5%</option>
-    <option value="10">10%</option>
-    <option value="15">15%</option>
+<option value="0">Sin descuento</option>
+<option value="5">5%</option>
+<option value="10">10%</option>
+<option value="15">15%</option>
 </select>
 
-<br><br>
+<label>Método de Pago</label>
+<select id="pago">
+<option>Efectivo</option>
+<option>Transferencia</option>
+</select>
 
-<button class="btn-generar" onclick="generar()">Generar</button>
-<button class="btn-imprimir" onclick="window.print()">Imprimir</button>
-
-<div class="area-impresion" id="resultado"></div>
+<button onclick="generar()">Generar y Guardar PDF</button>
 
 </div>
 
+<div class="tabla">
+<h2>Listado de Comprobantes</h2>
+<table>
+<thead>
+<tr>
+<th>N°</th>
+<th>Fecha</th>
+<th>Cliente</th>
+<th>Total</th>
+<th>Pago</th>
+<th>Acción</th>
+</tr>
+</thead>
+<tbody id="historial"></tbody>
+</table>
+</div>
+
+<div id="printArea" class="print-area"></div>
+
 <script>
 
-let numero = localStorage.getItem("numeroYikun");
-if(!numero){
-    numero = 3281;
-}else{
-    numero = parseInt(numero);
+// ===== Numeración correlativa =====
+let numeroActual = localStorage.getItem("numeroRecibo") || 1;
+numeroActual = parseInt(numeroActual);
+
+// ===== Historial =====
+let historial = JSON.parse(localStorage.getItem("historialRecibos")) || [];
+
+function guardarHistorial(){
+    localStorage.setItem("historialRecibos", JSON.stringify(historial));
+    renderHistorial();
 }
 
-function formatoARS(valor){
-    return valor.toLocaleString("es-AR", {
-        style:"currency",
-        currency:"ARS"
+function renderHistorial(){
+    let tabla = document.getElementById("historial");
+    tabla.innerHTML = "";
+
+    historial.forEach((recibo, index)=>{
+        tabla.innerHTML += `
+        <tr>
+        <td>${recibo.numero}</td>
+        <td>${recibo.fecha}</td>
+        <td>${recibo.cliente}</td>
+        <td>$${recibo.total}</td>
+        <td>${recibo.pago}</td>
+        <td>
+        <button onclick="descargar(${index})">PDF</button>
+        <button onclick="eliminar(${index})">X</button>
+        </td>
+        </tr>
+        `;
     });
 }
 
-function agregarFila(){
-    let tabla = document.getElementById("tabla");
-    let fila = tabla.insertRow();
-    fila.innerHTML = `
-    <td><input type="text" class="detalle"></td>
-    <td><input type="number" class="cantidad" min="1"></td>
-    <td><input type="number" class="precio" min="0" step="0.01"></td>
-    `;
+function eliminar(index){
+    historial.splice(index,1);
+    guardarHistorial();
+}
+
+function descargar(index){
+    generarPDF(historial[index]);
 }
 
 function generar(){
 
-    let detalles = document.getElementsByClassName("detalle");
-    let cantidades = document.getElementsByClassName("cantidad");
-    let precios = document.getElementsByClassName("precio");
+let fecha = document.getElementById("fecha").value;
+let cliente = document.getElementById("cliente").value;
+let vendedor = document.getElementById("vendedor").value;
+let detalle = document.getElementById("detalle").value;
+let importe = parseFloat(document.getElementById("importe").value);
+let descuento = parseFloat(document.getElementById("descuento").value);
+let pago = document.getElementById("pago").value;
 
-    let totalPedido = 0;
-    let filas = "";
+let descuentoCalculado = (importe * descuento) / 100;
+let total = (importe - descuentoCalculado).toFixed(2);
 
-    for(let i=0;i<detalles.length;i++){
-        if(detalles[i].value.trim() !== ""){
-            let cant = parseFloat(cantidades[i].value || 0);
-            let precio = parseFloat(precios[i].value || 0);
-            let subtotal = cant * precio;
-            totalPedido += subtotal;
+let numeroFormateado = numeroActual.toString().padStart(4,'0');
 
-            filas += `
-            <tr>
-                <td>${detalles[i].value}</td>
-                <td>${cant}</td>
-                <td>${formatoARS(precio)}</td>
-            </tr>`;
-        }
-    }
+let recibo = {
+numero: numeroFormateado,
+fecha,
+cliente,
+vendedor,
+detalle,
+importe,
+descuento,
+pago,
+total
+};
 
-    if(totalPedido === 0){
-        alert("Agregá al menos un producto.");
-        return;
-    }
+historial.push(recibo);
+guardarHistorial();
 
-    let sena = parseFloat(document.getElementById("sena").value || 0);
-    let porcentaje = parseFloat(document.getElementById("descuento").value);
+generarPDF(recibo);
 
-    let montoDescuento = totalPedido * (porcentaje / 100);
-    let totalFinal = totalPedido - montoDescuento;
-    let pendiente = totalFinal - sena;
+numeroActual++;
+localStorage.setItem("numeroRecibo", numeroActual);
 
-    let fechaActual = new Date().toLocaleDateString("es-AR");
-
-    let vendedorSeleccionado = document.getElementById("vendedor").value;
-
-    let datosVendedor = "";
-
-    if(vendedorSeleccionado === "03"){
-        datosVendedor = `
-        Vendedor: 03 Lucas A. Gráfica<br>
-        Local: Salta Cap. - Ayacucho 1621<br>
-        Cel: 3875729428
-        `;
-    }
-
-    if(vendedorSeleccionado === "02"){
-        datosVendedor = `
-        Vendedor: 02 Analía A. Papelería<br>
-        Local: Salta Cap. - Ayacucho 1621<br>
-        Cel: 3872254054
-        `;
-    }
-
-    let comprobanteHTML = `
-    <div class="comprobante">
-        <div class="logo-container">
-            <img src="logo.png" class="logo">
-        </div>
-
-        <div class="header-recibo">
-            <div>Recibo B - ${numero.toString().padStart(6,'0')}</div>
-            <div>Fecha: ${fechaActual}</div>
-        </div>
-
-        <p><strong>Cliente:</strong> ${document.getElementById("cliente").value}</p>
-
-        <table>
-            <tr>
-                <th>Detalle</th>
-                <th>Cantidad</th>
-                <th>Precio Unit.</th>
-            </tr>
-            ${filas}
-        </table>
-
-        <p><strong>Total Pedido:</strong> ${formatoARS(totalPedido)}</p>
-        <p><strong>Descuento (${porcentaje}%):</strong> ${formatoARS(montoDescuento)}</p>
-        <p><strong>Seña:</strong> ${formatoARS(sena)}</p>
-
-        <div class="total-pendiente">
-            Total Pendiente: ${formatoARS(pendiente)}
-        </div>
-
-        <div class="datos-vendedor">
-            ${datosVendedor}
-        </div>
-    </div>
-    `;
-
-    document.getElementById("resultado").innerHTML += comprobanteHTML;
-
-    numero++;
-    localStorage.setItem("numeroYikun", numero);
 }
+
+function generarPDF(data){
+
+let contenido = `
+<div class="recibo">
+<img src="Logo.png" class="logo">
+<div class="header-recibo">
+<span>Comprobante N° ${data.numero}</span>
+<span>${data.fecha}</span>
+</div>
+<p><strong>Cliente:</strong> ${data.cliente}</p>
+<p><strong>Vendedor:</strong> ${data.vendedor}</p>
+<p><strong>Detalle:</strong> ${data.detalle}</p>
+<p><strong>Método de Pago:</strong> ${data.pago}</p>
+<p><strong>Total:</strong> $${data.total}</p>
+</div>
+`;
+
+document.getElementById("printArea").innerHTML = contenido + contenido;
+
+html2pdf().from(document.getElementById("printArea")).set({
+margin:10,
+filename:Recibo_${data.numero}.pdf,
+html2canvas:{scale:2},
+jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+}).save();
+
+}
+
+renderHistorial();
 
 </script>
 
