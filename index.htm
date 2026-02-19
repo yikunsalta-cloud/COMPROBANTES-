@@ -68,6 +68,8 @@ button:hover {
     color:#333; 
     font-weight:bold;
 }
+
+/* Títulos */
 .comprobante .titulo-principal { 
     text-align:center; 
     font-size:28px; 
@@ -78,6 +80,8 @@ button:hover {
     font-size:18px; 
     margin-bottom:10px; 
 }
+
+/* Tabla del comprobante */
 .comprobante table { 
     width:100%; 
     border-collapse:collapse; 
@@ -91,7 +95,7 @@ button:hover {
     font-weight:bold;
 }
 
-/* ====== SECCIÓN SUPERIOR DEL CLIENTE + NOMBRE VENDEDOR ====== */
+/* Parte superior: Cliente y vendedor */
 .comprobante .superior {
     display:flex;
     justify-content:space-between;
@@ -105,7 +109,7 @@ button:hover {
     text-align:right;
 }
 
-/* ====== SECCIÓN INFERIOR ====== */
+/* Parte inferior: Totales y datos del vendedor */
 .comprobante .inferior {
     display:flex;
     justify-content:space-between;
@@ -124,9 +128,13 @@ button:hover {
     font-size:28px; 
     margin-top:10px;
 }
+
+/* ======= Lógica de duplicado para impresión ======= */
+.comprobante.duplicado { display:none; } /* por defecto no se muestra */
+
 @media print {
-    body { background:white; }
-    .comprobante { page-break-after:always; width:100%; }
+    .comprobante { width:100%; page-break-after:always; display:block; }
+    .comprobante.duplicado { display:block; } /* mostrar duplicado al imprimir */
 }
 </style>
 </head>
@@ -252,13 +260,11 @@ function generar(){
 
     let formaPago = document.getElementById("formaPago").value;
 
-    let comprobanteHTML = "";
-    for(let copia=0;copia<2;copia++){
-        comprobanteHTML += `
+    // Solo se muestra un comprobante en pantalla, duplicado oculto
+    let comprobanteHTML = `
         <div class="comprobante">
             <div class="titulo-principal">YIKUN</div>
             <div class="subtitulo">COMPROBANTE DE PAGO</div>
-
             <div class="superior">
                 <div class="cliente-left">
                     <p><strong>Cliente/a:</strong> ${cliente}</p>
@@ -267,12 +273,10 @@ function generar(){
                     <p><strong>Vendedor:</strong> ${nombreVendedor}</p>
                 </div>
             </div>
-
             <div style="display:flex; justify-content:space-between;">
                 <div>Recibo B - ${numeroFormateado}</div>
                 <div>Fecha: ${fechaActual}</div>
             </div>
-
             <table>
                 <tr>
                     <th>Detalle</th>
@@ -281,7 +285,6 @@ function generar(){
                 </tr>
                 ${filas}
             </table>
-
             <div class="inferior">
                 <div class="inferior-left">
                     <p>${datosVendedor}</p>
@@ -294,8 +297,43 @@ function generar(){
                 </div>
             </div>
         </div>
-        `;
-    }
+        <div class="comprobante duplicado">
+            <!-- duplicado oculto en pantalla, visible al imprimir -->
+            <div class="titulo-principal">YIKUN</div>
+            <div class="subtitulo">COMPROBANTE DE PAGO</div>
+            <div class="superior">
+                <div class="cliente-left">
+                    <p><strong>Cliente/a:</strong> ${cliente}</p>
+                </div>
+                <div class="vendedor-right">
+                    <p><strong>Vendedor:</strong> ${nombreVendedor}</p>
+                </div>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+                <div>Recibo B - ${numeroFormateado}</div>
+                <div>Fecha: ${fechaActual}</div>
+            </div>
+            <table>
+                <tr>
+                    <th>Detalle</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unit.</th>
+                </tr>
+                ${filas}
+            </table>
+            <div class="inferior">
+                <div class="inferior-left">
+                    <p>${datosVendedor}</p>
+                </div>
+                <div class="inferior-right">
+                    <p>Total Pedido: ${formatoARS(totalPedido)}</p>
+                    <p>Descuento (${porcentaje}%): ${formatoARS(montoDescuento)}</p>
+                    <p>Seña realizada (${formaPago}): ${formatoARS(sena)}</p>
+                    <div class="total-pendiente">Total Pendiente: ${formatoARS(pendiente)}</div>
+                </div>
+            </div>
+        </div>
+    `;
 
     document.getElementById("resultado").innerHTML = comprobanteHTML;
     numero++;
