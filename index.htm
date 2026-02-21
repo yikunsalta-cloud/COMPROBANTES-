@@ -270,7 +270,7 @@ function generar(){
     box-sizing:border-box;
     font-family:Arial, sans-serif;
     color:black;
-    overflow:hidden;
+    omin-height:297mm;
 ">
 `;
 
@@ -350,7 +350,7 @@ function guardarPDF(){
         margin: 0,
         filename: 'Comprobante_Yikun.pdf',
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 2 },
+        html2canvas: { scale: 1 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
