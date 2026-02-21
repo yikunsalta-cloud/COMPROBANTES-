@@ -2,387 +2,158 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Yikun - Comprobantes</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<title>Generador de Comprobantes</title>
 
 <style>
-
 body{
-    margin:0;
     font-family: Arial, sans-serif;
-    background:#0f172a;
+    background:#1f2a3a;
     color:white;
-}
-
-/* ENCABEZADO */
-.header{
-    background:#1e293b;
-    padding:20px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-}
-
-.logo{
-    font-family:"Arial Black";
-    font-size:40px;
-}
-
-.sub{
-    font-size:14px;
-    opacity:0.8;
-}
-
-/* CONTENEDOR PRINCIPAL */
-.container{
-    display:flex;
-    gap:20px;
     padding:20px;
 }
 
-/* PANEL IZQUIERDO */
-.panel{
-    background:#1e293b;
-    padding:20px;
-    border-radius:10px;
-    width:380px;
+h2{
+    margin-top:30px;
 }
 
-.panel h3{
-    margin-top:0;
-}
-
-/* INPUTS */
-input, select{
-    width:100%;
+input, button{
     padding:8px;
-    margin-top:6px;
-    margin-bottom:12px;
+    margin:5px;
+}
+
+button{
+    background:#2ecc71;
     border:none;
+    color:white;
+    cursor:pointer;
     border-radius:4px;
 }
 
-/* BOTONES */
-button{
-    border:none;
-    cursor:pointer;
-    font-family:"Arial Black";
-}
-
-.btn-accion{
-    background:#FFF200;
-    color:#000;
-    padding:12px;
-    width:100%;
-    margin-top:10px;
-}
-
-.btn-accion:hover{
-    background:#ffd900;
-}
-
-.btn-agregar{
-    background:#8b6f00;
-    color:white;
-    padding:10px;
-    width:100%;
-    margin-top:10px;
-}
-
-.btn-agregar:hover{
-    background:#b89600;
-}
-
-/* TABLA PRODUCTOS */
-.tabla-container{
-    flex:1;
-    background:#1e293b;
-    padding:20px;
-    border-radius:10px;
+button:hover{
+    background:#27ae60;
 }
 
 table{
     width:100%;
     border-collapse:collapse;
+    margin-top:10px;
+    background:#0f1a2b;
+}
+
+th, td{
+    border:1px solid #3a4a60;
+    padding:10px;
+    text-align:center;
 }
 
 th{
-    background:#0f172a;
-    padding:10px;
+    background:#0b1626;
 }
 
-td{
-    padding:6px;
+tr:nth-child(even){
+    background:#1b273a;
 }
 
-td input{
-    width:100%;
-}
-
-/* RESULTADO PDF */
-#resultado{
-    background:white;
-    color:black;
-    padding:20px;
-    margin:20px;
-}
-
-/* COMPROBANTE */
-.comprobante{
-    border:1px solid black;
-    padding:20px;
-    margin-bottom:20px;
-    page-break-inside: avoid;
-}
-
-.titulo-principal{
-    font-family:"Arial Black";
-    font-size:32px;
-    text-align:center;
-}
-
-.subtitulo{
-    text-align:center;
-    margin-bottom:10px;
-}
-
-.top{
+.producto-inputs{
     display:flex;
-    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
 }
-
-table{
-    margin-top:10px;
-}
-
-table th, table td{
-    border:1px solid black;
-    padding:5px;
-}
-
-.inferior{
-    display:flex;
-    justify-content:space-between;
-    margin-top:10px;
-}
-
-.total-pendiente{
-    font-size:18px;
-    font-weight:bold;
-}
-
 </style>
 </head>
 
 <body>
 
-<div class="header">
-    <div>
-        <div class="logo">YIKUN</div>
-        <div class="sub">Sistema de comprobantes</div>
-    </div>
+<h1>Generador de Comprobantes</h1>
+
+<h2>Agregar Producto</h2>
+
+<div class="producto-inputs">
+<input type="text" id="detalle" placeholder="Detalle">
+<input type="number" id="cantidad" placeholder="Cantidad">
+<input type="number" id="precio" placeholder="Precio">
+<button onclick="agregarProducto()">Agregar producto</button>
 </div>
 
-<div class="container">
+<h2>Productos</h2>
 
-<!-- PANEL -->
-<div class="panel">
-
-<h3>Datos del Cliente</h3>
-
-Cliente
-<input id="cliente">
-
-Vendedor
-<select id="vendedor">
-<option value="03">03 Lucas A.Grafica</option>
-<option value="02">02 Analia A.Papeleria</option>
-</select>
-
-Forma de pago
-<select id="formaPago">
-<option>Efectivo</option>
-<option>Transferencia</option>
-<option>Tarjeta</option>
-</select>
-
-Seña
-<input type="number" id="sena">
-
-Descuento %
-<input type="number" id="descuento" value="0">
-
-<button class="btn-accion" onclick="generar()">GENERAR COMPROBANTE</button>
-<button class="btn-accion" onclick="guardarPDF()">GUARDAR PDF</button>
-
-</div>
-
-<!-- PRODUCTOS -->
-<div class="tabla-container">
-
-<h3>Productos</h3>
-
-<table id="tabla">
+<table>
+<thead>
 <tr>
 <th>Detalle</th>
 <th>Cantidad</th>
 <th>Precio</th>
+<th>Eliminar</th>
 </tr>
-
-<tr>
-<td><input class="detalle"></td>
-<td><input class="cantidad" type="number"></td>
-<td><input class="precio" type="number"></td>
-</tr>
-
+</thead>
+<tbody id="tablaProductos">
+</tbody>
 </table>
 
-<button class="btn-agregar" onclick="agregarFila()">AGREGAR PRODUCTO</button>
-
-</div>
-
-</div>
-
-<div id="resultado"></div>
+<h2>Total: $<span id="total">0</span></h2>
 
 <script>
 
-/* NUMERACION */
-let numero = localStorage.getItem("numeroYikun");
-if(!numero){
-    numero = 1;
-}else{
-    numero = parseInt(numero);
-}
+let productos = [];
 
-/* FORMATO PESOS */
-function formatoARS(num){
-    return "$ " + num.toLocaleString("es-AR");
-}
+function agregarProducto() {
 
-/* AGREGAR PRODUCTO */
-function agregarFila(){
-    let tabla = document.getElementById("tabla");
-    let fila = tabla.insertRow();
+    let detalle = document.getElementById("detalle").value.trim();
+    let cantidad = parseInt(document.getElementById("cantidad").value);
+    let precio = parseFloat(document.getElementById("precio").value);
 
-    fila.innerHTML = `
-        <td><input class="detalle"></td>
-        <td><input class="cantidad" type="number"></td>
-        <td><input class="precio" type="number"></td>
-    `;
-}
-
-/* GENERAR COMPROBANTE */
-function generar(){
-    let cliente = document.getElementById("cliente").value.trim();
-    if(cliente === ""){ alert("Ingrese nombre del cliente"); return; }
-
-    let detalles = document.getElementsByClassName("detalle");
-    let cantidades = document.getElementsByClassName("cantidad");
-    let precios = document.getElementsByClassName("precio");
-
-    let totalPedido = 0;
-    let filas = "";
-    for(let i=0;i<detalles.length;i++){
-        if(detalles[i].value.trim() !== ""){
-            let cant = parseFloat(cantidades[i].value || 0);
-            let precio = parseFloat(precios[i].value || 0);
-            totalPedido += cant * precio;
-            filas += `<tr>
-                        <td>${detalles[i].value}</td>
-                        <td>${cant} Uni.</td>
-                        <td>${formatoARS(precio)}</td>
-                    </tr>`;
-        }
-    }
-
-    if(totalPedido === 0){ alert("Agregue al menos un producto"); return; }
-
-    let sena = parseFloat(document.getElementById("sena").value || 0);
-    let porcentaje = parseFloat(document.getElementById("descuento").value || 0);
-    let montoDescuento = totalPedido * (porcentaje / 100);
-    let totalFinal = totalPedido - montoDescuento;
-    let pendiente = totalFinal - sena;
-    if(pendiente < 0) pendiente = 0;
-
-    let fechaActual = new Date().toLocaleDateString("es-AR");
-    let numeroFormateado = numero.toString().padStart(6,'0');
-
-    let vendedorSeleccionado = document.getElementById("vendedor").value;
-    let nombreVendedor = "";
-    let datosVendedor = "";
-
-    if(vendedorSeleccionado === "03"){
-        nombreVendedor = "03 Lucas A.Grafica";
-        datosVendedor = `Local: Salta Cap. - Ayacucho 1621<br>Cel: 3875729428`;
-    } else {
-        nombreVendedor = "02 Analia A.Papeleria";
-        datosVendedor = `Local: Salta Cap. - Ayacucho 1621<br>Cel: 3872254054`;
-    }
-
-    let formaPago = document.getElementById("formaPago").value;
-
-    let comprobanteHTML = "";
-
-    for(let copia=0;copia<2;copia++){
-        comprobanteHTML += `
-        <div class="comprobante">
-            <div class="titulo-principal">YIKUN</div>
-            <div class="subtitulo">COMPROBANTE DE PAGO</div>
-
-            <div class="top">
-                <div>Recibo B - ${numeroFormateado}</div>
-                <div>Fecha: ${fechaActual}</div>
-            </div>
-
-            <p><strong>Cliente:</strong> ${cliente}</p>
-
-            <table>
-                <tr><th>Detalle</th><th>Cantidad</th><th>Precio</th></tr>
-                ${filas}
-            </table>
-
-            <div class="inferior">
-                <div>
-                    <p><strong>Vendedor:</strong> ${nombreVendedor}</p>
-                    <p>${datosVendedor}</p>
-                </div>
-
-                <div>
-                    <p>Total Pedido: ${formatoARS(totalPedido)}</p>
-                    <p>Descuento (${porcentaje}%): ${formatoARS(montoDescuento)}</p>
-                    <p>Seña (${formaPago}): ${formatoARS(sena)}</p>
-                    <div class="total-pendiente">Pendiente: ${formatoARS(pendiente)}</div>
-                </div>
-            </div>
-
-        </div>`;
-    }
-
-    document.getElementById("resultado").innerHTML = comprobanteHTML;
-
-    numero++;
-    localStorage.setItem("numeroYikun", numero);
-}
-
-/* GUARDAR PDF */
-function guardarPDF() {
-    const elemento = document.getElementById("resultado");
-    if(!elemento){
-        alert("Primero genere un comprobante");
+    if(!detalle || !cantidad || !precio){
+        alert("Completa todos los campos");
         return;
     }
 
-    var opt = {
-        margin: 5,
-        filename: 'Comprobante_Yikun.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    let producto = {
+        detalle,
+        cantidad,
+        precio
     };
 
-    html2pdf().set(opt).from(elemento).save();
+    productos.push(producto);
+
+    actualizarTabla();
+    limpiarInputs();
+}
+
+function actualizarTabla(){
+
+    let tabla = document.getElementById("tablaProductos");
+    tabla.innerHTML = "";
+
+    let total = 0;
+
+    productos.forEach((producto, index) => {
+
+        let fila = document.createElement("tr");
+
+        fila.innerHTML = `
+            <td>${producto.detalle}</td>
+            <td>${producto.cantidad}</td>
+            <td>${producto.precio}</td>
+            <td><button onclick="eliminarProducto(${index})">X</button></td>
+        `;
+
+        tabla.appendChild(fila);
+
+        total += producto.cantidad * producto.precio;
+    });
+
+    document.getElementById("total").textContent = total;
+}
+
+function eliminarProducto(index){
+    productos.splice(index,1);
+    actualizarTabla();
+}
+
+function limpiarInputs(){
+    document.getElementById("detalle").value = "";
+    document.getElementById("cantidad").value = "";
+    document.getElementById("precio").value = "";
 }
 
 </script>
