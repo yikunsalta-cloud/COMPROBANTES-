@@ -5,238 +5,155 @@
 <title>Generador de Comprobantes</title>
 
 <style>
-
 body{
-font-family: Arial Black, Arial, sans-serif;
-background:#212838;
-color:white;
-padding:20px;
-text-align:center;
+    font-family: Arial, sans-serif;
+    background:#1f2a3a;
+    color:white;
+    padding:20px;
 }
 
-.logo{
-width:200px;
-margin-bottom:10px;
+h2{
+    margin-top:30px;
 }
 
-h1{
-margin-bottom:20px;
+input, button{
+    padding:8px;
+    margin:5px;
 }
 
-.contenedor{
-background:#2f3a52;
-padding:20px;
-border-radius:10px;
-max-width:900px;
-margin:auto;
-}
-
-/* Inputs */
-input, select{
-padding:8px;
-margin:5px;
-border-radius:5px;
-border:none;
-width:180px;
-}
-
-/* Botones */
 button{
-margin-top:10px;
-padding:8px 15px;
-background:#08C6AB;
-color:#212838;
-border:none;
-cursor:pointer;
-font-weight:bold;
-border-radius:5px;
+    background:#2ecc71;
+    border:none;
+    color:white;
+    cursor:pointer;
+    border-radius:4px;
 }
 
 button:hover{
-background:#726EFF;
-color:white;
+    background:#27ae60;
 }
 
-/* Tabla productos */
-.tabla-productos{
-width:100%;
-border-collapse:collapse;
-margin-top:15px;
-background:white;
-color:black;
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+    background:#0f1a2b;
 }
 
-.tabla-productos th{
-background:#1b2335;
-color:white;
-padding:10px;
+th, td{
+    border:1px solid #3a4a60;
+    padding:10px;
+    text-align:center;
 }
 
-.tabla-productos td{
-border:1px solid #ccc;
-padding:8px;
+th{
+    background:#0b1626;
 }
 
-.seccion{
-margin-top:20px;
+tr:nth-child(even){
+    background:#1b273a;
 }
 
-/* Totales */
-.totales{
-margin-top:20px;
-font-size:18px;
+.producto-inputs{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
 }
-
 </style>
 </head>
 
 <body>
 
-<img src="logo.png" class="logo">
-
 <h1>Generador de Comprobantes</h1>
 
-<div class="contenedor">
+<h2>Agregar Producto</h2>
 
-<div class="seccion">
-<select id="vendedor">
-<option>Lucas</option>
-<option>Ariel</option>
-</select>
-
-<input type="text" id="cliente" placeholder="Cliente">
-</div>
-
-<div class="seccion">
-
-<h3>Agregar Producto</h3>
-
+<div class="producto-inputs">
 <input type="text" id="detalle" placeholder="Detalle">
 <input type="number" id="cantidad" placeholder="Cantidad">
 <input type="number" id="precio" placeholder="Precio">
-
-<br>
-
-<button onclick="agregarProducto()">Agregar Producto</button>
-
+<button onclick="agregarProducto()">Agregar producto</button>
 </div>
 
-<div class="seccion">
+<h2>Productos</h2>
 
-<h3>Productos</h3>
-
-<table class="tabla-productos">
+<table>
 <thead>
 <tr>
 <th>Detalle</th>
 <th>Cantidad</th>
 <th>Precio</th>
-<th>Total</th>
-<th></th>
+<th>Eliminar</th>
 </tr>
 </thead>
-
-<tbody id="listaProductos"></tbody>
-
+<tbody id="tablaProductos">
+</tbody>
 </table>
 
-</div>
-
-<div class="seccion">
-<input type="number" id="descuento" placeholder="Descuento %" value="0" onchange="calcularTotal()">
-</div>
-
-<div class="totales">
-Total: $<span id="total">0</span>
-</div>
-
-<div class="seccion">
-<button onclick="generar()">Generar Comprobante</button>
-</div>
-
-</div>
+<h2>Total: $<span id="total">0</span></h2>
 
 <script>
 
 let productos = [];
 
-function agregarProducto(){
+function agregarProducto() {
 
-let detalle = document.getElementById("detalle").value;
-let cantidad = parseFloat(document.getElementById("cantidad").value);
-let precio = parseFloat(document.getElementById("precio").value);
+    let detalle = document.getElementById("detalle").value.trim();
+    let cantidad = parseInt(document.getElementById("cantidad").value);
+    let precio = parseFloat(document.getElementById("precio").value);
 
-if(!detalle || !cantidad || !precio){
-alert("Completa todos los campos");
-return;
+    if(!detalle || !cantidad || !precio){
+        alert("Completa todos los campos");
+        return;
+    }
+
+    let producto = {
+        detalle,
+        cantidad,
+        precio
+    };
+
+    productos.push(producto);
+
+    actualizarTabla();
+    limpiarInputs();
 }
 
-productos.push({detalle,cantidad,precio});
+function actualizarTabla(){
 
-renderProductos();
+    let tabla = document.getElementById("tablaProductos");
+    tabla.innerHTML = "";
 
-document.getElementById("detalle").value="";
-document.getElementById("cantidad").value="";
-document.getElementById("precio").value="";
-}
+    let total = 0;
 
-function renderProductos(){
+    productos.forEach((producto, index) => {
 
-let tabla = document.getElementById("listaProductos");
-tabla.innerHTML="";
+        let fila = document.createElement("tr");
 
-productos.forEach((p,index)=>{
+        fila.innerHTML = `
+            <td>${producto.detalle}</td>
+            <td>${producto.cantidad}</td>
+            <td>${producto.precio}</td>
+            <td><button onclick="eliminarProducto(${index})">X</button></td>
+        `;
 
-let total = p.cantidad * p.precio;
+        tabla.appendChild(fila);
 
-tabla.innerHTML += `
-<tr>
-<td>${p.detalle}</td>
-<td>${p.cantidad}</td>
-<td>${p.precio}</td>
-<td>${total}</td>
-<td><button onclick="eliminarProducto(${index})">X</button></td>
-</tr>
-`;
+        total += producto.cantidad * producto.precio;
+    });
 
-});
-
-calcularTotal();
+    document.getElementById("total").textContent = total;
 }
 
 function eliminarProducto(index){
-productos.splice(index,1);
-renderProductos();
+    productos.splice(index,1);
+    actualizarTabla();
 }
 
-function calcularTotal(){
-
-let total = 0;
-
-productos.forEach(p=>{
-total += p.cantidad * p.precio;
-});
-
-let descuento = parseFloat(document.getElementById("descuento").value) || 0;
-
-let totalFinal = total - (total * (descuento/100));
-
-document.getElementById("total").innerText = totalFinal.toFixed(2);
-}
-
-function generar(){
-
-let vendedor = document.getElementById("vendedor").value;
-let cliente = document.getElementById("cliente").value;
-let total = document.getElementById("total").innerText;
-
-alert(
-"Comprobante generado\n\n"+
-"Vendedor: "+vendedor+"\n"+
-"Cliente: "+cliente+"\n"+
-"Total: $"+total
-);
-
+function limpiarInputs(){
+    document.getElementById("detalle").value = "";
+    document.getElementById("cantidad").value = "";
+    document.getElementById("precio").value = "";
 }
 
 </script>
