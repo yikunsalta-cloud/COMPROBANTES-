@@ -92,32 +92,44 @@ button{
     background:#21273F;
     padding:20px;
     border-radius:15px;
-}
 
-table{
+    /* TABLA PRODUCTOS PRO */
+
+#tabla{
     width:100%;
-    border-collapse:separate;
-    border-spacing:10px;
+    border-collapse:collapse;
 }
 
-th{
+#tabla th{
     background:#013337;
     padding:10px;
-    text-align:center;
     color:white;
 }
 
 #tabla td{
-    padding:0;
-    text-align:center;
+    padding:8px;
 }
 
+/* ANCHO DE COLUMNAS */
+#tabla td:nth-child(1){
+    width:60%;
+}
+
+#tabla td:nth-child(2){
+    width:15%;
+}
+
+#tabla td:nth-child(3){
+    width:25%;
+}
+
+/* INPUTS */
 #tabla input{
     width:100%;
     padding:10px;
     border-radius:8px;
+    border:none;
 }
-
 /* =================== COMPROBANTE =================== */
 
 .comprobante{
