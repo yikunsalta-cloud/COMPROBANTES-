@@ -85,51 +85,42 @@ button{
     margin-top:15px;
 }
 
-/* TABLA PRODUCTOS */
+/* =================== TABLA PRODUCTOS =================== */
 
 .tabla-container{
     flex:1;
     background:#21273F;
     padding:20px;
     border-radius:15px;
-
-    /* TABLA PRODUCTOS PRO */
-
-#tabla{
-    width:100%;
-    border-collapse:collapse;
 }
 
-#tabla th{
+table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:12px 10px; /* separación real */
+}
+
+th{
     background:#013337;
+    padding:12px;
+    border-radius:8px;
+    text-align:center;
+}
+
+td{
+    padding:0;
+}
+
+td input{
+    width:100%;
+    box-sizing:border-box;
     padding:10px;
+    border-radius:6px;
+    border:1px solid #013337;
+    background:#0f172a;
     color:white;
 }
 
-#tabla td{
-    padding:8px;
-}
-
-/* ANCHO DE COLUMNAS */
-#tabla td:nth-child(1){
-    width:60%;
-}
-
-#tabla td:nth-child(2){
-    width:15%;
-}
-
-#tabla td:nth-child(3){
-    width:25%;
-}
-
-/* INPUTS */
-#tabla input{
-    width:100%;
-    padding:10px;
-    border-radius:8px;
-    border:none;
-}
 /* =================== COMPROBANTE =================== */
 
 .comprobante{
