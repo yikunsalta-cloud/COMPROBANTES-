@@ -290,20 +290,32 @@ function generar(){
     for(let i=0;i<2;i++){
 
         comprobanteHTML+=`
-        <div class="comprobante">
+        <div class="comprobante" style="background:white;color:black;padding:25px;margin:30px;border-radius:10px;">
 
-            <img src="logo.png" style="width:150px; display:block; margin:auto;">
-
-            <div class="header-comprobante">
-                <div class="header-derecha">
-                    <div><strong>Fecha:</strong> ${fecha}</div>
-                    <div><strong>Recibo B:</strong> ${numeroFormateado}</div>
-                    <div><strong>Cliente:</strong> ${cliente}</div>
-                    <div><strong>Vendedor:</strong> ${nombreVendedor}</div>
-                </div>
+            <!-- LOGO CENTRADO -->
+            <div style="text-align:center;margin-bottom:20px;">
+                <img src="logo.png" style="width:160px;">
             </div>
 
-            <table border="1" cellpadding="6" cellspacing="0" width="100%">
+            <!-- PARTE SUPERIOR -->
+            <div style="display:flex;justify-content:space-between;margin-bottom:20px;">
+
+                <!-- IZQUIERDA SUPERIOR -->
+                <div style="font-size:14px;">
+                    <div><strong>Nº Recibo:</strong> ${numeroFormateado}</div>
+                    <div><strong>Cliente:</strong> ${cliente}</div>
+                </div>
+
+                <!-- DERECHA SUPERIOR -->
+                <div style="text-align:right;font-size:14px;">
+                    <div><strong>Fecha:</strong> ${fecha}</div>
+                    <div><strong>Vendedor:</strong> ${nombreVendedor}</div>
+                </div>
+
+            </div>
+
+            <!-- TABLA PRODUCTOS -->
+            <table border="1" cellpadding="6" cellspacing="0" width="100%" style="border-collapse:collapse;margin-bottom:20px;">
                 <tr>
                     <th>Detalle</th>
                     <th>Cantidad</th>
@@ -312,22 +324,25 @@ function generar(){
                 ${filas}
             </table>
 
-            <div class="footer-comprobante">
-                
-                <div class="footer-izquierda">
-                    <div>Total Pedido: ${formatoARS(totalPedido)}</div>
-                    <div>Descuento: ${formatoARS(descuento)}</div>
-                    <div>Seña: ${formatoARS(sena)}</div>
-                    <div class="saldo-rojo">
-                        Saldo Pendiente: ${formatoARS(pendiente)}
-                    </div>
-                </div>
+            <!-- PARTE INFERIOR -->
+            <div style="display:flex;justify-content:space-between;">
 
-                <div class="footer-derecha">
-                    <div><strong>Datos del Vendedor</strong></div>
+                <!-- INFERIOR IZQUIERDA -->
+                <div style="font-size:14px;">
+                    <div><strong>${nombreVendedor}</strong></div>
                     <div>Local: Salta Capital</div>
                     <div>Ayacucho 1621</div>
                     <div>Tel: 3875XXXXXX</div>
+                </div>
+
+                <!-- INFERIOR DERECHA -->
+                <div style="text-align:right;font-size:14px;">
+                    <div>Total Pedido: ${formatoARS(totalPedido)}</div>
+                    <div>Descuento: ${formatoARS(descuento)}</div>
+                    <div>Seña: ${formatoARS(sena)}</div>
+                    <div style="margin-top:10px;font-size:22px;font-weight:bold;color:red;">
+                        Saldo Pendiente: ${formatoARS(pendiente)}
+                    </div>
                 </div>
 
             </div>
