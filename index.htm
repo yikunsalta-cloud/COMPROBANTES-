@@ -11,23 +11,18 @@
 body{
     margin:0;
     font-family: Arial, sans-serif;
-    background:#0f172a;
+    background:#21273F;
     color:white;
 }
 
-/* LOGO */
-.logo{
+/* HEADER */
+.header{
     text-align:center;
-    margin-bottom:30px;
-}
-.logo img{
-    width:280px;
+    padding:20px;
 }
 
-/* CONTENEDOR PRINCIPAL */
-.panel{
-    max-width:1200px;
-    margin:auto;
+.logo img{
+    width:280px;
 }
 
 /* CONTENEDOR PRINCIPAL */
@@ -35,11 +30,13 @@ body{
     display:flex;
     gap:20px;
     padding:20px;
+    max-width:1200px;
+    margin:auto;
 }
 
 /* PANEL IZQUIERDO */
 .panel{
-    background:#FA551D
+    background:#013337;
     padding:20px;
     border-radius:10px;
     width:380px;
@@ -67,19 +64,20 @@ button{
 }
 
 .btn-accion{
-    background:#FFF200;
-    color:#000;
+    background:#149EF6;
+    color:white;
     padding:12px;
     width:100%;
     margin-top:10px;
 }
 
 .btn-accion:hover{
-    background:#ffd900;
+    background:#01F259;
+    color:#000;
 }
 
 .btn-agregar{
-    background:#8b6f00;
+    background:#FA551D;
     color:white;
     padding:10px;
     width:100%;
@@ -87,13 +85,13 @@ button{
 }
 
 .btn-agregar:hover{
-    background:#b89600;
+    background:#149EF6;
 }
 
 /* TABLA PRODUCTOS */
 .tabla-container{
     flex:1;
-    background:#1e293b;
+    background:#21273F;
     padding:20px;
     border-radius:10px;
 }
@@ -104,7 +102,7 @@ table{
 }
 
 th{
-    background:#0f172a;
+    background:#013337;
     padding:10px;
 }
 
@@ -132,15 +130,23 @@ td input{
     page-break-inside: avoid;
 }
 
-.titulo-principal{
-    font-family:"Arial Black";
-    font-size:32px;
+.logo-comprobante{
     text-align:center;
+    width:100%;
+    margin-bottom:15px;
+}
+
+.logo-comprobante img{
+    width:180px;
+    margin:0 auto;
+    display:block;
 }
 
 .subtitulo{
     text-align:center;
     margin-bottom:10px;
+    font-family:"Arial Black";
+    font-size:20px;
 }
 
 .top{
@@ -174,10 +180,10 @@ table th, table td{
 <body>
 
 <div class="header">
-    <div>
-        <div class="logo">YIKUN</div>
-        <div class="sub">Sistema de comprobantes</div>
+    <div class="logo">
+        <img src="logo.png" alt="Yikun Logo">
     </div>
+    <div>Sistema de comprobantes</div>
 </div>
 
 <div class="container">
@@ -244,7 +250,6 @@ Descuento %
 
 <script>
 
-/* NUMERACION */
 let numero = localStorage.getItem("numeroYikun");
 if(!numero){
     numero = 1;
@@ -252,12 +257,10 @@ if(!numero){
     numero = parseInt(numero);
 }
 
-/* FORMATO PESOS */
 function formatoARS(num){
     return "$ " + num.toLocaleString("es-AR");
 }
 
-/* AGREGAR PRODUCTO */
 function agregarFila(){
     let tabla = document.getElementById("tabla");
     let fila = tabla.insertRow();
@@ -269,7 +272,6 @@ function agregarFila(){
     `;
 }
 
-/* GENERAR COMPROBANTE */
 function generar(){
     let cliente = document.getElementById("cliente").value.trim();
     if(cliente === ""){ alert("Ingrese nombre del cliente"); return; }
@@ -324,7 +326,11 @@ function generar(){
     for(let copia=0;copia<2;copia++){
         comprobanteHTML += `
         <div class="comprobante">
-            <div class="titulo-principal">YIKUN</div>
+
+            <div class="logo-comprobante">
+                <img src="logo.png">
+            </div>
+
             <div class="subtitulo">COMPROBANTE DE PAGO</div>
 
             <div class="top">
@@ -362,7 +368,6 @@ function generar(){
     localStorage.setItem("numeroYikun", numero);
 }
 
-/* GUARDAR PDF */
 function guardarPDF() {
     const elemento = document.getElementById("resultado");
     if(!elemento){
