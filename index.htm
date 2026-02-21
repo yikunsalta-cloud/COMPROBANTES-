@@ -267,8 +267,19 @@ function generar(){
     let cliente = document.getElementById("cliente").value.trim();
     if(cliente===""){ alert("Ingrese nombre del cliente"); return; }
 
-    let vendedorSelect = document.getElementById("vendedor");
-    let nombreVendedor = vendedorSelect.options[vendedorSelect.selectedIndex].text;
+   let vendedorSeleccionado = document.getElementById("vendedor").value;
+
+let nombreVendedor = "";
+let datosVendedor = "";
+
+if(vendedorSeleccionado === "03"){
+    nombreVendedor = "03 Lucas A.Grafica";
+    datosVendedor = "Local: Salta Cap. - Ayacucho 1621<br>Cel: 3875729428";
+}
+else if(vendedorSeleccionado === "02"){
+    nombreVendedor = "02 Analia A.Papeleria";
+    datosVendedor = "Local: Salta Cap. - Ayacucho 1621<br>Cel: 3872254054";
+}
 
     let detalles = document.getElementsByClassName("detalle");
     let cantidades = document.getElementsByClassName("cantidad");
