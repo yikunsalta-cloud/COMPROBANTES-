@@ -5,155 +5,238 @@
 <title>Generador de Comprobantes</title>
 
 <style>
+
 body{
-    font-family: Arial, sans-serif;
-    background:#1f2a3a;
-    color:white;
-    padding:20px;
+font-family: Arial Black, Arial, sans-serif;
+background:#212838;
+color:white;
+padding:20px;
+text-align:center;
 }
 
-h2{
-    margin-top:30px;
+.logo{
+width:200px;
+margin-bottom:10px;
 }
 
-input, button{
-    padding:8px;
-    margin:5px;
+h1{
+margin-bottom:20px;
 }
 
+.contenedor{
+background:#2f3a52;
+padding:20px;
+border-radius:10px;
+max-width:900px;
+margin:auto;
+}
+
+/* Inputs */
+input, select{
+padding:8px;
+margin:5px;
+border-radius:5px;
+border:none;
+width:180px;
+}
+
+/* Botones */
 button{
-    background:#2ecc71;
-    border:none;
-    color:white;
-    cursor:pointer;
-    border-radius:4px;
+margin-top:10px;
+padding:8px 15px;
+background:#08C6AB;
+color:#212838;
+border:none;
+cursor:pointer;
+font-weight:bold;
+border-radius:5px;
 }
 
 button:hover{
-    background:#27ae60;
+background:#726EFF;
+color:white;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:10px;
-    background:#0f1a2b;
+/* Tabla productos */
+.tabla-productos{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+background:white;
+color:black;
 }
 
-th, td{
-    border:1px solid #3a4a60;
-    padding:10px;
-    text-align:center;
+.tabla-productos th{
+background:#1b2335;
+color:white;
+padding:10px;
 }
 
-th{
-    background:#0b1626;
+.tabla-productos td{
+border:1px solid #ccc;
+padding:8px;
 }
 
-tr:nth-child(even){
-    background:#1b273a;
+.seccion{
+margin-top:20px;
 }
 
-.producto-inputs{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
+/* Totales */
+.totales{
+margin-top:20px;
+font-size:18px;
 }
+
 </style>
 </head>
 
 <body>
 
+<img src="logo.png" class="logo">
+
 <h1>Generador de Comprobantes</h1>
 
-<h2>Agregar Producto</h2>
+<div class="contenedor">
 
-<div class="producto-inputs">
+<div class="seccion">
+<select id="vendedor">
+<option>Lucas</option>
+<option>Ariel</option>
+</select>
+
+<input type="text" id="cliente" placeholder="Cliente">
+</div>
+
+<div class="seccion">
+
+<h3>Agregar Producto</h3>
+
 <input type="text" id="detalle" placeholder="Detalle">
 <input type="number" id="cantidad" placeholder="Cantidad">
 <input type="number" id="precio" placeholder="Precio">
-<button onclick="agregarProducto()">Agregar producto</button>
+
+<br>
+
+<button onclick="agregarProducto()">Agregar Producto</button>
+
 </div>
 
-<h2>Productos</h2>
+<div class="seccion">
 
-<table>
+<h3>Productos</h3>
+
+<table class="tabla-productos">
 <thead>
 <tr>
 <th>Detalle</th>
 <th>Cantidad</th>
 <th>Precio</th>
-<th>Eliminar</th>
+<th>Total</th>
+<th></th>
 </tr>
 </thead>
-<tbody id="tablaProductos">
-</tbody>
+
+<tbody id="listaProductos"></tbody>
+
 </table>
 
-<h2>Total: $<span id="total">0</span></h2>
+</div>
+
+<div class="seccion">
+<input type="number" id="descuento" placeholder="Descuento %" value="0" onchange="calcularTotal()">
+</div>
+
+<div class="totales">
+Total: $<span id="total">0</span>
+</div>
+
+<div class="seccion">
+<button onclick="generar()">Generar Comprobante</button>
+</div>
+
+</div>
 
 <script>
 
 let productos = [];
 
-function agregarProducto() {
+function agregarProducto(){
 
-    let detalle = document.getElementById("detalle").value.trim();
-    let cantidad = parseInt(document.getElementById("cantidad").value);
-    let precio = parseFloat(document.getElementById("precio").value);
+let detalle = document.getElementById("detalle").value;
+let cantidad = parseFloat(document.getElementById("cantidad").value);
+let precio = parseFloat(document.getElementById("precio").value);
 
-    if(!detalle || !cantidad || !precio){
-        alert("Completa todos los campos");
-        return;
-    }
-
-    let producto = {
-        detalle,
-        cantidad,
-        precio
-    };
-
-    productos.push(producto);
-
-    actualizarTabla();
-    limpiarInputs();
+if(!detalle || !cantidad || !precio){
+alert("Completa todos los campos");
+return;
 }
 
-function actualizarTabla(){
+productos.push({detalle,cantidad,precio});
 
-    let tabla = document.getElementById("tablaProductos");
-    tabla.innerHTML = "";
+renderProductos();
 
-    let total = 0;
+document.getElementById("detalle").value="";
+document.getElementById("cantidad").value="";
+document.getElementById("precio").value="";
+}
 
-    productos.forEach((producto, index) => {
+function renderProductos(){
 
-        let fila = document.createElement("tr");
+let tabla = document.getElementById("listaProductos");
+tabla.innerHTML="";
 
-        fila.innerHTML = `
-            <td>${producto.detalle}</td>
-            <td>${producto.cantidad}</td>
-            <td>${producto.precio}</td>
-            <td><button onclick="eliminarProducto(${index})">X</button></td>
-        `;
+productos.forEach((p,index)=>{
 
-        tabla.appendChild(fila);
+let total = p.cantidad * p.precio;
 
-        total += producto.cantidad * producto.precio;
-    });
+tabla.innerHTML += `
+<tr>
+<td>${p.detalle}</td>
+<td>${p.cantidad}</td>
+<td>${p.precio}</td>
+<td>${total}</td>
+<td><button onclick="eliminarProducto(${index})">X</button></td>
+</tr>
+`;
 
-    document.getElementById("total").textContent = total;
+});
+
+calcularTotal();
 }
 
 function eliminarProducto(index){
-    productos.splice(index,1);
-    actualizarTabla();
+productos.splice(index,1);
+renderProductos();
 }
 
-function limpiarInputs(){
-    document.getElementById("detalle").value = "";
-    document.getElementById("cantidad").value = "";
-    document.getElementById("precio").value = "";
+function calcularTotal(){
+
+let total = 0;
+
+productos.forEach(p=>{
+total += p.cantidad * p.precio;
+});
+
+let descuento = parseFloat(document.getElementById("descuento").value) || 0;
+
+let totalFinal = total - (total * (descuento/100));
+
+document.getElementById("total").innerText = totalFinal.toFixed(2);
+}
+
+function generar(){
+
+let vendedor = document.getElementById("vendedor").value;
+let cliente = document.getElementById("cliente").value;
+let total = document.getElementById("total").innerText;
+
+alert(
+"Comprobante generado\n\n"+
+"Vendedor: "+vendedor+"\n"+
+"Cliente: "+cliente+"\n"+
+"Total: $"+total
+);
+
 }
 
 </script>
