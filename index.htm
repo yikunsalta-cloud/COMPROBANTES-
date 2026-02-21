@@ -213,17 +213,11 @@ function generar(){
 
     if(vendedorSeleccionado === "03"){
         nombreVendedor = "03 Lucas A.Grafica";
-        datosVendedor = `
-            Local: Salta Cap. - Ayacucho 1621<br>
-            Cel: 3875729428
-        `;
+        datosVendedor = "Local: Salta Cap. - Ayacucho 1621<br>Cel: 3875729428";
     }
     else if(vendedorSeleccionado === "02"){
         nombreVendedor = "02 Analia A.Papeleria";
-        datosVendedor = `
-            Local: Salta Cap. - Ayacucho 1621<br>
-            Cel: 3872254054
-        `;
+        datosVendedor = "Local: Salta Cap. - Ayacucho 1621<br>Cel: 3872254054";
     }
 
     let detalles = document.getElementsByClassName("detalle");
@@ -241,9 +235,9 @@ function generar(){
 
             filas += `
             <tr>
-                <td>${detalles[i].value}</td>
-                <td>${cant}</td>
-                <td>${formatoARS(precio)}</td>
+                <td style="background:white;color:black;">${detalles[i].value}</td>
+                <td style="background:white;color:black;text-align:center;">${cant}</td>
+                <td style="background:white;color:black;text-align:right;">${formatoARS(precio)}</td>
             </tr>`;
         }
     }
@@ -260,29 +254,42 @@ function generar(){
     let fecha = new Date().toLocaleDateString("es-AR");
     let numeroFormateado = numero.toString().padStart(6,'0');
 
+    let tipos = ["ORIGINAL", "DUPLICADO"];
+
     let comprobanteHTML = `
     <div style="
         width:210mm;
-        height:297mm;
+        min-height:297mm;
         background:white;
-        padding:15mm;
+        padding:10mm;
         box-sizing:border-box;
-        display:flex;
-        flex-direction:column;
-        justify-content:space-between;
+        font-family:'Arial Black', Arial, sans-serif;
+        color:black;
     ">
     `;
 
     for(let i=0;i<2;i++){
 
         comprobanteHTML += `
-        <div style="height:48%; border:1px dashed #999; padding:15px; box-sizing:border-box;">
+        <div style="
+            height:135mm;
+            border:1px dashed #999;
+            padding:15px;
+            margin-bottom:10mm;
+            box-sizing:border-box;
+            position:relative;
+            background:white;
+        ">
 
-            <div style="text-align:center;margin-bottom:15px;">
-                <img src="logo.png" style="width:140px;">
+            <div style="position:absolute;top:10px;right:15px;font-weight:bold;font-size:14px;">
+                ${tipos[i]}
             </div>
 
-            <div style="display:flex;justify-content:space-between;margin-bottom:15px;">
+            <div style="text-align:center;margin-bottom:10px;">
+                <img src="logo.png" style="width:120px;">
+            </div>
+
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
                 <div>
                     <div><strong>Nº Recibo:</strong> ${numeroFormateado}</div>
                     <div><strong>Cliente:</strong> ${cliente}</div>
@@ -294,7 +301,7 @@ function generar(){
             </div>
 
             <table style="width:100%;border-collapse:collapse;margin-bottom:10px;" border="1">
-                <tr>
+                <tr style="background:white;color:black;">
                     <th>Detalle</th>
                     <th>Cantidad</th>
                     <th>Precio</th>
@@ -311,7 +318,7 @@ function generar(){
                     <div>Total Pedido: ${formatoARS(totalPedido)}</div>
                     <div>Descuento: ${formatoARS(descuento)}</div>
                     <div>Seña: ${formatoARS(sena)}</div>
-                    <div style="margin-top:8px;font-size:22px;font-weight:bold;color:red;">
+                    <div style="margin-top:8px;font-size:20px;font-weight:bold;color:red;">
                         Saldo Pendiente: ${formatoARS(pendiente)}
                     </div>
                 </div>
