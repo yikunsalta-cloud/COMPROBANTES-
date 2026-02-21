@@ -232,13 +232,20 @@ function generar(){
             let precio = parseFloat(precios[i].value || 0);
             totalPedido += cant * precio;
 
-            filas += `
-            <tr>
-                <td style="border:1px solid #ccc;padding:6px;">${detalles[i].value}</td>
-                <td style="border:1px solid #ccc;padding:6px;text-align:center;">${cant}</td>
-                <td style="border:1px solid #ccc;padding:6px;text-align:right;">${formatoARS(precio)}</td>
-            </tr>`;
-        }
+            <table style="width:100%;border-collapse:collapse;margin-bottom:10px;">
+    <tr>
+        <th style="background:#ffffff;color:#000;border:1px solid #ccc;padding:6px;">
+            Detalle
+        </th>
+        <th style="background:#ffffff;color:#000;border:1px solid #ccc;padding:6px;">
+            Cantidad
+        </th>
+        <th style="background:#ffffff;color:#000;border:1px solid #ccc;padding:6px;">
+            Precio
+        </th>
+    </tr>
+    ${filas}
+</table>
     }
 
     if(totalPedido===0){ alert("Agregue productos"); return; }
