@@ -2,53 +2,147 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>YIKUN COMPROBANTE</title>
+<title>Yikun - Comprobantes</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 
-/* ------------------ ESTRUCTURA ORIGINAL ------------------ */
+/* =================== ESTILO GENERAL =================== */
 
 body{
+    margin:0;
     font-family: Arial, sans-serif;
+    background:#FA551D; /* FONDO PRINCIPAL */
+    color:white;
 }
 
-/* TABLA PRODUCTOS (MEJORADA SIN CAMBIAR DISEÑO) */
+/* LOGO SUPERIOR */
+
+.header{
+    text-align:center;
+    padding:25px 0;
+}
+
+.header img{
+    width:220px;
+}
+
+/* CONTENEDOR PRINCIPAL */
+
+.container{
+    display:flex;
+    gap:20px;
+    padding:20px;
+}
+
+/* PANEL IZQUIERDO */
+
+.panel{
+    background:#013337;
+    padding:20px;
+    border-radius:15px;
+    width:380px;
+}
+
+.panel h3{
+    margin-top:0;
+}
+
+input, select{
+    width:100%;
+    padding:10px;
+    margin-top:6px;
+    margin-bottom:12px;
+    border:none;
+    border-radius:6px;
+    background:#21273F;
+    color:white;
+}
+
+/* BOTONES */
+
+button{
+    border:none;
+    cursor:pointer;
+    font-weight:bold;
+    border-radius:6px;
+}
+
+.btn-accion{
+    background:#149EF6;
+    color:white;
+    padding:12px;
+    width:100%;
+    margin-top:10px;
+}
+
+.btn-accion:hover{
+    background:#0d8ae0;
+}
+
+.btn-agregar{
+    background:#FA551D;
+    color:white;
+    padding:12px;
+    width:100%;
+    margin-top:15px;
+}
+
+.btn-agregar:hover{
+    background:#e64a13;
+}
+
+/* =================== TABLA PRODUCTOS =================== */
+
+.tabla-container{
+    flex:1;
+    background:#21273F;
+    padding:20px;
+    border-radius:15px;
+}
 
 table{
     width:100%;
     border-collapse:separate;
-    border-spacing:0 6px; /* separación entre filas */
+    border-spacing:12px 10px; /* separación real */
 }
 
 th{
     background:#013337;
-    padding:10px;
-    text-align:left;
+    padding:12px;
+    border-radius:8px;
+    text-align:center;
 }
 
 td{
-    padding:6px;
+    padding:0;
 }
 
 td input{
     width:100%;
-    box-sizing:border-box; /* evita que invada la celda */
+    box-sizing:border-box;
+    padding:10px;
+    border-radius:6px;
+    border:1px solid #013337;
+    background:#0f172a;
+    color:white;
 }
 
-/* ------------------ COMPROBANTE ------------------ */
+/* =================== COMPROBANTE =================== */
 
 #resultado{
     background:white;
     color:black;
+    width:190mm;
+    margin:30px auto;
     padding:10mm;
-    margin:0 auto;
-    width:190mm; /* tamaño real A4 */
 }
 
 .comprobante{
     border:1px solid black;
     padding:15mm;
-    margin:5mm auto;
+    margin-bottom:10mm;
     height:130mm; /* 2 por hoja A4 */
     box-sizing:border-box;
     page-break-inside: avoid;
@@ -57,29 +151,18 @@ td input{
 .logo-comprobante{
     display:block;
     margin:0 auto 10px auto;
-    max-width:150px;
+    width:150px;
 }
 
 .titulo-principal{
     text-align:center;
-    font-size:24px;
+    font-size:26px;
     font-weight:bold;
 }
 
 .subtitulo{
     text-align:center;
     margin-bottom:10px;
-}
-
-.comprobante table{
-    border-collapse:collapse;
-    border-spacing:0;
-}
-
-.comprobante th,
-.comprobante td{
-    border:1px solid black;
-    padding:5px;
 }
 
 .top{
@@ -92,6 +175,18 @@ td input{
     margin-bottom:10px;
 }
 
+.comprobante table{
+    border-collapse:collapse;
+    border-spacing:0;
+    margin-top:10px;
+}
+
+.comprobante th,
+.comprobante td{
+    border:1px solid black;
+    padding:6px;
+}
+
 .inferior{
     display:flex;
     justify-content:space-between;
@@ -99,104 +194,114 @@ td input{
 }
 
 .total-pendiente{
+    font-size:20px;
     font-weight:bold;
-    font-size:22px;
+    color:#FA551D;
 }
 
-/* FORMATO A4 */
+/* A4 */
 
 @page{
     size:A4;
     margin:10mm;
 }
 
-.duplicado{
-    page-break-after: always;
-}
-
 </style>
 </head>
+
 <body>
 
-<h2>YIKUN COMPROBANTE</h2>
+<div class="header">
+    <img src="logo.png">
+</div>
 
-<label>Cliente/a:
-<input type="text" id="cliente">
-</label>
+<div class="container">
 
-<label>Vendedor:
+<!-- PANEL -->
+<div class="panel">
+
+<h3>Datos del Cliente</h3>
+
+Cliente
+<input id="cliente">
+
+Vendedor
 <select id="vendedor">
 <option value="03">03 Lucas A.Grafica</option>
 <option value="02">02 Analia A.Papeleria</option>
 </select>
-</label>
+
+Forma de pago
+<select id="formaPago">
+<option>Efectivo</option>
+<option>Transferencia</option>
+<option>Tarjeta</option>
+</select>
+
+Seña
+<input type="number" id="sena" value="0">
+
+Descuento %
+<input type="number" id="descuento" value="0">
+
+<button class="btn-accion" onclick="generar()">GENERAR COMPROBANTE</button>
+<button class="btn-accion" onclick="guardarPDF()">GUARDAR PDF</button>
+
+</div>
+
+<!-- PRODUCTOS -->
+<div class="tabla-container">
+
+<h3>Productos</h3>
 
 <table id="tabla">
 <tr>
 <th>Detalle</th>
 <th>Cantidad</th>
-<th>Precio Unit.</th>
+<th>Precio</th>
+</tr>
+
+<tr>
+<td><input class="detalle"></td>
+<td><input class="cantidad" type="number" value="1"></td>
+<td><input class="precio" type="number" value="0"></td>
 </tr>
 </table>
 
-<button onclick="agregarFila()">Agregar Producto</button>
+<button class="btn-agregar" onclick="agregarFila()">AGREGAR PRODUCTO</button>
 
-<br><br>
+</div>
 
-<label>Seña:
-<input type="number" id="sena" value="0">
-</label>
-
-<label>Forma de pago:
-<select id="formaPago">
-<option value="Efectivo">Efectivo</option>
-<option value="Transferencia">Transferencia</option>
-</select>
-</label>
-
-<label>Descuento:
-<select id="descuento">
-<option value="0">0%</option>
-<option value="5">5%</option>
-<option value="10">10%</option>
-<option value="15">15%</option>
-<option value="20">20%</option>
-</select>
-</label>
-
-<br><br>
-
-<button onclick="generar()">Generar Comprobante</button>
-<button onclick="guardarPDF()">Guardar como PDF A4</button>
+</div>
 
 <div id="resultado"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 <script>
 
-let numero = localStorage.getItem("numeroYikun") || 3281;
-numero = parseInt(numero);
+/* NUMERACION */
+let numero = localStorage.getItem("numeroYikun");
+if(!numero){ numero = 1; } else { numero = parseInt(numero); }
 
-function formatoARS(valor){
-    return "$" + valor.toLocaleString("es-AR");
+/* FORMATO */
+function formatoARS(num){
+    return "$ " + num.toLocaleString("es-AR");
 }
 
+/* AGREGAR PRODUCTO */
 function agregarFila(){
     let tabla = document.getElementById("tabla");
     let fila = tabla.insertRow();
     fila.innerHTML = `
-    <td><input type="text" class="detalle"></td>
-    <td><input type="number" class="cantidad" value="1"></td>
-    <td><input type="number" class="precio" value="0"></td>
+        <td><input class="detalle"></td>
+        <td><input class="cantidad" type="number" value="1"></td>
+        <td><input class="precio" type="number" value="0"></td>
     `;
 }
 
-window.onload = agregarFila;
-
+/* GENERAR */
 function generar(){
 
-    let cliente = document.getElementById("cliente").value;
+    let cliente = document.getElementById("cliente").value.trim();
     if(cliente===""){ alert("Ingrese nombre del cliente"); return; }
 
     let detalles = document.getElementsByClassName("detalle");
@@ -208,8 +313,8 @@ function generar(){
 
     for(let i=0;i<detalles.length;i++){
         if(detalles[i].value!==""){
-            let cant = parseFloat(cantidades[i].value);
-            let precio = parseFloat(precios[i].value);
+            let cant = parseFloat(cantidades[i].value || 0);
+            let precio = parseFloat(precios[i].value || 0);
             totalPedido += cant * precio;
 
             filas += `
@@ -223,8 +328,8 @@ function generar(){
 
     if(totalPedido===0){ alert("Agregue productos"); return; }
 
-    let sena = parseFloat(document.getElementById("sena").value);
-    let porcentaje = parseFloat(document.getElementById("descuento").value);
+    let sena = parseFloat(document.getElementById("sena").value || 0);
+    let porcentaje = parseFloat(document.getElementById("descuento").value || 0);
     let descuento = totalPedido*(porcentaje/100);
     let totalFinal = totalPedido-descuento;
     let pendiente = totalFinal-sena;
@@ -270,12 +375,11 @@ function generar(){
                     Seña: ${formatoARS(sena)}
                 </div>
                 <div class="total-pendiente">
-                    Saldo Pendiente: ${formatoARS(pendiente)}
+                    Pendiente: ${formatoARS(pendiente)}
                 </div>
             </div>
 
-        </div>
-        `;
+        </div>`;
     }
 
     document.getElementById("resultado").innerHTML = comprobanteHTML;
@@ -284,8 +388,8 @@ function generar(){
     localStorage.setItem("numeroYikun",numero);
 }
 
+/* PDF */
 function guardarPDF(){
-
     const elemento=document.getElementById("resultado");
 
     var opt={
@@ -300,5 +404,6 @@ function guardarPDF(){
 }
 
 </script>
+
 </body>
 </html>
