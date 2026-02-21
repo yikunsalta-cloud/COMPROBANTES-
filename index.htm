@@ -3,148 +3,197 @@
 <head>
 <meta charset="UTF-8">
 <title>YIKUN COMPROBANTE</title>
+
 <style>
-body { 
-    font-family: Arial, sans-serif; 
-    margin:20px; 
-    background:#212838; 
-    color:#FFFFFF;  
-    font-weight:bold;
-}
-h2 { color:#FFFFFF; } 
-label { display:block; margin-bottom:10px; color:#FFFFFF; font-weight:bold; }
-input, select {
-    font-weight:bold;
-    padding:5px;
-    border: 1px solid #374658;
-    border-radius:4px;
+
+body{
+    font-family: "Arial Black", Arial, sans-serif;
     background:#212838;
-    color:#FFFFFF; 
+    color:white;
+    margin:0;
+    padding:20px;
 }
-input::placeholder { color:#08C6AB; } 
-table { 
-    border-collapse: collapse; 
-    width:100%; 
-    margin-top:10px;
-    background:#374658;
-    color:#FFFFFF; 
+
+/* LOGO */
+.logo{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.logo img{
+    width:420px;
+    max-width:90%;
+}
+
+/* BLOQUES TURQUESA */
+.bloque{
+    background:#08C6AB;
+    padding:15px;
+    margin-bottom:15px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    font-size:28px;
+}
+
+.bloque input,
+.bloque select{
+    flex:1;
+    font-size:22px;
+    padding:8px;
+    border:none;
+    background:#d9d9d9;
+    font-family: "Arial Black";
+}
+
+/* BARRAS MORADAS */
+.barra{
+    background:linear-gradient(90deg,#7a00ff,#c300ff);
+    padding:10px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:10px;
+    font-size:24px;
+}
+
+.barra input,
+.barra select{
+    font-size:20px;
+    padding:5px;
+    border:none;
+    font-family: "Arial Black";
+}
+
+/* BOTONES DERECHA */
+.botones{
+    position:fixed;
+    right:30px;
+    top:200px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.botones button{
+    background:yellow;
+    border:none;
+    padding:15px;
     font-weight:bold;
-}
-th, td { 
-    border: 1px solid #08C6AB; 
-    padding:5px; 
-    text-align:left; 
-    font-weight:bold;
-    color:#FFFFFF; 
-}
-button { 
-    margin-top:10px; 
-    padding:5px 10px; 
-    background:#08C6AB; 
-    color:#212838; 
-    border:none; 
     cursor:pointer;
-    font-weight:bold;
+    font-family: "Arial Black";
 }
-button:hover { background:#726EFF; color:#FFFFFF; }
 
-/* Comprobante generado */
-.comprobante { 
-    border:1px solid #333; 
-    padding:15px; 
-    margin-top:20px; 
-    width:700px; 
-    background:#f5f5f5; 
-    color:#333; 
-    font-weight:bold;
-    page-break-inside: avoid;
+/* TABLA PRODUCTOS */
+.productos{
+    margin-top:20px;
 }
-.titulo-principal { 
-    text-align:center; 
-    font-size:28px; 
-    font-weight:bold; 
-    color:#000; /* YIKUN en negro */
+
+.productos table{
+    width:100%;
+    border-collapse:collapse;
 }
-.subtitulo { 
-    text-align:center; 
-    font-size:18px; 
-    margin-bottom:10px; 
-    color:#212838; 
+
+.productos th{
+    background:linear-gradient(90deg,#7a00ff,#c300ff);
+    padding:10px;
+    font-size:28px;
 }
-.comprobante table { width:100%; border-collapse:collapse; background:#ffffff; color:#000; font-weight:bold;}
-.comprobante th, .comprobante td { border:1px solid #333; padding:5px; text-align:left; font-weight:bold; color:#000; }
 
-/* Parte superior: número recibo izquierda, fecha derecha */
-.comprobante .top { display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold; }
-
-/* Parte media: cliente izquierda */
-.comprobante .medio { display:flex; justify-content:flex-start; margin-bottom:10px; font-weight:bold; }
-
-/* Parte inferior: datos vendedor izquierda, totales derecha */
-.comprobante .inferior { display:flex; justify-content:space-between; margin-top:30px; align-items:flex-end; }
-.inferior-left { width:45%; font-weight:bold; }
-.inferior-right { width:50%; text-align:right; font-weight:bold; }
-.total-pendiente { font-weight:bold; color:#DC2626; font-size:28px; margin-top:0; }
-
-/* Duplicado para PDF A4 */
-.duplicado { page-break-after: always; }
-@media print {
-    .comprobante { width:100%; }
+.productos td{
+    background:#08C6AB;
+    padding:5px;
 }
+
+.productos input{
+    width:100%;
+    padding:8px;
+    font-size:18px;
+    border:none;
+    font-family: "Arial Black";
+}
+
+/* BOTON AGREGAR */
+.btn-agregar{
+    background:yellow;
+    border:none;
+    padding:15px;
+    margin-top:10px;
+    cursor:pointer;
+    font-family: "Arial Black";
+}
+
 </style>
 </head>
+
 <body>
 
-<h2>YIKUN COMPROBANTE</h2>
+<div class="logo">
+    <img src="Logo.png" alt="Logo Yikun">
+</div>
 
-<label>Cliente/a: <input type="text" id="cliente" placeholder="Ingrese nombre del cliente"></label>
+<div class="bloque">
+    Cliente/a
+    <input type="text" id="cliente" placeholder="Ingrese nombre del cliente">
+</div>
 
-<label>Vendedor: 
-<select id="vendedor">
-    <option value="03">03 Lucas A.Grafica</option>
-    <option value="02">02 Analia A.Papeleria</option>
-</select>
-</label>
+<div class="bloque">
+    Vendedor
+    <select id="vendedor">
+        <option value="03">03 Lucas A.Grafica</option>
+        <option value="02">02 Analia A.Papeleria</option>
+    </select>
+</div>
 
+<div class="barra">
+    Seña
+    <input type="number" id="sena" value="0">
+
+    Descuento
+    <select id="descuento">
+        <option value="0">0%</option>
+        <option value="5">5%</option>
+        <option value="10">10%</option>
+        <option value="15">15%</option>
+        <option value="20">20%</option>
+    </select>
+
+    Pago
+    <select id="formaPago">
+        <option value="Efectivo">Efectivo</option>
+        <option value="Transferencia">Transferencia</option>
+    </select>
+</div>
+
+<div class="productos">
 <table id="tabla">
 <tr>
-    <th>Detalle</th>
-    <th>Cantidad</th>
-    <th>Precio Unit.</th>
+<th>Detalle</th>
+<th>Cantidad</th>
+<th>Precio Unit.</th>
 </tr>
 </table>
-<button onclick="agregarFila()">Agregar Producto</button>
+</div>
 
-<label>Seña: <input type="number" id="sena" value="0" min="0"></label>
+<button class="btn-agregar" onclick="agregarFila()">AGREGAR PRODUCTO</button>
 
-<label>Forma de pago: 
-<select id="formaPago">
-    <option value="Efectivo">Efectivo</option>
-    <option value="Transferencia">Transferencia</option>
-</select>
-</label>
-
-<label>Descuento:
-<select id="descuento">
-    <option value="0">0%</option>
-    <option value="5">5%</option>
-    <option value="10">10%</option>
-    <option value="15">15%</option>
-    <option value="20">20%</option>
-</select>
-</label>
-
-<button onclick="generar()">Generar Comprobante</button>
-<button onclick="guardarPDF()">Guardar como PDF A4</button>
+<div class="botones">
+<button onclick="generar()">GENERAR COMPROBANTE</button>
+<button onclick="guardarPDF()">GUARDAR COMO PDF</button>
+</div>
 
 <div id="resultado"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <script>
+
 let numero = localStorage.getItem("numeroYikun") || 3281;
 numero = parseInt(numero);
 
-function formatoARS(valor){ return "$" + valor.toLocaleString("es-AR", {minimumFractionDigits:0}); }
+function formatoARS(valor){
+    return "$" + valor.toLocaleString("es-AR");
+}
 
 function agregarFila(){
     let tabla = document.getElementById("tabla");
@@ -152,14 +201,19 @@ function agregarFila(){
     fila.innerHTML = `
     <td><input type="text" class="detalle" placeholder="Producto"></td>
     <td><input type="number" class="cantidad" min="1" value="1"></td>
-    <td><input type="number" class="precio" min="0" step="0.01" value="0"></td>
+    <td><input type="number" class="precio" min="0" value="0"></td>
     `;
 }
+
 window.onload = agregarFila;
 
 function generar(){
-    let cliente = document.getElementById("cliente").value.trim();
-    if(cliente === ""){ alert("Ingrese nombre del cliente"); return; }
+
+    let cliente = document.getElementById("cliente").value;
+    if(cliente === ""){
+        alert("Ingrese nombre del cliente");
+        return;
+    }
 
     let detalles = document.getElementsByClassName("detalle");
     let cantidades = document.getElementsByClassName("cantidad");
@@ -167,96 +221,49 @@ function generar(){
 
     let totalPedido = 0;
     let filas = "";
+
     for(let i=0;i<detalles.length;i++){
-        if(detalles[i].value.trim() !== ""){
-            let cant = parseFloat(cantidades[i].value || 0);
-            let precio = parseFloat(precios[i].value || 0);
+        if(detalles[i].value !== ""){
+            let cant = parseFloat(cantidades[i].value);
+            let precio = parseFloat(precios[i].value);
             totalPedido += cant * precio;
-            filas += `<tr>
-                        <td>${detalles[i].value}</td>
-                        <td>${cant} Uni.</td>
-                        <td>${formatoARS(precio)}</td>
-                    </tr>`;
+
+            filas += `
+            <tr>
+                <td>${detalles[i].value}</td>
+                <td>${cant}</td>
+                <td>${formatoARS(precio)}</td>
+            </tr>`;
         }
     }
-    if(totalPedido === 0){ alert("Agregue al menos un producto"); return; }
 
-    let sena = parseFloat(document.getElementById("sena").value || 0);
-    let porcentaje = parseFloat(document.getElementById("descuento").value);
-    let montoDescuento = totalPedido * (porcentaje / 100);
+    let sena = parseFloat(document.getElementById("sena").value);
+    let descuento = parseFloat(document.getElementById("descuento").value);
+    let montoDescuento = totalPedido * (descuento/100);
     let totalFinal = totalPedido - montoDescuento;
     let pendiente = totalFinal - sena;
-    if(pendiente < 0) pendiente = 0;
 
-    let fechaActual = new Date().toLocaleDateString("es-AR");
-    let numeroFormateado = numero.toString().padStart(6,'0');
+    let comprobante = `
+    <div class="comprobante">
+        <h2>YIKUN</h2>
+        Cliente: ${cliente}<br>
+        Total Pedido: ${formatoARS(totalPedido)}<br>
+        Descuento: ${formatoARS(montoDescuento)}<br>
+        Seña: ${formatoARS(sena)}<br>
+        Total Pendiente: ${formatoARS(pendiente)}
+    </div>
+    `;
 
-    let vendedorSeleccionado = document.getElementById("vendedor").value;
-    let nombreVendedor = "";
-    let datosVendedor = "";
-    if(vendedorSeleccionado === "03"){
-        nombreVendedor = "03 Lucas A.Grafica";
-        datosVendedor = `Local: Salta Cap. - Ayacucho 1621<br>Cel: 3875729428`;
-    } else if(vendedorSeleccionado === "02"){
-        nombreVendedor = "02 Analia A.Papeleria";
-        datosVendedor = `Local: Salta Cap. - Ayacucho 1621<br>Cel: 3872254054`;
-    }
-    let formaPago = document.getElementById("formaPago").value;
-
-    // Generamos 2 copias para PDF A4
-    let comprobanteHTML = "";
-    for(let copia=0;copia<2;copia++){
-        comprobanteHTML += `
-        <div class="comprobante ${copia===1 ? 'duplicado' : ''}">
-            <div class="titulo-principal">YIKUN</div>
-            <div class="subtitulo">COMPROBANTE DE PAGO</div>
-            <div class="top">
-                <div>Recibo B - ${numeroFormateado}</div>
-                <div>Fecha: ${fechaActual}</div>
-            </div>
-            <div class="medio">
-                <div><strong>Cliente/a:</strong> ${cliente}</div>
-            </div>
-            <table>
-                <tr><th>Detalle</th><th>Cantidad</th><th>Precio Unit.</th></tr>
-                ${filas}
-            </table>
-            <div class="inferior">
-                <div class="inferior-left">
-                    <p><strong>Vendedor:</strong> ${nombreVendedor}</p>
-                    <p>${datosVendedor}</p>
-                </div>
-                <div class="inferior-right">
-                    <p>Total Pedido: ${formatoARS(totalPedido)}</p>
-                    <p>Descuento (${porcentaje}%): ${formatoARS(montoDescuento)}</p>
-                    <p>Seña realizada (${formaPago}): ${formatoARS(sena)}</p>
-                    <div class="total-pendiente">Total Pendiente: ${formatoARS(pendiente)}</div>
-                </div>
-            </div>
-        </div>
-        `;
-    }
-
-    document.getElementById("resultado").innerHTML = comprobanteHTML;
-    numero++;
-    localStorage.setItem("numeroYikun", numero);
+    document.getElementById("resultado").innerHTML = comprobante;
 }
 
-function guardarPDF() {
-    const elemento = document.getElementById("resultado"); // Tomamos toda la sección con 2 copias
-    if(!elemento){
-        alert("Primero genere un comprobante");
-        return;
-    }
-    var opt = {
-        margin:       5,
-        filename:     'Comprobante_Yikun.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' } // PDF A4
-    };
-    html2pdf().set(opt).from(elemento).save();
+function guardarPDF(){
+    const elemento = document.getElementById("resultado");
+
+    html2pdf().from(elemento).save("Comprobante_Yikun.pdf");
 }
+
 </script>
+
 </body>
-        </html>
+</html>
