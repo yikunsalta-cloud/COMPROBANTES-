@@ -200,7 +200,6 @@ function agregarFila(){
         <td><input class="precio" type="number" value="0"></td>
     `;
 }
-
 function generar(){
 
     let cliente = document.getElementById("cliente").value.trim();
@@ -235,9 +234,9 @@ function generar(){
 
             filas += `
             <tr>
-                <td style="background:white;color:black;">${detalles[i].value}</td>
-                <td style="background:white;color:black;text-align:center;">${cant}</td>
-                <td style="background:white;color:black;text-align:right;">${formatoARS(precio)}</td>
+                <td style="border:1px solid #ccc;padding:6px;">${detalles[i].value}</td>
+                <td style="border:1px solid #ccc;padding:6px;text-align:center;">${cant}</td>
+                <td style="border:1px solid #ccc;padding:6px;text-align:right;">${formatoARS(precio)}</td>
             </tr>`;
         }
     }
@@ -256,29 +255,30 @@ function generar(){
 
     let tipos = ["ORIGINAL", "DUPLICADO"];
 
-let comprobanteHTML = `
-<div style="
-    width:210mm;
-    height:297mm;
-    background:white;
-    padding:10mm;
-    box-sizing:border-box;
-    font-family:'Arial Black', Arial, sans-serif;
-    color:black;
-    overflow:hidden;
-">
-`;
+    let comprobanteHTML = `
+    <div style="
+        width:210mm;
+        min-height:297mm;
+        background:white;
+        padding:10mm;
+        box-sizing:border-box;
+        font-family:Arial, sans-serif;
+        color:black;
+    ">
+    `;
+
     for(let i=0;i<2;i++){
 
         comprobanteHTML += `
         <div style="
-            height:135mm;
+            height:130mm;
             border:1px dashed #999;
-            padding:15px;
-            margin-bottom:10mm;
+            padding:12px;
+            margin-bottom:5mm;
             box-sizing:border-box;
             position:relative;
             background:white;
+            page-break-inside: avoid;
         ">
 
             <div style="position:absolute;top:10px;right:15px;font-weight:bold;font-size:14px;">
@@ -286,7 +286,7 @@ let comprobanteHTML = `
             </div>
 
             <div style="text-align:center;margin-bottom:10px;">
-                <img src="logo.png" style="width:120px;">
+                <img src="logo.png" style="width:110px;">
             </div>
 
             <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
@@ -300,11 +300,11 @@ let comprobanteHTML = `
                 </div>
             </div>
 
-            <table style="width:100%;border-collapse:collapse;margin-bottom:10px;" border="1">
-                <tr style="background:white;color:black;">
-                    <th>Detalle</th>
-                    <th>Cantidad</th>
-                    <th>Precio</th>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:10px;">
+                <tr>
+                    <th style="border:1px solid #ccc;padding:6px;">Detalle</th>
+                    <th style="border:1px solid #ccc;padding:6px;">Cantidad</th>
+                    <th style="border:1px solid #ccc;padding:6px;">Precio</th>
                 </tr>
                 ${filas}
             </table>
@@ -318,7 +318,7 @@ let comprobanteHTML = `
                     <div>Total Pedido: ${formatoARS(totalPedido)}</div>
                     <div>Descuento: ${formatoARS(descuento)}</div>
                     <div>Seña: ${formatoARS(sena)}</div>
-                    <div style="margin-top:8px;font-size:20px;font-weight:bold;color:red;">
+                    <div style="margin-top:8px;font-size:18px;font-weight:bold;">
                         Saldo Pendiente: ${formatoARS(pendiente)}
                     </div>
                 </div>
@@ -344,7 +344,8 @@ function guardarPDF(){
         filename: 'Comprobante_Yikun.pdf',
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
     html2pdf().set(opt).from(elemento).save();
