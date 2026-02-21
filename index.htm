@@ -7,120 +7,146 @@
 <style>
 
 body{
-    font-family: "Arial Black", Arial, sans-serif;
-    background:#212838;
-    color:white;
     margin:0;
-    padding:20px;
+    background:#212838;
+    font-family:"Arial Black", Arial, sans-serif;
+    color:white;
 }
 
 /* LOGO */
 .logo{
     text-align:center;
-    margin-bottom:30px;
+    margin-top:30px;
+    margin-bottom:20px;
 }
 
 .logo img{
     width:420px;
-    max-width:90%;
+}
+
+/* CONTENEDOR */
+.contenedor{
+    width:95%;
+    margin:auto;
 }
 
 /* BLOQUES TURQUESA */
-.bloque{
-    background:#08C6AB;
+.fila-superior{
+    display:flex;
+    gap:30px;
+    margin-bottom:20px;
+}
+
+.bloque-turquesa{
+    background:#1cc7b8;
     padding:15px;
-    margin-bottom:15px;
+    flex:1;
     display:flex;
     align-items:center;
     gap:15px;
-    font-size:28px;
+    font-size:34px;
 }
 
-.bloque input,
-.bloque select{
+.bloque-turquesa input,
+.bloque-turquesa select{
     flex:1;
-    font-size:22px;
+    font-size:28px;
     padding:8px;
     border:none;
-    background:#d9d9d9;
-    font-family: "Arial Black";
+    background:#dcdcdc;
+    font-family:"Arial Black";
 }
 
-/* BARRAS MORADAS */
-.barra{
-    background:linear-gradient(90deg,#7a00ff,#c300ff);
+/* BARRA VIOLETA */
+.fila-opciones{
+    display:flex;
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.bloque-violeta{
+    background:linear-gradient(90deg,#8000ff,#c300ff);
     padding:10px;
     display:flex;
     align-items:center;
-    gap:15px;
-    margin-bottom:10px;
-    font-size:24px;
+    gap:10px;
+    font-size:28px;
 }
 
-.barra input,
-.barra select{
-    font-size:20px;
+.bloque-violeta input,
+.bloque-violeta select{
+    font-size:24px;
     padding:5px;
     border:none;
-    font-family: "Arial Black";
+    font-family:"Arial Black";
 }
 
 /* BOTONES DERECHA */
 .botones{
-    position:fixed;
-    right:30px;
-    top:200px;
+    position:absolute;
+    right:40px;
+    top:260px;
     display:flex;
     flex-direction:column;
     gap:10px;
 }
 
 .botones button{
-    background:yellow;
+    background:#ffe600;
     border:none;
     padding:15px;
-    font-weight:bold;
-    cursor:pointer;
-    font-family: "Arial Black";
-}
-
-/* TABLA PRODUCTOS */
-.productos{
-    margin-top:20px;
-}
-
-.productos table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-.productos th{
-    background:linear-gradient(90deg,#7a00ff,#c300ff);
-    padding:10px;
-    font-size:28px;
-}
-
-.productos td{
-    background:#08C6AB;
-    padding:5px;
-}
-
-.productos input{
-    width:100%;
-    padding:8px;
     font-size:18px;
-    border:none;
-    font-family: "Arial Black";
+    cursor:pointer;
+    font-family:"Arial Black";
+}
+
+/* SECCION PRODUCTOS */
+.seccion-productos{
+    display:flex;
+    align-items:flex-start;
+    gap:20px;
 }
 
 /* BOTON AGREGAR */
 .btn-agregar{
-    background:yellow;
+    background:#ffe600;
     border:none;
     padding:15px;
-    margin-top:10px;
+    font-family:"Arial Black";
     cursor:pointer;
-    font-family: "Arial Black";
+}
+
+/* TABLA */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:linear-gradient(90deg,#8000ff,#c300ff);
+    padding:10px;
+    font-size:36px;
+}
+
+td{
+    background:#1cc7b8;
+    padding:5px;
+}
+
+td input{
+    width:100%;
+    font-size:24px;
+    padding:5px;
+    border:none;
+    font-family:"Arial Black";
+}
+
+/* COMPROBANTE */
+.comprobante{
+    background:white;
+    color:black;
+    margin-top:30px;
+    padding:20px;
 }
 
 </style>
@@ -129,43 +155,65 @@ body{
 <body>
 
 <div class="logo">
-    <img src="Logo.png" alt="Logo Yikun">
+<img src="Logo.png">
 </div>
 
-<div class="bloque">
-    Cliente/a
-    <input type="text" id="cliente" placeholder="Ingrese nombre del cliente">
+<div class="contenedor">
+
+<div class="fila-superior">
+
+<div class="bloque-turquesa">
+Cliente/a =
+<input type="text" id="cliente" placeholder="Ingrese nombre del cliente">
 </div>
 
-<div class="bloque">
-    Vendedor
-    <select id="vendedor">
-        <option value="03">03 Lucas A.Grafica</option>
-        <option value="02">02 Analia A.Papeleria</option>
-    </select>
+<div class="bloque-turquesa">
+Vendedor
+<select id="vendedor">
+<option value="03">03 Lucas A.Grafica</option>
+<option value="02">02 Analia A.Papeleria</option>
+</select>
 </div>
 
-<div class="barra">
-    Seña
-    <input type="number" id="sena" value="0">
-
-    Descuento
-    <select id="descuento">
-        <option value="0">0%</option>
-        <option value="5">5%</option>
-        <option value="10">10%</option>
-        <option value="15">15%</option>
-        <option value="20">20%</option>
-    </select>
-
-    Pago
-    <select id="formaPago">
-        <option value="Efectivo">Efectivo</option>
-        <option value="Transferencia">Transferencia</option>
-    </select>
 </div>
 
-<div class="productos">
+<div class="fila-opciones">
+
+<div class="bloque-violeta">
+Seña
+<input type="number" id="sena" value="0">
+</div>
+
+<div class="bloque-violeta">
+Descuento
+<select id="descuento">
+<option value="0">0%</option>
+<option value="5">5%</option>
+<option value="10">10%</option>
+<option value="15">15%</option>
+<option value="20">20%</option>
+</select>
+</div>
+
+<div class="bloque-violeta">
+Pago
+<select id="formaPago">
+<option>Efectivo</option>
+<option>Transferencia</option>
+</select>
+</div>
+
+</div>
+
+<div class="botones">
+<button onclick="generar()">GENERAR COMPROBANTE</button>
+<button onclick="guardarPDF()">GUARDAR COMO PDF A4</button>
+</div>
+
+<div class="seccion-productos">
+
+<button class="btn-agregar" onclick="agregarFila()">AGREGAR PRODUCTO</button>
+
 <table id="tabla">
 <tr>
 <th>Detalle</th>
@@ -173,16 +221,12 @@ body{
 <th>Precio Unit.</th>
 </tr>
 </table>
-</div>
 
-<button class="btn-agregar" onclick="agregarFila()">AGREGAR PRODUCTO</button>
-
-<div class="botones">
-<button onclick="generar()">GENERAR COMPROBANTE</button>
-<button onclick="guardarPDF()">GUARDAR COMO PDF</button>
 </div>
 
 <div id="resultado"></div>
+
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -192,75 +236,64 @@ let numero = localStorage.getItem("numeroYikun") || 3281;
 numero = parseInt(numero);
 
 function formatoARS(valor){
-    return "$" + valor.toLocaleString("es-AR");
+return "$" + valor.toLocaleString("es-AR");
 }
 
 function agregarFila(){
-    let tabla = document.getElementById("tabla");
-    let fila = tabla.insertRow();
-    fila.innerHTML = `
-    <td><input type="text" class="detalle" placeholder="Producto"></td>
-    <td><input type="number" class="cantidad" min="1" value="1"></td>
-    <td><input type="number" class="precio" min="0" value="0"></td>
-    `;
+let tabla = document.getElementById("tabla");
+let fila = tabla.insertRow();
+
+fila.innerHTML = `
+<td><input type="text" class="detalle" placeholder="Producto"></td>
+<td><input type="number" class="cantidad" value="1"></td>
+<td><input type="number" class="precio" value="0"></td>
+`;
 }
 
 window.onload = agregarFila;
 
 function generar(){
 
-    let cliente = document.getElementById("cliente").value;
-    if(cliente === ""){
-        alert("Ingrese nombre del cliente");
-        return;
-    }
+let cliente = document.getElementById("cliente").value;
+if(cliente === ""){
+alert("Ingrese cliente");
+return;
+}
 
-    let detalles = document.getElementsByClassName("detalle");
-    let cantidades = document.getElementsByClassName("cantidad");
-    let precios = document.getElementsByClassName("precio");
+let detalles = document.getElementsByClassName("detalle");
+let cantidades = document.getElementsByClassName("cantidad");
+let precios = document.getElementsByClassName("precio");
 
-    let totalPedido = 0;
-    let filas = "";
+let totalPedido = 0;
 
-    for(let i=0;i<detalles.length;i++){
-        if(detalles[i].value !== ""){
-            let cant = parseFloat(cantidades[i].value);
-            let precio = parseFloat(precios[i].value);
-            totalPedido += cant * precio;
+for(let i=0;i<detalles.length;i++){
+if(detalles[i].value !== ""){
+totalPedido += cantidades[i].value * precios[i].value;
+}
+}
 
-            filas += `
-            <tr>
-                <td>${detalles[i].value}</td>
-                <td>${cant}</td>
-                <td>${formatoARS(precio)}</td>
-            </tr>`;
-        }
-    }
+let sena = parseFloat(document.getElementById("sena").value);
+let descuento = parseFloat(document.getElementById("descuento").value);
 
-    let sena = parseFloat(document.getElementById("sena").value);
-    let descuento = parseFloat(document.getElementById("descuento").value);
-    let montoDescuento = totalPedido * (descuento/100);
-    let totalFinal = totalPedido - montoDescuento;
-    let pendiente = totalFinal - sena;
+let montoDescuento = totalPedido * descuento / 100;
+let totalFinal = totalPedido - montoDescuento;
+let pendiente = totalFinal - sena;
 
-    let comprobante = `
-    <div class="comprobante">
-        <h2>YIKUN</h2>
-        Cliente: ${cliente}<br>
-        Total Pedido: ${formatoARS(totalPedido)}<br>
-        Descuento: ${formatoARS(montoDescuento)}<br>
-        Seña: ${formatoARS(sena)}<br>
-        Total Pendiente: ${formatoARS(pendiente)}
-    </div>
-    `;
+document.getElementById("resultado").innerHTML = `
+<div class="comprobante">
+<h2>COMPROBANTE YIKUN</h2>
+Cliente: ${cliente}<br>
+Total Pedido: ${formatoARS(totalPedido)}<br>
+Descuento: ${formatoARS(montoDescuento)}<br>
+Seña: ${formatoARS(sena)}<br>
+Total Pendiente: ${formatoARS(pendiente)}
+</div>
+`;
 
-    document.getElementById("resultado").innerHTML = comprobante;
 }
 
 function guardarPDF(){
-    const elemento = document.getElementById("resultado");
-
-    html2pdf().from(elemento).save("Comprobante_Yikun.pdf");
+html2pdf().from(document.getElementById("resultado")).save("Comprobante_Yikun.pdf");
 }
 
 </script>
