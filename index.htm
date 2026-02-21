@@ -1,4 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Yikun - Comprobantes</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+
+/* =================== ESTILO GENERAL =================== */
+
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#FA551D;
+    color:white;
+}
+
+/* LOGO SUPERIOR */
+
+.header{
+    text-align:center;
+    padding:25px 0;
+}
+
+.header img{
+    width:220px;
+}
+
+/* CONTENEDOR PRINCIPAL */
+
+.container{
+    display:flex;
+    gap:20px;
+    padding:20px;
+}
+
+/* PANEL IZQUIERDO */
+
+.panel{
+    background:#013337;
+    padding:20px;
+    border-radius:15px;
+    width:380px;
+}
+
+.panel h3{
+    margin-top:0;
+}
+
+input, select{
+    width:100%;
+    padding:10px;
+    margin-top:6px;
+    margin-bottom:12px;
+    border:none;
+    border-radius:6px;
+    background:#21273F;
+    color:white;
+}
+
+/* BOTONES */
+
+button{
+    border:none;
+    cursor:pointer;
+    font-weight:bold;
+    border-radius:6px;
+}
+
+.btn-accion{
+    background:#149EF6;
+    color:white;
+    padding:12px;
+    width:100%;
+    margin-top:10px;
+}
+
+.btn-agregar{
+    background:#FA551D;
+    color:white;
+    padding:12px;
+    width:100%;
+    margin-top:15px;
+}
+
+/* TABLA PRODUCTOS */
+
+.tabla-container{
+    flex:1;
+    background:#21273F;
+    padding:20px;
+    border-radius:15px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#013337;
+    padding:10px;
+    text-align:center;
+    color:white;
+}
+
+td{
+    padding:6px;
+    text-align:center;
+}
+
+/* =================== COMPROBANTE =================== */
+
+.comprobante{
+    background:white;
+    color:black;
+    padding:25px;
+    margin:30px;
+    border-radius:10px;
+}
+
+.header-comprobante{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:15px;
+}
+
+.header-derecha{
+    text-align:right;
+    font-size:14px;
+}
+
+.footer-comprobante{
+    display:flex;
+    justify-content:space-between;
+    margin-top:25px;
+}
+
+.footer-izquierda{
+    width:50%;
+    font-size:14px;
+}
+
+.footer-derecha{
+    width:40%;
+    text-align:right;
+    font-size:14px;
+}
+
+.saldo-rojo{
+    margin-top:10px;
+    font-size:22px;
+    font-weight:bold;
+    color:#FA551D;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <img src="logo.png">
+</div>
+
+<div class="container">
+
+<div class="panel">
+
+<h3>Datos del Cliente</h3>
+
+Cliente
+<input id="cliente">
+
+Vendedor
+<select id="vendedor">
+<option value="03">03 Lucas A.Grafica</option>
+<option value="02">02 Analia A.Papeleria</option>
+</select>
+
+Forma de pago
+<select>
+<option>Efectivo</option>
+<option>Transferencia</option>
+<option>Tarjeta</option>
+</select>
+
+Seña
+<input type="number" id="sena" value="0">
+
+Descuento %
+<input type="number" id="descuento" value="0">
+
+<button class="btn-accion" onclick="generar()">GENERAR COMPROBANTE</button>
+<button class="btn-accion" onclick="guardarPDF()">GUARDAR PDF</button>
+
+</div>
+
+<div class="tabla-container">
+
+<h3>Productos</h3>
+
+<table id="tabla">
+<tr>
+<th>Detalle</th>
+<th>Cantidad</th>
+<th>Precio</th>
+</tr>
+
+<tr>
+<td><input class="detalle"></td>
+<td><input class="cantidad" type="number" value="1"></td>
+<td><input class="precio" type="number" value="0"></td>
+</tr>
+</table>
+
+<button class="btn-agregar" onclick="agregarFila()">AGREGAR PRODUCTO</button>
+
+</div>
+
+</div>
+
+<div id="resultado"></div>
+
 <script>
+
+let numero = localStorage.getItem("numeroYikun");
+if(!numero){ numero = 1; } else { numero = parseInt(numero); }
+
+function formatoARS(num){
+    return "$ " + num.toLocaleString("es-AR");
+}
+
+function agregarFila(){
+    let tabla = document.getElementById("tabla");
+    let fila = tabla.insertRow();
+    fila.innerHTML = `
+        <td><input class="detalle"></td>
+        <td><input class="cantidad" type="number" value="1"></td>
+        <td><input class="precio" type="number" value="0"></td>
+    `;
+}
 
 function generar(){
 
@@ -60,7 +303,7 @@ function generar(){
                 </div>
             </div>
 
-            <table>
+            <table border="1" cellpadding="6" cellspacing="0" width="100%">
                 <tr>
                     <th>Detalle</th>
                     <th>Cantidad</th>
@@ -100,4 +343,21 @@ function generar(){
     localStorage.setItem("numeroYikun",numero);
 }
 
+function guardarPDF(){
+    const elemento=document.getElementById("resultado");
+
+    var opt={
+        margin:5,
+        filename:'Comprobante_Yikun.pdf',
+        image:{type:'jpeg',quality:0.98},
+        html2canvas:{scale:2},
+        jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+    };
+
+    html2pdf().set(opt).from(elemento).save();
+}
+
 </script>
+
+</body>
+</html>
