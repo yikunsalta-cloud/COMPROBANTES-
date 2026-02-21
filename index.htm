@@ -342,45 +342,51 @@ function generar(){
 
     for(let i=0;i<2;i++){
 
-        comprobanteHTML+=`
-        <div class="comprobante">
+      comprobanteHTML+=`
+<div class="comprobante">
 
-            <img src="logo.png" class="logo-comprobante">
+    <img src="logo.png" class="logo-comprobante">
 
-            <div class="titulo-principal">YIKUN</div>
-            <div class="subtitulo">COMPROBANTE DE PAGO</div>
+    <div class="header-comprobante">
+        <div class="header-derecha">
+            <div><strong>Fecha:</strong> ${fecha}</div>
+            <div><strong>Recibo B:</strong> ${numeroFormateado}</div>
+            <div><strong>Cliente:</strong> ${cliente}</div>
+            <div><strong>Vendedor:</strong> ${nombreVendedor}</div>
+        </div>
+    </div>
 
-            <div class="top">
-                <div>Recibo B - ${numeroFormateado}</div>
-                <div>Fecha: ${fecha}</div>
+    <table>
+        <tr>
+            <th>Detalle</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+        </tr>
+        ${filas}
+    </table>
+
+    <div class="footer-comprobante">
+        
+        <div class="footer-izquierda">
+            <div>Total Pedido: ${formatoARS(totalPedido)}</div>
+            <div>Descuento: ${formatoARS(descuento)}</div>
+            <div>Seña: ${formatoARS(sena)}</div>
+            <div class="saldo-rojo">
+                Saldo Pendiente: ${formatoARS(pendiente)}
             </div>
+        </div>
 
-            <div class="medio">
-                <strong>Cliente:</strong> ${cliente}
-            </div>
+        <div class="footer-derecha">
+            <div><strong>Datos del Vendedor</strong></div>
+            <div>Local: Salta Capital</div>
+            <div>Ayacucho 1621</div>
+            <div>Tel: 3875XXXXXX</div>
+        </div>
 
-            <table>
-            <tr>
-                <th>Detalle</th>
-                <th>Cantidad</th>
-                <th>Precio</th>
-            </tr>
-            ${filas}
-            </table>
+    </div>
 
-            <div class="inferior">
-                <div>
-                    Total Pedido: ${formatoARS(totalPedido)}<br>
-                    Descuento: ${formatoARS(descuento)}<br>
-                    Seña: ${formatoARS(sena)}
-                </div>
-                <div class="total-pendiente">
-                    Pendiente: ${formatoARS(pendiente)}
-                </div>
-            </div>
-
-        </div>`;
-    }
+</div>
+`;
 
     document.getElementById("resultado").innerHTML = comprobanteHTML;
 
