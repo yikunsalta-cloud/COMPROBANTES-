@@ -332,21 +332,17 @@ function generar(){
     numero++;
     localStorage.setItem("numeroYikun",numero);
 }
-    
+
 function guardarPDF(){
 
     const elemento = document.getElementById("resultado");
 
     var opt = {
-        margin: 0,
+        margin: [5, 5, 5, 5],
         filename: 'Comprobante_Yikun.pdf',
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 1 },
-        jsPDF: { 
-            unit: 'mm', 
-            format: 'a4', 
-            orientation: 'portrait'
-        },
+        html2canvas: { scale: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
         pagebreak: { mode: ['avoid-all'] }
     };
 
@@ -356,4 +352,5 @@ function guardarPDF(){
 </script>
 
 </body>
+</html>
 </html>
