@@ -126,7 +126,7 @@ body{
 }
 
 #resultado{
-    margin:0;
+    margin:10;
 }
 
 </style>
@@ -162,7 +162,7 @@ Descuento %
 
 </div>
 
-<div style="flex:1;background:#21273F;padding:20px;border-radius:15px;">
+<div style="flex:0;background:#21273F;padding:20px;border-radius:15px;">
 
 <table id="tabla">
 <tr>
@@ -185,7 +185,7 @@ Descuento %
 
 <div id="resultado" style="
     width:180mm;
-    margin:0 auto;
+    margin:10 auto;
     border:0.5px dashed #999;
     padding:0;
     box-sizing:border-box;
@@ -273,11 +273,11 @@ function generar(){
 
         hoja += `
         <div style="
-            width:80%;
+            width:50%;
             height:148.5mm;
             padding:0mm;
             box-sizing:border-box;
-            border:0px dashed #999;
+            border:5px dashed #999;
         ">
 
             <div style="text-align:center;margin-bottom:8px;">
@@ -336,7 +336,7 @@ function guardarPDF(){
     const elemento = document.getElementById("resultado");
 
     var opt = {
-        margin: 1,
+        margin: 0,
         filename: 'Comprobante_Yikun.pdf',
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { 
@@ -345,7 +345,7 @@ function guardarPDF(){
         },
         jsPDF: { 
             unit: 'mm',
-            format: [180,280],
+            format: [200,280],
             orientation: 'portrait'
         },
         pagebreak: { mode: [] }
