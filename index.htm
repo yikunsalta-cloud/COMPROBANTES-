@@ -258,8 +258,8 @@ function generar(){
 
     let hoja = `
     <div style="
-        width:200mm;
-        height:296mm;
+        width:190mm;
+        height:290mm;
         background:white;
         font-family:Arial, Black;
         color:black;
@@ -333,16 +333,16 @@ function guardarPDF(){
     const elemento = document.getElementById("resultado");
 
     var opt = {
-        margin: 1,
+        margin: 0,
         filename: 'Comprobante_Yikun.pdf',
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { 
-            scale: 1,
+            scale: 2,
             useCORS: true
         },
         jsPDF: { 
             unit: 'mm',
-            format: [200,296],
+            format: [190,290],
             orientation: 'portrait'
         },
         pagebreak: { mode: [] }
