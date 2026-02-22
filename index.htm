@@ -126,7 +126,7 @@ body{
 }
 
 #resultado{
-    margin:0;
+    margin:10;
 }
 
 </style>
@@ -261,8 +261,8 @@ function generar(){
 
     let hoja = `
     <div style="
-        width:200mm;
-        height:296mm;
+        width:180mm;
+        height:280mm;
         background:white;
         font-family:Arial, Black;
         color:black;
@@ -273,9 +273,9 @@ function generar(){
 
         hoja += `
         <div style="
-            width:100%;
+            width:85%;
             height:148.5mm;
-            padding:10mm;
+            padding:0mm;
             box-sizing:border-box;
             border:1px dashed #999;
         ">
@@ -336,16 +336,16 @@ function guardarPDF(){
     const elemento = document.getElementById("resultado");
 
     var opt = {
-        margin: 0,
+        margin: 1,
         filename: 'Comprobante_Yikun.pdf',
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { 
-            scale: 2,
+            scale: 1,
             useCORS: true
         },
         jsPDF: { 
             unit: 'mm',
-            format: [200,296],
+            format: [180,280],
             orientation: 'portrait'
         },
         pagebreak: { mode: [] }
