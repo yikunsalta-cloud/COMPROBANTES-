@@ -234,13 +234,13 @@ function generar(){
 
             filas += `
             <tr>
-                <td style="border:1px solid #ccc;padding:4px;background:#ffffff;color:#000000;">
+                <td style="border:1px solid #000;padding:4px;background:#ffffff;color:#000000;">
                     ${detalles[i].value}
                 </td>
-                <td style="border:1px solid #ccc;padding:4px;text-align:center;background:#ffffff;color:#000000;">
+                <td style="border:1px solid #000;padding:4px;text-align:center;background:#ffffff;color:#000000;">
                     ${cant}
                 </td>
-                <td style="border:1px solid #ccc;padding:4px;text-align:right;background:#ffffff;color:#000000;">
+                <td style="border:1px solid #000;padding:4px;text-align:right;background:#ffffff;color:#000000;">
                     ${formatoARS(precio)}
                 </td>
             </tr>`;
@@ -261,10 +261,10 @@ function generar(){
 
     let hoja = `
     <div style="
-        width:180mm;
-        height:280mm;
+        width:210mm;
+        height:297mm;
         background:white;
-        font-family:Arial, Black;
+        font-family:Arial Black, Arial, sans-serif;
         color:black;
     ">
     `;
@@ -273,18 +273,19 @@ function generar(){
 
         hoja += `
         <div style="
-            width:50%;
+            width:190mm;
             height:148.5mm;
-            padding:0mm;
+            margin:0 auto;
             box-sizing:border-box;
-            border:1px dashed #999;
+            border:0.5px dashed #999;
+            padding:5mm;
         ">
 
-            <div style="text-align:center;margin-bottom:8px;">
-                <img src="logo.png" style="width:100px;">
+            <div style="text-align:center;margin-bottom:6px;">
+                <img src="logo.png" style="width:90px;">
             </div>
 
-            <div style="display:flex;justify-content:space-between;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;">
                 <div>
                     <div><strong>Nº Recibo:</strong> ${numeroFormateado}</div>
                     <div><strong>Cliente:</strong> ${cliente}</div>
@@ -295,16 +296,16 @@ function generar(){
                 </div>
             </div>
 
-            <table style="width:0%;border-collapse:collapse;margin-top:4px;">
+            <table style="width:100%;border-collapse:collapse;margin-top:6px;font-size:12px;">
                 <tr>
-                    <th style="border:1px solid #ccc;padding:4px;background:#ffffff;color:#000000;">Detalle</th>
-                    <th style="border:1px solid #ccc;padding:4px;background:#ffffff;color:#000000;">Cantidad</th>
-                    <th style="border:1px solid #ccc;padding:4px;background:#ffffff;color:#000000;">Precio</th>
+                    <th style="border:1px solid #000;padding:4px;background:#ffffff;color:#000000;">Detalle</th>
+                    <th style="border:1px solid #000;padding:4px;background:#ffffff;color:#000000;">Cantidad</th>
+                    <th style="border:1px solid #000;padding:4px;background:#ffffff;color:#000000;">Precio</th>
                 </tr>
                 ${filas}
             </table>
 
-            <div style="display:flex;justify-content:space-between;margin-top:6px;">
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;">
                 <div>
                     <div><strong>${nombreVendedor}</strong></div>
                     <div>${datosVendedor}</div>
@@ -313,7 +314,7 @@ function generar(){
                     <div>Total Pedido: ${formatoARS(totalPedido)}</div>
                     <div>Descuento: ${formatoARS(descuento)}</div>
                     <div>Seña: ${formatoARS(sena)}</div>
-                    <div style="margin-top:6px;font-size:16px;font-weight:bold;">
+                    <div style="margin-top:6px;font-size:14px;font-weight:bold;">
                         Saldo Pendiente: ${formatoARS(pendiente)}
                     </div>
                 </div>
@@ -330,7 +331,6 @@ function generar(){
     numero++;
     localStorage.setItem("numeroYikun",numero);
 }
-    
 function guardarPDF(){
 
     const elemento = document.getElementById("resultado");
@@ -340,15 +340,14 @@ function guardarPDF(){
         filename: 'Comprobante_Yikun.pdf',
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { 
-            scale: 1,
+            scale: 2,
             useCORS: true
         },
         jsPDF: { 
             unit: 'mm',
-            format: [200,280],
+            format: 'a4',
             orientation: 'portrait'
-        },
-        pagebreak: { mode: [] }
+        }
     };
 
     html2pdf().set(opt).from(elemento).save();
