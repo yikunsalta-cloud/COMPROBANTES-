@@ -190,7 +190,6 @@ if(!numero){ numero = 1; } else { numero = parseInt(numero); }
 function formatoARS(num){
     return "$ " + num.toLocaleString("es-AR");
 }
-
 function generar(){
 
     let cliente = document.getElementById("cliente").value.trim();
@@ -225,15 +224,9 @@ function generar(){
 
             filas += `
             <tr>
-                <td style="border:1px solid #ccc;padding:6px;">
-                    ${detalles[i].value}
-                </td>
-                <td style="border:1px solid #ccc;padding:6px;text-align:center;">
-                    ${cant}
-                </td>
-                <td style="border:1px solid #ccc;padding:6px;text-align:right;">
-                    ${formatoARS(precio)}
-                </td>
+                <td style="border:1px solid #ccc;padding:4px;">${detalles[i].value}</td>
+                <td style="border:1px solid #ccc;padding:4px;text-align:center;">${cant}</td>
+                <td style="border:1px solid #ccc;padding:4px;text-align:right;">${formatoARS(precio)}</td>
             </tr>`;
         }
     }
@@ -250,13 +243,11 @@ function generar(){
     let fecha = new Date().toLocaleDateString("es-AR");
     let numeroFormateado = numero.toString().padStart(6,'0');
 
-    let comprobanteHTML = `
+    let hoja = `
     <div style="
         width:210mm;
         height:297mm;
         background:white;
-        padding:0;
-        box-sizing:border-box;
         font-family:Arial, sans-serif;
         color:black;
     ">
@@ -264,60 +255,70 @@ function generar(){
 
     for(let i=0;i<2;i++){
 
-        comprobanteHTML += `
+        hoja += `
         <div style="
             height:148.5mm;
-            padding:10mm;
-            box-sizing:border-box;
+            display:flex;
+            justify-content:center;
+            align-items:center;
             border-bottom:1px dashed #999;
         ">
 
-            <div style="text-align:center;margin-bottom:10px;">
-                <img src="logo.png" style="width:90px;">
-            </div>
+            <div style="
+                width:105mm;
+                height:148mm;
+                padding:8mm;
+                box-sizing:border-box;
+                border:1px dashed #bbb;
+            ">
 
-            <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
-                <div>
-                    <div><strong>Nº Recibo:</strong> ${numeroFormateado}</div>
-                    <div><strong>Cliente:</strong> ${cliente}</div>
+                <div style="text-align:center;margin-bottom:6px;">
+                    <img src="logo.png" style="width:70px;">
                 </div>
-                <div style="text-align:right;">
-                    <div><strong>Fecha:</strong> ${fecha}</div>
-                    <div><strong>Vendedor:</strong> ${nombreVendedor}</div>
-                </div>
-            </div>
 
-            <table style="width:100%;border-collapse:collapse;margin-bottom:10px;">
-                <tr>
-                    <th style="border:1px solid #ccc;padding:6px;">Detalle</th>
-                    <th style="border:1px solid #ccc;padding:6px;">Cant.</th>
-                    <th style="border:1px solid #ccc;padding:6px;">Precio</th>
-                </tr>
-                ${filas}
-            </table>
-
-            <div style="display:flex;justify-content:space-between;">
-                <div>
-                    <div><strong>${nombreVendedor}</strong></div>
-                    <div>${datosVendedor}</div>
-                </div>
-                <div style="text-align:right;">
-                    <div>Total: ${formatoARS(totalPedido)}</div>
-                    <div>Desc.: ${formatoARS(descuento)}</div>
-                    <div>Seña: ${formatoARS(sena)}</div>
-                    <div style="margin-top:6px;font-size:16px;font-weight:bold;">
-                        Saldo: ${formatoARS(pendiente)}
+                <div style="display:flex;justify-content:space-between;font-size:13px;">
+                    <div>
+                        <div><strong>Nº Recibo:</strong> ${numeroFormateado}</div>
+                        <div><strong>Cliente:</strong> ${cliente}</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div><strong>Fecha:</strong> ${fecha}</div>
+                        <div><strong>Vendedor:</strong> ${nombreVendedor}</div>
                     </div>
                 </div>
-            </div>
 
+                <table style="width:100%;border-collapse:collapse;margin-top:6px;font-size:12px;">
+                    <tr>
+                        <th style="border:1px solid #ccc;padding:4px;">Detalle</th>
+                        <th style="border:1px solid #ccc;padding:4px;">Cantidad</th>
+                        <th style="border:1px solid #ccc;padding:4px;">Precio</th>
+                    </tr>
+                    ${filas}
+                </table>
+
+                <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:12px;">
+                    <div>
+                        <div><strong>${nombreVendedor}</strong></div>
+                        <div>${datosVendedor}</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div>Total: ${formatoARS(totalPedido)}</div>
+                        <div>Desc.: ${formatoARS(descuento)}</div>
+                        <div>Seña: ${formatoARS(sena)}</div>
+                        <div style="margin-top:4px;font-weight:bold;">
+                            Saldo: ${formatoARS(pendiente)}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
         `;
     }
 
-    comprobanteHTML += `</div>`;
+    hoja += `</div>`;
 
-    document.getElementById("resultado").innerHTML = comprobanteHTML;
+    document.getElementById("resultado").innerHTML = hoja;
 
     numero++;
     localStorage.setItem("numeroYikun",numero);
