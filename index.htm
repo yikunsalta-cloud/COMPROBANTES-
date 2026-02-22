@@ -184,9 +184,9 @@ Descuento %
 </div>
 
 <div id="resultado" style="
-    width:200mm;
-    height:280mm;
-    margin:0;
+    width:180mm;
+    margin:0 auto;
+    border:0.5px dashed #999;
     padding:0;
     box-sizing:border-box;
     background:white;
@@ -273,11 +273,11 @@ function generar(){
 
         hoja += `
         <div style="
-            width:100%;
+            width:80%;
             height:148.5mm;
-            padding:10mm;
+            padding:0mm;
             box-sizing:border-box;
-            border:1px dashed #999;
+            border:0px dashed #999;
         ">
 
             <div style="text-align:center;margin-bottom:8px;">
@@ -340,7 +340,7 @@ function guardarPDF(){
         filename: 'Comprobante_Yikun.pdf',
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { 
-            scale: 2,
+            scale: 1,
             useCORS: true
         },
         jsPDF: { 
