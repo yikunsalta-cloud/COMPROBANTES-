@@ -190,6 +190,7 @@ if(!numero){ numero = 1; } else { numero = parseInt(numero); }
 function formatoARS(num){
     return "$ " + num.toLocaleString("es-AR");
 }
+    
 function generar(){
 
     let cliente = document.getElementById("cliente").value.trim();
@@ -257,61 +258,52 @@ function generar(){
 
         hoja += `
         <div style="
+            width:100%;
             height:148.5mm;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            border-bottom:1px dashed #999;
+            padding:10mm;
+            box-sizing:border-box;
+            border:1px dashed #999;
         ">
 
-            <div style="
-                width:105mm;
-                height:148mm;
-                padding:8mm;
-                box-sizing:border-box;
-                border:1px dashed #bbb;
-            ">
-
-                <div style="text-align:center;margin-bottom:6px;">
-                    <img src="logo.png" style="width:70px;">
-                </div>
-
-                <div style="display:flex;justify-content:space-between;font-size:13px;">
-                    <div>
-                        <div><strong>Nº Recibo:</strong> ${numeroFormateado}</div>
-                        <div><strong>Cliente:</strong> ${cliente}</div>
-                    </div>
-                    <div style="text-align:right;">
-                        <div><strong>Fecha:</strong> ${fecha}</div>
-                        <div><strong>Vendedor:</strong> ${nombreVendedor}</div>
-                    </div>
-                </div>
-
-                <table style="width:100%;border-collapse:collapse;margin-top:6px;font-size:12px;">
-                    <tr>
-                        <th style="border:1px solid #ccc;padding:4px;">Detalle</th>
-                        <th style="border:1px solid #ccc;padding:4px;">Cantidad</th>
-                        <th style="border:1px solid #ccc;padding:4px;">Precio</th>
-                    </tr>
-                    ${filas}
-                </table>
-
-                <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:12px;">
-                    <div>
-                        <div><strong>${nombreVendedor}</strong></div>
-                        <div>${datosVendedor}</div>
-                    </div>
-                    <div style="text-align:right;">
-                        <div>Total: ${formatoARS(totalPedido)}</div>
-                        <div>Desc.: ${formatoARS(descuento)}</div>
-                        <div>Seña: ${formatoARS(sena)}</div>
-                        <div style="margin-top:4px;font-weight:bold;">
-                            Saldo: ${formatoARS(pendiente)}
-                        </div>
-                    </div>
-                </div>
-
+            <div style="text-align:center;margin-bottom:8px;">
+                <img src="logo.png" style="width:90px;">
             </div>
+
+            <div style="display:flex;justify-content:space-between;">
+                <div>
+                    <div><strong>Nº Recibo:</strong> ${numeroFormateado}</div>
+                    <div><strong>Cliente:</strong> ${cliente}</div>
+                </div>
+                <div style="text-align:right;">
+                    <div><strong>Fecha:</strong> ${fecha}</div>
+                    <div><strong>Vendedor:</strong> ${nombreVendedor}</div>
+                </div>
+            </div>
+
+            <table style="width:100%;border-collapse:collapse;margin-top:6px;">
+                <tr>
+                    <th style="border:1px solid #ccc;padding:4px;">Detalle</th>
+                    <th style="border:1px solid #ccc;padding:4px;">Cantidad</th>
+                    <th style="border:1px solid #ccc;padding:4px;">Precio</th>
+                </tr>
+                ${filas}
+            </table>
+
+            <div style="display:flex;justify-content:space-between;margin-top:6px;">
+                <div>
+                    <div><strong>${nombreVendedor}</strong></div>
+                    <div>${datosVendedor}</div>
+                </div>
+                <div style="text-align:right;">
+                    <div>Total Pedido: ${formatoARS(totalPedido)}</div>
+                    <div>Descuento: ${formatoARS(descuento)}</div>
+                    <div>Seña: ${formatoARS(sena)}</div>
+                    <div style="margin-top:6px;font-size:16px;font-weight:bold;">
+                        Saldo Pendiente: ${formatoARS(pendiente)}
+                    </div>
+                </div>
+            </div>
+
         </div>
         `;
     }
@@ -323,7 +315,6 @@ function generar(){
     numero++;
     localStorage.setItem("numeroYikun",numero);
 }
-    
 function guardarPDF(){
 
     const elemento = document.getElementById("resultado");
