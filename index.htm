@@ -343,19 +343,25 @@ function generar(){
     numero++;
     localStorage.setItem("numeroYikun",numero);
 }
-
+    
 function guardarPDF(){
+
     const elemento = document.getElementById("resultado");
 
     var opt = {
-        margin: 0,
+        margin: [10, 10, 10, 10], // arriba, izquierda, abajo, derecha
         filename: 'Comprobante_Yikun.pdf',
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { scale: 1 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        jsPDF: { 
+            unit: 'mm', 
+            format: 'a4', 
+            orientation: 'portrait'
+        }
     };
 
+    html2pdf().set(opt).from(elemento).save();
+}
     html2pdf().set(opt).from(elemento).save();
 }
 
