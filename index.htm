@@ -136,31 +136,11 @@ body{
 
 <div class="header">
     <img src="logo.png">
-</div>
 
-<div class="container">
+</script>
 
-<div class="panel">
-
-Cliente
-<input id="cliente">
-
-Vendedor
-<select id="vendedor">
-<option value="03">03 Lucas A.Grafica</option>
-<option value="02">02 Analia A.Papeleria</option>
-</select>
-
-Seña
-<input type="number" id="sena" value="0">
-
-Descuento %
-<input type="number" id="descuento" value="0">
-
-<button class="btn-accion" onclick="generar()">GENERAR COMPROBANTE</button>
-<button class="btn-accion" onclick="guardarPDF()">GUARDAR PDF</button>
-
-</div>
+</body>
+</html></div>
 
 <div style="flex:1;background:#21273F;padding:20px;border-radius:15px;">
 
@@ -201,166 +181,122 @@ function formatoARS(num){
 }
 function generar(){
 
-    let cliente = document.getElementById("cliente").value.trim();
-    if(cliente===""){ alert("Ingrese nombre del cliente"); return; }
+let cliente = document.getElementById("cliente").value.trim();
+if(cliente===""){ alert("Ingrese nombre del cliente"); return; }
 
-    let vendedorSeleccionado = document.getElementById("vendedor").value;
+let vendedorSeleccionado = document.getElementById("vendedor").value;
 
-    let nombreVendedor = "";
-    let datosVendedor = "";
+let nombreVendedor = "";
+let datosVendedor = "";
 
-    if(vendedorSeleccionado === "03"){
-        nombreVendedor = "03 Lucas A.Grafica";
-        datosVendedor = "Local: Salta Cap. - Ayacucho 1621<br>Cel: 3875729428";
-    } else {
-        nombreVendedor = "02 Analia A.Papeleria";
-        datosVendedor = "Local: Salta Cap. - Ayacucho 1621<br>Cel: 3872254054";
-    }
+if(vendedorSeleccionado === "03"){
+    nombreVendedor = "03 Lucas A.Grafica";
+    datosVendedor = "Local: Salta Cap. - Ayacucho 1621<br>Cel: 3875729428";
+} else {
+    nombreVendedor = "02 Analia A.Papeleria";
+    datosVendedor = "Local: Salta Cap. - Ayacucho 1621<br>Cel: 3872254054";
+}
 
-    let detalles = document.getElementsByClassName("detalle");
-    let cantidades = document.getElementsByClassName("cantidad");
-    let precios = document.getElementsByClassName("precio");
+let detalles = document.getElementsByClassName("detalle");
+let cantidades = document.getElementsByClassName("cantidad");
+let precios = document.getElementsByClassName("precio");
 
-    let totalPedido = 0;
-    let filas = "";
+let totalPedido = 0;
+let filas = "";
 
-    for(let i=0;i<detalles.length;i++){
-        if(detalles[i].value!==""){
-            let cant = parseFloat(cantidades[i].value || 0);
-            let precio = parseFloat(precios[i].value || 0);
-            totalPedido += cant * precio;
+for(let i=0;i<detalles.length;i++){
 
-            filas += `
-            <tr>
-                <td style="border:1px solid #000;padding:4px;background:#ffffff;color:#000;">
-                    ${detalles[i].value}
-                </td>
-                <td style="border:1px solid #000;padding:4px;text-align:center;background:#ffffff;color:#000;">
-                    ${cant}
-                </td>
-                <td style="border:1px solid #000;padding:4px;text-align:right;background:#ffffff;color:#000;">
-                    ${formatoARS(precio)}
-                </td>
-            </tr>`;
-        }
-    }
+if(detalles[i].value!==""){
 
-    if(totalPedido===0){ alert("Agregue productos"); return; }
+let cant = parseFloat(cantidades[i].value || 0);
+let precio = parseFloat(precios[i].value || 0);
 
-    let sena = parseFloat(document.getElementById("sena").value || 0);
-    let porcentaje = parseFloat(document.getElementById("descuento").value || 0);
-    let descuento = totalPedido*(porcentaje/100);
-    let totalFinal = totalPedido-descuento;
-    let pendiente = totalFinal-sena;
-    if(pendiente<0) pendiente=0;
+totalPedido += cant * precio;
 
-    let fecha = new Date().toLocaleDateString("es-AR");
-    let numeroFormateado = numero.toString().padStart(6,'0');
-
-    let const comprobanteHTML = `
-<div style="
-width:190mm;
-height:130mm;
-margin:auto;
-padding:5mm;
-border:1px solid black;
-font-family:Arial;
-box-sizing:border-box;
-">
-
-<div style="text-align:center;margin-bottom:8px;">
-    <img src="logo.png" style="width:130px;">
-</div>
-
-<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px;">
-    <div>
-        <div><strong>Nº Recibo:</strong> ${numeroFormateado}</div>
-        <div><strong>Cliente:</strong> ${cliente}</div>
-    </div>
-
-    <div style="text-align:right;">
-        <div><strong>Fecha:</strong> ${fecha}</div>
-        <div><strong>Vendedor:</strong> ${nombreVendedor}</div>
-    </div>
-</div>
-
-<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:5px;">
-
+filas += `
 <tr>
-<th style="border:1px solid #000;padding:4px;background:#fff;">Detalle</th>
-<th style="border:1px solid #000;padding:4px;background:#fff;">Cantidad</th>
-<th style="border:1px solid #000;padding:4px;background:#fff;">Precio</th>
-</tr>
 
-${filas}
+<td style="border:1px solid #000;padding:4px;background:#fff;color:#000;">
+${detalles[i].value}
+</td>
 
-</table>
+<td style="border:1px solid #000;padding:4px;text-align:center;background:#fff;color:#000;">
+${cant}
+</td>
 
-<div style="display:flex;justify-content:space-between;font-size:12px;margin-top:5px;">
+<td style="border:1px solid #000;padding:4px;text-align:right;background:#fff;color:#000;">
+${formatoARS(precio)}
+</td>
 
-<div>
-<strong>${nombreVendedor}</strong><br>
-${datosVendedor}
-</div>
+</tr>`;
+}
+}
 
-<div style="text-align:right;">
-Total Pedido: ${formatoARS(totalPedido)}<br>
-Descuento: ${formatoARS(descuento)}<br>
-Seña: ${formatoARS(sena)}<br>
+if(totalPedido===0){ alert("Agregue productos"); return; }
 
-<div style="margin-top:5px;font-size:14px;font-weight:bold;">
-Saldo Pendiente: ${formatoARS(pendiente)}
-</div>
+let sena = parseFloat(document.getElementById("sena").value || 0);
 
-</div>
+let porcentaje = parseFloat(document.getElementById("descuento").value || 0);
 
-</div>
+let descuento = totalPedido*(porcentaje/100);
 
-</div>
-`;
+let totalFinal = totalPedido-descuento;
 
+let pendiente = totalFinal-sena;
+
+if(pendiente<0) pendiente=0;
+
+let fecha = new Date().toLocaleDateString("es-AR");
+
+let numeroFormateado = numero.toString().padStart(6,'0');
 
 
 const comprobanteHTML = `
+
 <div style="
 width:190mm;
 height:130mm;
 margin:auto;
 padding:5mm;
 border:1px solid black;
+background:white;
 font-family:Arial;
 box-sizing:border-box;
 ">
 
 <div style="text-align:center;margin-bottom:8px;">
-    <img src="logo.png" style="width:130px;">
+<img src="logo.png" style="width:130px;">
 </div>
 
 <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px;">
-    <div>
-        <div><strong>Nº Recibo:</strong> ${numeroFormateado}</div>
-        <div><strong>Cliente:</strong> ${cliente}</div>
-    </div>
 
-    <div style="text-align:right;">
-        <div><strong>Fecha:</strong> ${fecha}</div>
-        <div><strong>Vendedor:</strong> ${nombreVendedor}</div>
-    </div>
+<div>
+<div><strong>Nº Recibo:</strong> ${numeroFormateado}</div>
+<div><strong>Cliente:</strong> ${cliente}</div>
 </div>
 
-<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:5px;">
+<div style="text-align:right;">
+<div><strong>Fecha:</strong> ${fecha}</div>
+<div><strong>Vendedor:</strong> ${nombreVendedor}</div>
+</div>
+
+</div>
+
+
+<table style="width:100%;border-collapse:collapse;font-size:12px;">
 
 <tr>
-<th style="border:1px solid #000;padding:4px;background:#fff;">Detalle</th>
-<th style="border:1px solid #000;padding:4px;background:#fff;">Cantidad</th>
-<th style="border:1px solid #000;padding:4px;background:#fff;">Precio</th>
+<th style="border:1px solid #000;padding:4px;background:#fff;color:#000;">Detalle</th>
+<th style="border:1px solid #000;padding:4px;background:#fff;color:#000;">Cantidad</th>
+<th style="border:1px solid #000;padding:4px;background:#fff;color:#000;">Precio</th>
 </tr>
 
 ${filas}
 
 </table>
 
-<div style="display:flex;justify-content:space-between;font-size:12px;margin-top:5px;">
+
+<div style="display:flex;justify-content:space-between;font-size:12px;margin-top:10px;">
 
 <div>
 <strong>${nombreVendedor}</strong><br>
@@ -368,11 +304,14 @@ ${datosVendedor}
 </div>
 
 <div style="text-align:right;">
+
 Total Pedido: ${formatoARS(totalPedido)}<br>
+
 Descuento: ${formatoARS(descuento)}<br>
+
 Seña: ${formatoARS(sena)}<br>
 
-<div style="margin-top:5px;font-size:14px;font-weight:bold;">
+<div style="font-size:14px;font-weight:bold;margin-top:5px;">
 Saldo Pendiente: ${formatoARS(pendiente)}
 </div>
 
@@ -383,27 +322,17 @@ Saldo Pendiente: ${formatoARS(pendiente)}
 </div>
 `;
 
+
 const hoja = `
 
-<div style="
-width:210mm;
-height:297mm;
-font-family:Arial;
-position:relative;
-">
+<div style="width:210mm;height:297mm;background:white;">
 
 <div style="margin-top:8mm;">
 ${comprobanteHTML}
 </div>
 
-
-<div style="
-border-top:2px dashed black;
-width:190mm;
-margin:8mm auto;
-">
+<div style="border-top:2px dashed black;width:190mm;margin:8mm auto;">
 </div>
-
 
 <div>
 ${comprobanteHTML}
@@ -413,18 +342,14 @@ ${comprobanteHTML}
 
 `;
 
-
-
 document.getElementById("resultado").innerHTML = hoja;
 
-
 numero++;
+
 localStorage.setItem("numeroYikun",numero);
 
-
-
-
-function guardarPDF(){
+    }
+    function guardarPDF(){
 
 const elemento = document.getElementById("resultado");
 
@@ -437,19 +362,14 @@ filename:'Comprobante_Yikun.pdf',
 image:{ type:'jpeg', quality:1 },
 
 html2canvas:{
-
 scale:2,
-letterRendering:true,
 useCORS:true
-
 },
 
 jsPDF:{
-
 unit:'mm',
 format:'a4',
 orientation:'portrait'
-
 }
 
 };
@@ -457,3 +377,8 @@ orientation:'portrait'
 html2pdf().set(opt).from(elemento).save();
 
     }
+    
+</script>
+
+</body>
+</html>
