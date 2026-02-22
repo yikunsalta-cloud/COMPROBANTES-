@@ -205,7 +205,7 @@ function generar(){
         nombreVendedor = "03 Lucas A.Grafica";
         datosVendedor = "Local: Salta Cap. - Ayacucho 1621<br>Cel: 3875729428";
     }
-    else if(vendedorSeleccionado === "02"){
+    else{
         nombreVendedor = "02 Analia A.Papeleria";
         datosVendedor = "Local: Salta Cap. - Ayacucho 1621<br>Cel: 3872254054";
     }
@@ -225,13 +225,13 @@ function generar(){
 
             filas += `
             <tr>
-                <td style="background:#ffffff;color:#000;border:1px solid #ccc;padding:6px;">
+                <td style="border:1px solid #ccc;padding:6px;">
                     ${detalles[i].value}
                 </td>
-                <td style="background:#ffffff;color:#000;border:1px solid #ccc;padding:6px;text-align:center;">
+                <td style="border:1px solid #ccc;padding:6px;text-align:center;">
                     ${cant}
                 </td>
-                <td style="background:#ffffff;color:#000;border:1px solid #ccc;padding:6px;text-align:right;">
+                <td style="border:1px solid #ccc;padding:6px;text-align:right;">
                     ${formatoARS(precio)}
                 </td>
             </tr>`;
@@ -250,15 +250,12 @@ function generar(){
     let fecha = new Date().toLocaleDateString("es-AR");
     let numeroFormateado = numero.toString().padStart(6,'0');
 
-    let tipos = ["ORIGINAL", "DUPLICADO"];
-
     let comprobanteHTML = `
     <div style="
-        width:190mm;
-        min-height:277mm;
-        margin:auto;
+        width:210mm;
+        height:297mm;
         background:white;
-        padding:10mm;
+        padding:0;
         box-sizing:border-box;
         font-family:Arial, sans-serif;
         color:black;
@@ -269,21 +266,14 @@ function generar(){
 
         comprobanteHTML += `
         <div style="
-            height:138.5mm;
-            border:1px dashed #999;
-            padding:12px;
+            height:148.5mm;
+            padding:10mm;
             box-sizing:border-box;
-            position:relative;
-            background:white;
-            page-break-inside: avoid;
+            border-bottom:1px dashed #999;
         ">
 
-            <div style="position:absolute;top:10px;right:15px;font-weight:bold;font-size:14px;">
-                ${tipos[i]}
-            </div>
-
             <div style="text-align:center;margin-bottom:10px;">
-                <img src="logo.png" style="width:110px;">
+                <img src="logo.png" style="width:90px;">
             </div>
 
             <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
@@ -299,9 +289,9 @@ function generar(){
 
             <table style="width:100%;border-collapse:collapse;margin-bottom:10px;">
                 <tr>
-                    <th style="background:#ffffff;color:#000;border:1px solid #ccc;padding:6px;">Detalle</th>
-                    <th style="background:#ffffff;color:#000;border:1px solid #ccc;padding:6px;">Cantidad</th>
-                    <th style="background:#ffffff;color:#000;border:1px solid #ccc;padding:6px;">Precio</th>
+                    <th style="border:1px solid #ccc;padding:6px;">Detalle</th>
+                    <th style="border:1px solid #ccc;padding:6px;">Cant.</th>
+                    <th style="border:1px solid #ccc;padding:6px;">Precio</th>
                 </tr>
                 ${filas}
             </table>
@@ -312,11 +302,11 @@ function generar(){
                     <div>${datosVendedor}</div>
                 </div>
                 <div style="text-align:right;">
-                    <div>Total Pedido: ${formatoARS(totalPedido)}</div>
-                    <div>Descuento: ${formatoARS(descuento)}</div>
+                    <div>Total: ${formatoARS(totalPedido)}</div>
+                    <div>Desc.: ${formatoARS(descuento)}</div>
                     <div>Seña: ${formatoARS(sena)}</div>
-                    <div style="margin-top:8px;font-size:18px;font-weight:bold;">
-                        Saldo Pendiente: ${formatoARS(pendiente)}
+                    <div style="margin-top:6px;font-size:16px;font-weight:bold;">
+                        Saldo: ${formatoARS(pendiente)}
                     </div>
                 </div>
             </div>
@@ -332,23 +322,26 @@ function generar(){
     numero++;
     localStorage.setItem("numeroYikun",numero);
 }
-
+    
 function guardarPDF(){
 
     const elemento = document.getElementById("resultado");
 
     var opt = {
-        margin: [5, 5, 5, 5],
+        margin: 0,
         filename: 'Comprobante_Yikun.pdf',
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a5', orientation: 'portrait' },
+        html2canvas: { scale: 1 },
+        jsPDF: { 
+            unit: 'mm',
+            format: 'a4',
+            orientation: 'portrait'
+        },
         pagebreak: { mode: ['avoid-all'] }
     };
 
     html2pdf().set(opt).from(elemento).save();
 }
-
 </script>
 
 </body>
