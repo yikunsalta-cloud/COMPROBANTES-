@@ -277,7 +277,7 @@ function generar(){
             height:148.5mm;
             padding:0mm;
             box-sizing:border-box;
-            border:5px dashed #999;
+            border:1px dashed #999;
         ">
 
             <div style="text-align:center;margin-bottom:8px;">
@@ -295,7 +295,7 @@ function generar(){
                 </div>
             </div>
 
-            <table style="width:100%;border-collapse:collapse;margin-top:5px;">
+            <table style="width:0%;border-collapse:collapse;margin-top:5px;">
                 <tr>
                     <th style="border:1px solid #ccc;padding:4px;background:#ffffff;color:#000000;">Detalle</th>
                     <th style="border:1px solid #ccc;padding:4px;background:#ffffff;color:#000000;">Cantidad</th>
@@ -340,7 +340,7 @@ function guardarPDF(){
         filename: 'Comprobante_Yikun.pdf',
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { 
-            scale: 2,
+            scale: 1,
             useCORS: true
         },
         jsPDF: { 
