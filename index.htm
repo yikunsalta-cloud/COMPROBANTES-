@@ -199,6 +199,7 @@ if(!numero){ numero = 1; } else { numero = parseInt(numero); }
 function formatoARS(num){
     return "$ " + num.toLocaleString("es-AR");
 }
+    
 function generar(){
 
     let cliente = document.getElementById("cliente").value.trim();
@@ -212,8 +213,7 @@ function generar(){
     if(vendedorSeleccionado === "03"){
         nombreVendedor = "03 Lucas A.Grafica";
         datosVendedor = "Local: Salta Cap. - Ayacucho 1621<br>Cel: 3875729428";
-    }
-    else{
+    } else {
         nombreVendedor = "02 Analia A.Papeleria";
         datosVendedor = "Local: Salta Cap. - Ayacucho 1621<br>Cel: 3872254054";
     }
@@ -233,15 +233,9 @@ function generar(){
 
             filas += `
             <tr>
-                <td style="border:1px solid #000;padding:4px;background:#ffffff;color:#000000;">
-                    ${detalles[i].value}
-                </td>
-                <td style="border:1px solid #000;padding:4px;text-align:center;background:#ffffff;color:#000000;">
-                    ${cant}
-                </td>
-                <td style="border:1px solid #000;padding:4px;text-align:right;background:#ffffff;color:#000000;">
-                    ${formatoARS(precio)}
-                </td>
+                <td style="border:1px solid #000;padding:4px;background:#fff;">${detalles[i].value}</td>
+                <td style="border:1px solid #000;padding:4px;text-align:center;background:#fff;">${cant}</td>
+                <td style="border:1px solid #000;padding:4px;text-align:right;background:#fff;">${formatoARS(precio)}</td>
             </tr>`;
         }
     }
@@ -258,32 +252,22 @@ function generar(){
     let fecha = new Date().toLocaleDateString("es-AR");
     let numeroFormateado = numero.toString().padStart(6,'0');
 
-    let hoja = `
-    <div style="
-    width:210mm;
-    background:white;
-    font-family:Arial Black, Arial, sans-serif;
-    color:black;
-">
-`;
+    function comprobante(){
+        return `
+        <div style="
+            width:190mm;
+            height:148.5mm;
+            margin:0 auto;
+            padding:8mm;
+            box-sizing:border-box;
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+            border-bottom:0.5px dashed #999;
+        ">
 
-    for(let i=0;i<2;i++){
-
-    hoja += `
-    <div style="
-    width:190mm;
-    min-height:148.5mm;
-    margin:0 auto;
-    box-sizing:border-box;
-    border-bottom:${i===0 ? "0.5px dashed #999" : "none"};
-    padding:5mm;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    ">
-
-            <div style="text-align:center;margin-bottom:6px;">
-                <img src="logo.png" style="width:90px;">
+            <div style="text-align:center;">
+                <img src="logo.png" style="width:130px;">
             </div>
 
             <div style="display:flex;justify-content:space-between;font-size:12px;">
@@ -297,41 +281,51 @@ function generar(){
                 </div>
             </div>
 
-            <table style="width:100%;border-collapse:collapse;margin-top:6px;font-size:12px;">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;">
                 <tr>
-                    <th style="border:1px solid #000;padding:4px;background:#ffffff;color:#000000;">Detalle</th>
-                    <th style="border:1px solid #000;padding:4px;background:#ffffff;color:#000000;">Cantidad</th>
-                    <th style="border:1px solid #000;padding:4px;background:#ffffff;color:#000000;">Precio</th>
+                    <th style="border:1px solid #000;padding:4px;">Detalle</th>
+                    <th style="border:1px solid #000;padding:4px;">Cantidad</th>
+                    <th style="border:1px solid #000;padding:4px;">Precio</th>
                 </tr>
                 ${filas}
             </table>
 
-            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;">
                 <div>
-                    <div><strong>${nombreVendedor}</strong></div>
-                    <div>${datosVendedor}</div>
+                    <strong>${nombreVendedor}</strong><br>
+                    ${datosVendedor}
                 </div>
                 <div style="text-align:right;">
-                    <div>Total Pedido: ${formatoARS(totalPedido)}</div>
-                    <div>Descuento: ${formatoARS(descuento)}</div>
-                    <div>Seña: ${formatoARS(sena)}</div>
+                    Total Pedido: ${formatoARS(totalPedido)}<br>
+                    Descuento: ${formatoARS(descuento)}<br>
+                    Seña: ${formatoARS(sena)}<br>
                     <div style="margin-top:6px;font-size:14px;font-weight:bold;">
                         Saldo Pendiente: ${formatoARS(pendiente)}
                     </div>
                 </div>
             </div>
 
-        </div>
-        `;
+        </div>`;
     }
 
-    hoja += `</div>`;
+    let hoja = `
+    <div style="
+        width:210mm;
+        height:297mm;
+        background:white;
+        font-family:Arial Black, Arial, sans-serif;
+        color:black;
+    ">
+        ${comprobante()}
+        ${comprobante()}
+    </div>`;
 
     document.getElementById("resultado").innerHTML = hoja;
 
     numero++;
     localStorage.setItem("numeroYikun",numero);
 }
+    
 function guardarPDF(){
 
     const elemento = document.getElementById("resultado");
