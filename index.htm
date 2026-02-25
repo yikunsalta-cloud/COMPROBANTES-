@@ -206,137 +206,6 @@ fila.innerHTML=`
 
 }
 
-function generar(){
-
-let cliente=document.getElementById("cliente").value.trim();
-
-if(cliente===""){
-alert("Ingrese nombre del cliente");
-return;
-}
-
-let vendedor=document.getElementById("vendedor").value;
-
-let nombreVendedor="";
-let datosVendedor="";
-
-if(vendedor=="03"){
-nombreVendedor="03 Lucas A.Grafica";
-datosVendedor="Local: Salta Cap. - Ayacucho 1621<br>Cel: 3875729428";
-}else{
-nombreVendedor="02 Analia A.Papeleria";
-datosVendedor="Local: Salta Cap. - Ayacucho 1621<br>Cel: 3872254054";
-}
-
-let detalles=document.getElementsByClassName("detalle");
-let cantidades=document.getElementsByClassName("cantidad");
-let precios=document.getElementsByClassName("precio");
-
-let totalPedido=0;
-let filas="";
-
-for(let i=0;i<detalles.length;i++){
-
-if(detalles[i].value!=""){
-
-let cant=parseFloat(cantidades[i].value) || 0;
-let precio=parseFloat(precios[i].value) || 0;
-
-totalPedido+=cant*precio;
-
-filas+=`
-<tr>
-<td>${detalles[i].value}</td>
-<td>${cant}</td>
-<td>${formatoARS(precio)}</td>
-</tr>
-`;
-
-}
-
-}
-
-if(totalPedido==0){
-alert("Agregue productos");
-return;
-}
-
-let sena=parseFloat(document.getElementById("sena").value) || 0;
-let porcentaje=parseFloat(document.getElementById("descuento").value) || 0;
-
-let descuento=totalPedido*(porcentaje/100);
-let totalFinal=totalPedido-descuento;
-let pendiente=totalFinal-sena;
-
-let fecha=new Date().toLocaleDateString("es-AR");
-let numeroFormateado=numero.toString().padStart(6,'0');
-
-const comprobante=`
-
-<div style="
-width:210mm;
-height:148mm;
-padding:15mm;
-box-sizing:border-box;
-background:white;
-color:black;
-font-size:12px;
-">
-
-<div style="text-align:center;margin-bottom:10px;">
-<img src="logo.png" style="width:120px;">
-</div>
-
-<div style="display:flex;justify-content:space-between;">
-<div>
-N° Recibo: ${numeroFormateado}<br>
-Cliente: ${cliente}
-</div>
-
-<div style="text-align:right;">
-Fecha: ${fecha}<br>
-Vendedor: ${nombreVendedor}
-</div>
-</div>
-
-<table style="margin-top:10px;">
-<tr>
-<th>Detalle</th>
-<th>Cantidad</th>
-<th>Precio</th>
-</tr>
-${filas}
-</table>
-
-<div style="display:flex;justify-content:space-between;margin-top:10px;">
-<div>
-${nombreVendedor}<br>
-${datosVendedor}
-</div>
-
-<div style="text-align:right;">
-Total Pedido: ${formatoARS(totalPedido)}<br>
-Descuento: ${formatoARS(descuento)}<br>
-Seña: ${formatoARS(sena)}<br>
-<b>Saldo Pendiente: ${formatoARS(pendiente)}</b>
-</div>
-</div>
-
-</div>
-`;
-
-const hoja=`
-<div style="width:210mm;height:297mm;background:white;">
-${comprobante}
-<div style="border-top:2px dashed black;"></div>
-${comprobante}
-</div>
-`;
-
-document.getElementById("resultado").innerHTML=hoja;
-
-}
-
 function guardarPDF(){
 
 let elemento=document.getElementById("resultado");
@@ -345,8 +214,9 @@ let opt = {
 margin:0,
 filename:"Comprobante_Yikun.pdf",
 image:{type:"jpeg",quality:1},
-html2canvas:{scale:3},
-jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}
+html2canvas:{scale:2},
+jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},
+pagebreak:{mode:['avoid-all']}
 };
 
 html2pdf().set(opt).from(elemento).save();
