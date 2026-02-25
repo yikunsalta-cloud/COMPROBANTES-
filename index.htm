@@ -3,7 +3,6 @@
 <head>
 
 <meta charset="UTF-8">
-
 <title>Yikun - Comprobantes</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -139,7 +138,6 @@ GUARDAR PDF
 
 </div>
 
-
 <div style="flex:1;background:#21273F;padding:20px;border-radius:15px;">
 
 <table id="tabla">
@@ -166,9 +164,7 @@ AGREGAR PRODUCTO
 
 </div>
 
-
 <div id="resultado"></div>
-
 
 <script>
 
@@ -180,29 +176,103 @@ numero=1;
 numero=parseInt(numero);
 }
 
-
-
 function formatoARS(num){
 return "$ "+num.toLocaleString("es-AR");
 }
 
-
-
 function agregarFila(){
-
 let tabla=document.getElementById("tabla");
-
 let fila=tabla.insertRow();
 
 fila.innerHTML=`
-
 <td><input class="detalle"></td>
-
 <td><input class="cantidad" type="number" value="1"></td>
-
 <td><input class="precio" type="number" value="0"></td>
-
 `;
+}
+
+function generar(){
+
+let cliente=document.getElementById("cliente").value;
+
+if(cliente===""){
+alert("Ingrese cliente");
+return;
+}
+
+let detalles=document.getElementsByClassName("detalle");
+let cantidades=document.getElementsByClassName("cantidad");
+let precios=document.getElementsByClassName("precio");
+
+let total=0;
+let filas="";
+
+for(let i=0;i<detalles.length;i++){
+
+if(detalles[i].value!=""){
+
+let cant=cantidades[i].value;
+let precio=precios[i].value;
+
+total+=cant*precio;
+
+filas+=`
+<tr>
+<td style="border:1px solid black;">${detalles[i].value}</td>
+<td style="border:1px solid black;">${cant}</td>
+<td style="border:1px solid black;">${formatoARS(Number(precio))}</td>
+</tr>
+`;
+
+}
+
+}
+
+if(total==0){
+alert("Agregue productos");
+return;
+}
+
+let fecha=new Date().toLocaleDateString("es-AR");
+let numeroFormateado=numero.toString().padStart(6,'0');
+
+const comprobante=`
+
+<div style="width:210mm;height:140mm;padding:10mm;background:white;color:black;">
+
+<div style="text-align:center;margin-bottom:10px;">
+<img src="logo.png" style="width:110px;">
+</div>
+
+Cliente: ${cliente}<br>
+Fecha: ${fecha}<br>
+N° Recibo: ${numeroFormateado}
+
+<table style="width:100%;border-collapse:collapse;margin-top:10px;">
+<tr>
+<th style="border:1px solid black;">Detalle</th>
+<th style="border:1px solid black;">Cantidad</th>
+<th style="border:1px solid black;">Precio</th>
+</tr>
+${filas}
+</table>
+
+<div style="text-align:right;margin-top:10px;">
+<b>Total: ${formatoARS(total)}</b>
+</div>
+
+</div>
+`;
+
+const hoja=`
+<div style="width:210mm;height:297mm;background:white;">
+${comprobante}
+<div style="border-top:2px dashed black;"></div>
+${comprobante}
+</div>
+`;
+
+document.getElementById("resultado").innerHTML=hoja;
 
 }
 
@@ -210,13 +280,17 @@ function guardarPDF(){
 
 let elemento=document.getElementById("resultado");
 
+if(elemento.innerHTML===""){
+alert("Primero genere el comprobante");
+return;
+}
+
 let opt = {
 margin:0,
 filename:"Comprobante_Yikun.pdf",
 image:{type:"jpeg",quality:1},
 html2canvas:{scale:2},
-jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},
-pagebreak:{mode:['avoid-all']}
+jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}
 };
 
 html2pdf().set(opt).from(elemento).save();
