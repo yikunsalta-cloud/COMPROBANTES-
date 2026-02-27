@@ -190,133 +190,109 @@ fila.innerHTML=`
 <td><input class="precio" type="number" value="0"></td>
 `;
 }
+}
+window.onload = agregarFila;
 
 function generar(){
+    let cliente = document.getElementById("cliente").value.trim();
+    if(cliente === ""){ alert("Ingrese nombre del cliente"); return; }
 
-let cliente=document.getElementById("cliente").value;
+    let detalles = document.getElementsByClassName("detalle");
+    let cantidades = document.getElementsByClassName("cantidad");
+    let precios = document.getElementsByClassName("precio");
 
-if(cliente===""){
-alert("Ingrese cliente");
-return;
+    let totalPedido = 0;
+    let filas = "";
+    for(let i=0;i<detalles.length;i++){
+        if(detalles[i].value.trim() !== ""){
+            let cant = parseFloat(cantidades[i].value || 0);
+            let precio = parseFloat(precios[i].value || 0);
+            totalPedido += cant * precio;
+            filas += `<tr>
+                        <td>${detalles[i].value}</td>
+                        <td>${cant} Uni.</td>
+                        <td>${formatoARS(precio)}</td>
+                    </tr>`;
+        }
+    }
+    if(totalPedido === 0){ alert("Agregue al menos un producto"); return; }
+
+    let sena = parseFloat(document.getElementById("sena").value || 0);
+    let porcentaje = parseFloat(document.getElementById("descuento").value);
+    let montoDescuento = totalPedido * (porcentaje / 100);
+    let totalFinal = totalPedido - montoDescuento;
+    let pendiente = totalFinal - sena;
+    if(pendiente < 0) pendiente = 0;
+
+    let fechaActual = new Date().toLocaleDateString("es-AR");
+    let numeroFormateado = numero.toString().padStart(6,'0');
+
+    let vendedorSeleccionado = document.getElementById("vendedor").value;
+    let nombreVendedor = "";
+    let datosVendedor = "";
+    if(vendedorSeleccionado === "03"){
+        nombreVendedor = "03 Lucas A.Grafica";
+        datosVendedor = `Local: Salta Cap. - Ayacucho 1621<br>Cel: 3875729428`;
+    } else if(vendedorSeleccionado === "02"){
+        nombreVendedor = "02 Analia A.Papeleria";
+        datosVendedor = `Local: Salta Cap. - Ayacucho 1621<br>Cel: 3872254054`;
+    }
+    let formaPago = document.getElementById("formaPago").value;
+
+    // Generamos 2 copias para PDF A4
+    let comprobanteHTML = "";
+    for(let copia=0;copia<2;copia++){
+        comprobanteHTML += `
+        <div class="comprobante ${copia===1 ? 'duplicado' : ''}">
+            <div class="titulo-principal">YIKUN</div>
+            <div class="subtitulo">COMPROBANTE DE PAGO</div>
+            <div class="top">
+                <div>Recibo B - ${numeroFormateado}</div>
+                <div>Fecha: ${fechaActual}</div>
+            </div>
+            <div class="medio">
+                <div><strong>Cliente/a:</strong> ${cliente}</div>
+            </div>
+            <table>
+                <tr><th>Detalle</th><th>Cantidad</th><th>Precio Unit.</th></tr>
+                ${filas}
+            </table>
+            <div class="inferior">
+                <div class="inferior-left">
+                    <p><strong>Vendedor:</strong> ${nombreVendedor}</p>
+                    <p>${datosVendedor}</p>
+                </div>
+                <div class="inferior-right">
+                    <p>Total Pedido: ${formatoARS(totalPedido)}</p>
+                    <p>Descuento (${porcentaje}%): ${formatoARS(montoDescuento)}</p>
+                    <p>Seña realizada (${formaPago}): ${formatoARS(sena)}</p>
+                    <div class="total-pendiente">Total Pendiente: ${formatoARS(pendiente)}</div>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+
+    document.getElementById("resultado").innerHTML = comprobanteHTML;
+    numero++;
+    localStorage.setItem("numeroYikun", numero);
 }
 
-let detalles=document.getElementsByClassName("detalle");
-let cantidades=document.getElementsByClassName("cantidad");
-let precios=document.getElementsByClassName("precio");
-
-let total=0;
-let filas="";
-
-for(let i=0;i<detalles.length;i++){
-
-if(detalles[i].value!=""){
-
-let cant=cantidades[i].value;
-let precio=precios[i].value;
-
-total+=cant*precio;
-
-filas+=`
-<tr>
-<td style="border:1px solid black;">${detalles[i].value}</td>
-<td style="border:1px solid black;">${cant}</td>
-<td style="border:1px solid black;">${formatoARS(Number(precio))}</td>
-</tr>
-`;
-
+function guardarPDF() {
+    const elemento = document.getElementById("resultado"); // Tomamos toda la sección con 2 copias
+    if(!elemento){
+        alert("Primero genere un comprobante");
+        return;
+    }
+    var opt = {
+        margin:       5,
+        filename:     'Comprobante_Yikun.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' } // PDF A4
+    };
+    html2pdf().set(opt).from(elemento).save();
 }
-
-}
-
-if(total==0){
-alert("Agregue productos");
-return;
-}
-
-let fecha=new Date().toLocaleDateString("es-AR");
-let numeroFormateado=numero.toString().padStart(6,'0');
-
-const comprobante=`
-
-<div style="width:210mm;height:140mm;padding:10mm;background:white;color:black;">
-
-<div style="text-align:center;margin-bottom:10px;">
-<img src="logo.png" style="width:110px;">
-</div>
-
-Cliente: ${cliente}<br>
-Fecha: ${fecha}<br>
-N° Recibo: ${numeroFormateado}
-
-<table style="width:100%;border-collapse:collapse;margin-top:10px;">
-<tr>
-<th style="border:1px solid black;">Detalle</th>
-<th style="border:1px solid black;">Cantidad</th>
-<th style="border:1px solid black;">Precio</th>
-</tr>
-${filas}
-</table>
-
-<div style="text-align:right;margin-top:10px;">
-<b>Total: ${formatoARS(total)}</b>
-</div>
-
-</div>
-`;
-
-const hoja=`
-<div style="
-width:210mm;
-height:297mm;
-background:white;
-display:flex;
-justify-content:center;
-align-items:center;
-">
-
-<div style="
-width:210mm;
-height:140mm;
-display:flex;
-justify-content:center;
-align-items:center;
-">
-
-${comprobante}
-
-</div>
-
-</div>
-`;
-
-document.getElementById("resultado").innerHTML=hoja;
-
-}
-
-function guardarPDF(){
-
-let elemento=document.getElementById("resultado");
-
-if(elemento.innerHTML===""){
-alert("Primero genere el comprobante");
-return;
-}
-
-let opt = {
-margin:0,
-filename:"Comprobante_Yikun.pdf",
-image:{type:"jpeg",quality:1},
-html2canvas:{scale:2},
-jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}
-};
-
-html2pdf().set(opt).from(elemento).save();
-
-numero++;
-localStorage.setItem("numeroYikun",numero);
-
-}
-
 </script>
 
 </body>
