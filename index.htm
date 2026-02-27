@@ -74,29 +74,80 @@ margin-top:15px;
 
 table{
 width:100%;
-border-collapse:separate;
-border-spacing:12px 10px;
-}
-
-th{
-background:#013337;
-padding:12px;
-border-radius:8px;
-text-align:center;
-}
-
-td input{
-width:100%;
-padding:10px;
-border-radius:6px;
-border:1px solid #013337;
-background:#0f172a;
-color:white;
+border-collapse:collapse;
 }
 
 #resultado{
-margin:0 auto;
 background:white;
+margin:auto;
+}
+
+/* COMPROBANTE */
+
+.comprobante{
+width:210mm;
+height:140mm;
+background:white;
+color:black;
+padding:10mm;
+box-sizing:border-box;
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:5px;
+}
+
+.logo-centro img{
+width:110px;
+}
+
+.fecha{
+text-align:right;
+font-size:18px;
+font-weight:bold;
+}
+
+.vendedor-top{
+text-align:right;
+font-size:12px;
+}
+
+.cliente{
+margin-top:5px;
+border-bottom:2px solid black;
+padding-bottom:3px;
+}
+
+.tabla-productos th,
+.tabla-productos td{
+border:2px solid black;
+padding:6px;
+text-align:center;
+color:black;
+background:white;
+}
+
+.inferior{
+display:flex;
+justify-content:space-between;
+margin-top:10px;
+}
+
+.inferior-izq{
+font-size:12px;
+}
+
+.inferior-der{
+text-align:right;
+}
+
+.pendiente{
+color:red;
+font-size:22px;
+font-weight:bold;
 }
 
 </style>
@@ -190,115 +241,152 @@ fila.innerHTML=`
 <td><input class="precio" type="number" value="0"></td>
 `;
 }
+
 function generar(){
-    let cliente = document.getElementById("cliente").value.trim();
-    if(cliente === ""){ alert("Ingrese nombre del cliente"); return; }
 
-    let detalles = document.getElementsByClassName("detalle");
-    let cantidades = document.getElementsByClassName("cantidad");
-    let precios = document.getElementsByClassName("precio");
+let cliente=document.getElementById("cliente").value;
 
-    let totalPedido = 0;
-    let filas = "";
-    for(let i=0;i<detalles.length;i++){
-        if(detalles[i].value.trim() !== ""){
-            let cant = parseFloat(cantidades[i].value || 0);
-            let precio = parseFloat(precios[i].value || 0);
-            totalPedido += cant * precio;
-            filas += `<tr>
-                        <td>${detalles[i].value}</td>
-                        <td>${cant} Uni.</td>
-                        <td>${formatoARS(precio)}</td>
-                    </tr>`;
-        }
-    }
-    if(totalPedido === 0){ alert("Agregue al menos un producto"); return; }
-
-    let sena = parseFloat(document.getElementById("sena").value || 0);
-    let porcentaje = parseFloat(document.getElementById("descuento").value);
-    let montoDescuento = totalPedido * (porcentaje / 100);
-    let totalFinal = totalPedido - montoDescuento;
-    let pendiente = totalFinal - sena;
-    if(pendiente < 0) pendiente = 0;
-
-    let fechaActual = new Date().toLocaleDateString("es-AR");
-    let numeroFormateado = numero.toString().padStart(6,'0');
-
-    let vendedorSeleccionado = document.getElementById("vendedor").value;
-    let nombreVendedor = "";
-    let datosVendedor = "";
-    if(vendedorSeleccionado === "03"){
-        nombreVendedor = "03 Lucas A.Grafica";
-        datosVendedor = `Local: Salta Cap. - Ayacucho 1621<br>Cel: 3875729428`;
-    } else if(vendedorSeleccionado === "02"){
-        nombreVendedor = "02 Analia A.Papeleria";
-        datosVendedor = `Local: Salta Cap. - Ayacucho 1621<br>Cel: 3872254054`;
-    }
-
-    let formaPago = document.getElementById("formaPago").value;
-
-    let comprobanteHTML = "";
-
-    for(let copia=0;copia<2;copia++){
-        comprobanteHTML += `
-        <div class="comprobante-maqueta">
-
-            <div class="fila-top">
-                <div>
-                    Recibo<br>
-                    <b>${numeroFormateado}</b>
-                </div>
-
-                <div class="logo-centro">
-                    <img src="logo.png">
-                </div>
-
-                <div>
-                    FECHA : ${fechaActual}<br>
-                    NUMERO DE VENDEDOR<br>
-                    DATOS DEL VENDEDOR
-                </div>
-            </div>
-
-            <div class="cliente">
-                Cliente/a : <b>${cliente}</b>
-            </div>
-
-            <table class="tabla-productos">
-                <tr>
-                    <th>Detalle</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unit.</th>
-                </tr>
-                ${filas}
-            </table>
-
-            <div class="totales">
-                <div>
-                    <p><strong>Vendedor:</strong> ${nombreVendedor}</p>
-                    <p>${datosVendedor}</p>
-                </div>
-
-                <div class="derecha">
-                    <p>Total Pedido: ${formatoARS(totalPedido)}</p>
-                    <p>Descuento (${porcentaje}%): ${formatoARS(montoDescuento)}</p>
-                    <p>Seña realizada (${formaPago}): ${formatoARS(sena)}</p>
-                    <div class="pendiente">
-                        Total Pendiente: ${formatoARS(pendiente)}
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        ${copia===0 ? '<div class="linea-corte"></div>' : ''}
-        `;
-    }
-
-    document.getElementById("resultado").innerHTML = comprobanteHTML;
-    numero++;
-    localStorage.setItem("numeroYikun", numero);
+if(cliente===""){
+alert("Ingrese cliente");
+return;
 }
+
+let detalles=document.getElementsByClassName("detalle");
+let cantidades=document.getElementsByClassName("cantidad");
+let precios=document.getElementsByClassName("precio");
+
+let total=0;
+let filas="";
+
+for(let i=0;i<detalles.length;i++){
+
+if(detalles[i].value!=""){
+
+let cant=cantidades[i].value;
+let precio=precios[i].value;
+
+total+=cant*precio;
+
+filas+=`
+<tr>
+<td>${detalles[i].value}</td>
+<td>${cant}</td>
+<td>${formatoARS(Number(precio))}</td>
+</tr>
+`;
+
+}
+
+}
+
+if(total==0){
+alert("Agregue productos");
+return;
+}
+
+let sena=document.getElementById("sena").value;
+let pendiente=total-sena;
+
+let fecha=new Date().toLocaleDateString("es-AR");
+let numeroFormateado=numero.toString().padStart(6,'0');
+
+let vendedorSeleccionado=document.getElementById("vendedor").value;
+
+let nombreVendedor="";
+let datosVendedor="";
+
+if(vendedorSeleccionado==="03"){
+nombreVendedor="03 Lucas A.Grafica";
+datosVendedor="Salta - Ayacucho 1621 / Cel: 3875729428";
+}else{
+nombreVendedor="02 Analia A.Papeleria";
+datosVendedor="Salta - Ayacucho 1621 / Cel: 3872254054";
+}
+
+const hoja=`
+<div style="width:210mm;height:297mm;display:flex;justify-content:center;align-items:flex-start;padding-top:20mm;background:white;">
+
+<div class="comprobante">
+
+<div class="top">
+
+<div>
+Recibo<br>
+<b>${numeroFormateado}</b>
+</div>
+
+<div class="logo-centro">
+<img src="logo.png">
+</div>
+
+<div>
+<div class="fecha">${fecha}</div>
+<div class="vendedor-top">
+${nombreVendedor}<br>
+${datosVendedor}
+</div>
+</div>
+
+</div>
+
+<div class="cliente">
+Cliente: <b>${cliente}</b>
+</div>
+
+<table class="tabla-productos">
+<tr>
+<th>Detalle</th>
+<th>Cantidad</th>
+<th>Precio Unit.</th>
+</tr>
+${filas}
+</table>
+
+<div class="inferior">
+
+<div class="inferior-izq">
+${nombreVendedor}<br>
+${datosVendedor}
+</div>
+
+<div class="inferior-der">
+Total: ${formatoARS(total)}<br>
+Seña: ${formatoARS(Number(sena))}<br>
+<div class="pendiente">
+Saldo Pendiente: ${formatoARS(pendiente)}
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+`;
+
+document.getElementById("resultado").innerHTML=hoja;
+
+}
+
+function guardarPDF(){
+
+let elemento=document.getElementById("resultado");
+
+let opt = {
+margin:0,
+filename:"Comprobante_Yikun.pdf",
+image:{type:"jpeg",quality:1},
+html2canvas:{scale:2},
+jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}
+};
+
+html2pdf().set(opt).from(elemento).save();
+
+numero++;
+localStorage.setItem("numeroYikun",numero);
+
+}
+
 </script>
 
 </body>
