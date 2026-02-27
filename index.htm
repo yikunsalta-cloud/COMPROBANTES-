@@ -74,61 +74,29 @@ margin-top:15px;
 
 table{
 width:100%;
-border-collapse:collapse;
+border-collapse:separate;
+border-spacing:12px 10px;
 }
 
-th,td{
-border:2px solid black;
-padding:6px;
+th{
+background:#013337;
+padding:12px;
+border-radius:8px;
 text-align:center;
+}
+
+td input{
+width:100%;
+padding:10px;
+border-radius:6px;
+border:1px solid #013337;
+background:#0f172a;
+color:white;
 }
 
 #resultado{
 margin:0 auto;
 background:white;
-}
-
-.comprobante{
-width:210mm;
-height:140mm;
-padding:10mm;
-background:white;
-color:black;
-font-size:14px;
-}
-
-.linea{
-border-top:2px dashed black;
-margin:5px 0;
-}
-
-.logo{
-text-align:center;
-margin-bottom:5px;
-}
-
-.logo img{
-width:90px;
-}
-
-.encabezado{
-display:flex;
-justify-content:space-between;
-font-size:13px;
-margin-bottom:5px;
-}
-
-.total{
-text-align:right;
-margin-top:10px;
-}
-
-.pendiente{
-color:red;
-font-weight:bold;
-font-size:18px;
-text-align:center;
-margin-top:5px;
 }
 
 </style>
@@ -226,7 +194,11 @@ fila.innerHTML=`
 function generar(){
 
 let cliente=document.getElementById("cliente").value;
-let sena=document.getElementById("sena").value;
+
+if(cliente===""){
+alert("Ingrese cliente");
+return;
+}
 
 let detalles=document.getElementsByClassName("detalle");
 let cantidades=document.getElementsByClassName("cantidad");
@@ -246,9 +218,9 @@ total+=cant*precio;
 
 filas+=`
 <tr>
-<td>${detalles[i].value}</td>
-<td>${cant} Uni.</td>
-<td>${formatoARS(Number(precio))}</td>
+<td style="border:1px solid black;">${detalles[i].value}</td>
+<td style="border:1px solid black;">${cant}</td>
+<td style="border:1px solid black;">${formatoARS(Number(precio))}</td>
 </tr>
 `;
 
@@ -256,60 +228,64 @@ filas+=`
 
 }
 
-let pendiente = total - sena;
+if(total==0){
+alert("Agregue productos");
+return;
+}
 
 let fecha=new Date().toLocaleDateString("es-AR");
 let numeroFormateado=numero.toString().padStart(6,'0');
 
 const comprobante=`
 
-<div class="comprobante">
+<div style="width:210mm;height:140mm;padding:10mm;background:white;color:black;">
 
-<div class="encabezado">
-<div>
-Recibo<br>
-<b>${numeroFormateado}</b>
+<div style="text-align:center;margin-bottom:10px;">
+<img src="logo.png" style="width:110px;">
 </div>
 
-<div class="logo">
-<img src="logo.png">
-</div>
+Cliente: ${cliente}<br>
+Fecha: ${fecha}<br>
+N° Recibo: ${numeroFormateado}
 
-<div>
-FECHA : ${fecha}<br>
-NUMERO DE VENDEDOR<br>
-DATOS DEL VENDEDOR
-</div>
-</div>
-
-Cliente/a : <b>${cliente}</b>
-
-<table style="margin-top:5px;">
+<table style="width:100%;border-collapse:collapse;margin-top:10px;">
 <tr>
-<th>Detalle</th>
-<th>Cantidad</th>
-<th>Precio Unit.</th>
+<th style="border:1px solid black;">Detalle</th>
+<th style="border:1px solid black;">Cantidad</th>
+<th style="border:1px solid black;">Precio</th>
 </tr>
 ${filas}
 </table>
 
-<div class="total">
-Total Pedido: ${formatoARS(total)}<br>
-Seña Realizada: ${formatoARS(Number(sena))}
-</div>
-
-<div class="pendiente">
-Total Pendiente: ${formatoARS(pendiente)}
+<div style="text-align:right;margin-top:10px;">
+<b>Total: ${formatoARS(total)}</b>
 </div>
 
 </div>
 `;
 
 const hoja=`
-<div style="width:210mm;height:297mm;background:white;">
+<div style="
+width:210mm;
+height:297mm;
+background:white;
+display:flex;
+justify-content:center;
+align-items:center;
+">
+
+<div style="
+width:210mm;
+height:140mm;
+display:flex;
+justify-content:center;
+align-items:center;
+">
+
 ${comprobante}
-<div class="linea"></div>
-${comprobante}
+
+</div>
+
 </div>
 `;
 
@@ -320,6 +296,11 @@ document.getElementById("resultado").innerHTML=hoja;
 function guardarPDF(){
 
 let elemento=document.getElementById("resultado");
+
+if(elemento.innerHTML===""){
+alert("Primero genere el comprobante");
+return;
+}
 
 let opt = {
 margin:0,
