@@ -83,310 +83,322 @@ margin:auto;
 }
 
 /* COMPROBANTE */
-
 .comprobante{
-width:210mm;
-height:140mm;
-background:white;
-color:black;
-padding:10mm;
-box-sizing:border-box;
+    width:210mm;
+    height:140mm;
+    background:white;
+    color:black;
+    padding:10mm;
+    box-sizing:border-box;
 }
 
 .top{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:5px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:5px;
 }
 
 .logo-centro img{
-width:110px;
+    width:110px;
 }
 
 .fecha{
-text-align:right;
-font-size:18px;
-font-weight:bold;
+    text-align:right;
+    font-size:18px;
+    font-weight:bold;
 }
 
 .vendedor-top{
-text-align:right;
-font-size:12px;
+    text-align:right;
+    font-size:12px;
 }
 
 .cliente{
-margin-top:5px;
-border-bottom:2px solid black;
-padding-bottom:3px;
+    margin-top:5px;
+    border-bottom:2px solid black;
+    padding-bottom:3px;
 }
 
 .tabla-productos th,
 .tabla-productos td{
-border:2px solid black;
-padding:6px;
-text-align:center;
-color:black;
-background:white;
+    border:2px solid black;
+    padding:6px;
+    text-align:center;
+    color:black;
+    background:white;
 }
 
 .inferior{
-display:flex;
-justify-content:space-between;
-margin-top:10px;
+    display:flex;
+    justify-content:space-between;
+    margin-top:10px;
 }
 
 .inferior-izq{
-font-size:12px;
+    font-size:12px;
 }
 
 .inferior-der{
-text-align:right;
+    text-align:right;
 }
 
 .pendiente{
-color:red;
-font-size:22px;
-font-weight:bold;
+    color:red;
+    font-size:22px;
+    font-weight:bold;
 }
-
 </style>
-
 </head>
 
 <body>
 
 <div class="header">
-<img src="logo.png">
+    <img src="logo.png" alt="Logo Yikun">
 </div>
 
 <div class="container">
+    <div class="panel">
+        Cliente
+        <input id="cliente">
 
-<div class="panel">
+        Vendedor
+        <select id="vendedor">
+            <option value="03">03 Lucas A.Grafica</option>
+            <option value="02">02 Analia A.Papeleria</option>
+        </select>
 
-Cliente
-<input id="cliente">
+        Seña
+        <input type="number" id="sena" value="0" min="0">
 
-Vendedor
-<select id="vendedor">
-<option value="03">03 Lucas A.Grafica</option>
-<option value="02">02 Analia A.Papeleria</option>
-</select>
+        Descuento %
+        <input type="number" id="descuento" value="0" min="0" max="100">
 
-Seña
-<input type="number" id="sena" value="0">
+        <button class="btn-accion" onclick="generar()">
+            GENERAR COMPROBANTE
+        </button>
 
-Descuento %
-<input type="number" id="descuento" value="0">
+        <button class="btn-accion" onclick="guardarPDF()">
+            GUARDAR PDF
+        </button>
+    </div>
 
-<button class="btn-accion" onclick="generar()">
-GENERAR COMPROBANTE
-</button>
+    <div style="flex:1;background:#21273F;padding:20px;border-radius:15px;">
+        <table id="tabla">
+            <tr>
+                <th>Detalle</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+            </tr>
+            <tr>
+                <td><input class="detalle"></td>
+                <td><input class="cantidad" type="number" value="1" min="1"></td>
+                <td><input class="precio" type="number" value="0" min="0"></td>
+            </tr>
+        </table>
 
-<button class="btn-accion" onclick="guardarPDF()">
-GUARDAR PDF
-</button>
-
-</div>
-
-<div style="flex:1;background:#21273F;padding:20px;border-radius:15px;">
-
-<table id="tabla">
-
-<tr>
-<th>Detalle</th>
-<th>Cantidad</th>
-<th>Precio</th>
-</tr>
-
-<tr>
-<td><input class="detalle"></td>
-<td><input class="cantidad" type="number" value="1"></td>
-<td><input class="precio" type="number" value="0"></td>
-</tr>
-
-</table>
-
-<button class="btn-agregar" onclick="agregarFila()">
-AGREGAR PRODUCTO
-</button>
-
-</div>
-
+        <button class="btn-agregar" onclick="agregarFila()">
+            AGREGAR PRODUCTO
+        </button>
+    </div>
 </div>
 
 <div id="resultado"></div>
 
 <script>
-
 let numero = localStorage.getItem("numeroYikun");
-
-if(!numero){
-numero=1;
-}else{
-numero=parseInt(numero);
-}
+numero = numero ? parseInt(numero, 10) : 1;
 
 function formatoARS(num){
-return "$ "+num.toLocaleString("es-AR");
+    return "$ " + num.toLocaleString("es-AR", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+    });
+}
+
+function escaparHTML(texto){
+    return texto
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 function agregarFila(){
-let tabla=document.getElementById("tabla");
-let fila=tabla.insertRow();
+    let tabla = document.getElementById("tabla");
+    let fila = tabla.insertRow();
 
-fila.innerHTML=`
-<td><input class="detalle"></td>
-<td><input class="cantidad" type="number" value="1"></td>
-<td><input class="precio" type="number" value="0"></td>
-`;
+    fila.innerHTML = `
+        <td><input class="detalle"></td>
+        <td><input class="cantidad" type="number" value="1" min="1"></td>
+        <td><input class="precio" type="number" value="0" min="0"></td>
+    `;
 }
 
 function generar(){
+    let cliente = document.getElementById("cliente").value.trim();
 
-let cliente=document.getElementById("cliente").value;
+    if(cliente === ""){
+        alert("Ingrese cliente");
+        return;
+    }
 
-if(cliente===""){
-alert("Ingrese cliente");
-return;
-}
+    let detalles = document.getElementsByClassName("detalle");
+    let cantidades = document.getElementsByClassName("cantidad");
+    let precios = document.getElementsByClassName("precio");
 
-let detalles=document.getElementsByClassName("detalle");
-let cantidades=document.getElementsByClassName("cantidad");
-let precios=document.getElementsByClassName("precio");
+    let total = 0;
+    let filas = "";
 
-let total=0;
-let filas="";
+    for(let i = 0; i < detalles.length; i++){
+        let detalle = detalles[i].value.trim();
 
-for(let i=0;i<detalles.length;i++){
+        if(detalle !== ""){
+            let cant = Number(cantidades[i].value);
+            let precio = Number(precios[i].value);
 
-if(detalles[i].value!=""){
+            if(cant <= 0 || precio < 0 || isNaN(cant) || isNaN(precio)){
+                alert("Revise cantidades y precios. No pueden ser inválidos.");
+                return;
+            }
 
-let cant=cantidades[i].value;
-let precio=precios[i].value;
+            let subtotal = cant * precio;
+            total += subtotal;
 
-total+=cant*precio;
+            filas += `
+                <tr>
+                    <td>${escaparHTML(detalle)}</td>
+                    <td>${cant}</td>
+                    <td>${formatoARS(precio)}</td>
+                </tr>
+            `;
+        }
+    }
 
-filas+=`
-<tr>
-<td>${detalles[i].value}</td>
-<td>${cant}</td>
-<td>${formatoARS(Number(precio))}</td>
-</tr>
-`;
+    if(total === 0){
+        alert("Agregue productos");
+        return;
+    }
 
-}
+    let sena = Number(document.getElementById("sena").value);
+    let descuento = Number(document.getElementById("descuento").value);
 
-}
+    if(isNaN(sena) || sena < 0){
+        alert("La seña no puede ser negativa.");
+        return;
+    }
 
-if(total==0){
-alert("Agregue productos");
-return;
-}
+    if(isNaN(descuento) || descuento < 0 || descuento > 100){
+        alert("El descuento debe estar entre 0 y 100.");
+        return;
+    }
 
-let sena=document.getElementById("sena").value;
-let pendiente=total-sena;
+    let descuentoMonto = total * (descuento / 100);
+    let totalFinal = total - descuentoMonto;
 
-let fecha=new Date().toLocaleDateString("es-AR");
-let numeroFormateado=numero.toString().padStart(6,'0');
+    if(sena > totalFinal){
+        alert("La seña no puede ser mayor al total final.");
+        return;
+    }
 
-let vendedorSeleccionado=document.getElementById("vendedor").value;
+    let pendiente = totalFinal - sena;
 
-let nombreVendedor="";
-let datosVendedor="";
+    let fecha = new Date().toLocaleDateString("es-AR");
+    let numeroFormateado = numero.toString().padStart(6, "0");
 
-if(vendedorSeleccionado==="03"){
-nombreVendedor="03 Lucas A.Grafica";
-datosVendedor="Salta - Ayacucho 1621 / Cel: 3875729428";
-}else{
-nombreVendedor="02 Analia A.Papeleria";
-datosVendedor="Salta - Ayacucho 1621 / Cel: 3872254054";
-}
+    let vendedorSeleccionado = document.getElementById("vendedor").value;
 
-const hoja=`
-<div style="width:210mm;height:297mm;display:flex;justify-content:center;align-items:flex-start;padding-top:20mm;background:white;">
+    let nombreVendedor = "";
+    let datosVendedor = "";
 
-<div class="comprobante">
+    if(vendedorSeleccionado === "03"){
+        nombreVendedor = "03 Lucas A.Grafica";
+        datosVendedor = "Salta - Ayacucho 1621 / Cel: 3875729428";
+    } else {
+        nombreVendedor = "02 Analia A.Papeleria";
+        datosVendedor = "Salta - Ayacucho 1621 / Cel: 3872254054";
+    }
 
-<div class="top">
+    const hoja = `
+    <div style="width:210mm;height:297mm;display:flex;justify-content:center;align-items:flex-start;padding-top:20mm;background:white;">
+        <div class="comprobante">
+            <div class="top">
+                <div>
+                    Recibo<br>
+                    <b>${numeroFormateado}</b>
+                </div>
 
-<div>
-Recibo<br>
-<b>${numeroFormateado}</b>
-</div>
+                <div class="logo-centro">
+                    <img src="logo.png" alt="Logo Yikun">
+                </div>
 
-<div class="logo-centro">
-<img src="logo.png">
-</div>
+                <div>
+                    <div class="fecha">${fecha}</div>
+                    <div class="vendedor-top">
+                        ${nombreVendedor}<br>
+                        ${datosVendedor}
+                    </div>
+                </div>
+            </div>
 
-<div>
-<div class="fecha">${fecha}</div>
-<div class="vendedor-top">
-${nombreVendedor}<br>
-${datosVendedor}
-</div>
-</div>
+            <div class="cliente">
+                Cliente: <b>${escaparHTML(cliente)}</b>
+            </div>
 
-</div>
+            <table class="tabla-productos">
+                <tr>
+                    <th>Detalle</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unit.</th>
+                </tr>
+                ${filas}
+            </table>
 
-<div class="cliente">
-Cliente: <b>${cliente}</b>
-</div>
+            <div class="inferior">
+                <div class="inferior-izq">
+                    ${nombreVendedor}<br>
+                    ${datosVendedor}
+                </div>
 
-<table class="tabla-productos">
-<tr>
-<th>Detalle</th>
-<th>Cantidad</th>
-<th>Precio Unit.</th>
-</tr>
-${filas}
-</table>
+                <div class="inferior-der">
+                    Subtotal: ${formatoARS(total)}<br>
+                    Descuento: ${descuento}% (${formatoARS(descuentoMonto)})<br>
+                    Total final: ${formatoARS(totalFinal)}<br>
+                    Seña: ${formatoARS(sena)}<br>
+                    <div class="pendiente">
+                        Saldo Pendiente: ${formatoARS(pendiente)}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
 
-<div class="inferior">
-
-<div class="inferior-izq">
-${nombreVendedor}<br>
-${datosVendedor}
-</div>
-
-<div class="inferior-der">
-Total: ${formatoARS(total)}<br>
-Seña: ${formatoARS(Number(sena))}<br>
-<div class="pendiente">
-Saldo Pendiente: ${formatoARS(pendiente)}
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-`;
-
-document.getElementById("resultado").innerHTML=hoja;
-
+    document.getElementById("resultado").innerHTML = hoja;
 }
 
 function guardarPDF(){
+    let elemento = document.getElementById("resultado");
 
-let elemento=document.getElementById("resultado");
+    if(elemento.innerHTML.trim() === ""){
+        alert("Primero genere un comprobante");
+        return;
+    }
 
-let opt = {
-margin:0,
-filename:"Comprobante_Yikun.pdf",
-image:{type:"jpeg",quality:1},
-html2canvas:{scale:2},
-jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}
-};
+    let opt = {
+        margin: 0,
+        filename: "Comprobante_Yikun.pdf",
+        image: { type: "jpeg", quality: 1 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    };
 
-html2pdf().set(opt).from(elemento).save();
-
-numero++;
-localStorage.setItem("numeroYikun",numero);
-
+    html2pdf().set(opt).from(elemento).save().then(() => {
+        numero++;
+        localStorage.setItem("numeroYikun", numero);
+    });
 }
-
 </script>
 
 </body>
