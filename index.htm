@@ -1,152 +1,297 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Yikun - Comprobantes</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
+*{ box-sizing:border-box; }
 
 body{
-margin:0;
-font-family:Arial;
-background:#FA551D;
-color:white;
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(180deg,#FA551D,#bb350d);
+    color:white;
 }
 
 .header{
-text-align:center;
-padding:25px 0;
+    text-align:center;
+    padding:20px 0 10px;
 }
 
 .header img{
-width:220px;
+    width:170px;
+    max-width:80%;
 }
 
 .container{
-display:flex;
-gap:20px;
-padding:20px;
+    display:flex;
+    gap:20px;
+    padding:20px;
+    align-items:flex-start;
 }
 
-.panel{
-background:#013337;
-padding:20px;
-border-radius:15px;
-width:380px;
+.panel,
+.productos-panel{
+    background:#013337;
+    padding:20px;
+    border-radius:22px;
+    box-shadow:0 8px 25px rgba(0,0,0,.25);
+}
+
+.panel{ width:390px; }
+.productos-panel{ flex:1; background:#21273F; }
+
+label{
+    font-weight:bold;
+    font-size:14px;
 }
 
 input,select{
-width:100%;
-padding:10px;
-margin-top:6px;
-margin-bottom:12px;
-border:none;
-border-radius:6px;
-background:#21273F;
-color:white;
+    width:100%;
+    padding:14px;
+    margin-top:6px;
+    margin-bottom:14px;
+    border:none;
+    border-radius:12px;
+    background:#21273F;
+    color:white;
+    font-size:16px;
+    outline:none;
+}
+
+.productos-panel input{
+    background:#013337;
 }
 
 button{
-border:none;
-cursor:pointer;
-font-weight:bold;
-border-radius:6px;
-}
-
-.btn-accion{
-background:#149EF6;
-color:white;
-padding:12px;
-width:100%;
-margin-top:10px;
-}
-
-.btn-agregar{
-background:#FA551D;
-color:white;
-padding:12px;
-width:100%;
-margin-top:15px;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-}
-
-#resultado{
-background:white;
-margin:auto;
-}
-
-/* COMPROBANTE */
-.comprobante{
-    width:210mm;
-    height:140mm;
-    background:white;
-    color:black;
-    padding:10mm;
-    box-sizing:border-box;
-}
-
-.top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:5px;
-}
-
-.logo-centro img{
-    width:110px;
-}
-
-.fecha{
-    text-align:right;
-    font-size:18px;
+    border:none;
+    cursor:pointer;
     font-weight:bold;
+    border-radius:14px;
+    font-size:15px;
 }
 
-.vendedor-top{
-    text-align:right;
-    font-size:12px;
-}
-
-.cliente{
-    margin-top:5px;
-    border-bottom:2px solid black;
-    padding-bottom:3px;
-}
-
-.tabla-productos th,
-.tabla-productos td{
-    border:2px solid black;
-    padding:6px;
-    text-align:center;
-    color:black;
-    background:white;
-}
-
-.inferior{
-    display:flex;
-    justify-content:space-between;
+.btn{
+    color:white;
+    padding:15px;
+    width:100%;
     margin-top:10px;
 }
 
-.inferior-izq{
+.azul{ background:#149EF6; }
+.verde{ background:#00B86B; }
+.naranja{ background:#FA551D; }
+.rojo{ background:#D93025; }
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    font-size:14px;
+    padding-bottom:8px;
+}
+
+.btn-eliminar{
+    background:#D93025;
+    color:white;
+    padding:10px;
+    width:100%;
+}
+
+#resultado{
+    background:white;
+    margin:20px auto;
+    overflow:auto;
+    max-width:100%;
+}
+
+/* COMPROBANTE */
+.hoja{
+    width:210mm;
+    min-height:297mm;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding-top:18mm;
+    background:white;
+}
+
+.comprobante{
+    width:190mm;
+    min-height:130mm;
+    background:white;
+    color:#111;
+    border:2px solid #111;
+    padding:8mm;
+    box-sizing:border-box;
+}
+
+.comp-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:3px solid #FA551D;
+    padding-bottom:8px;
+}
+
+.comp-logo img{
+    width:115px;
+}
+
+.comp-titulo{
+    text-align:center;
+}
+
+.comp-titulo h2{
+    margin:0;
+    font-size:24px;
+    color:#013337;
+}
+
+.comp-titulo p{
+    margin:3px 0 0;
     font-size:12px;
 }
 
-.inferior-der{
+.comp-numero{
     text-align:right;
+    font-size:14px;
+}
+
+.datos{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:12px;
+    font-size:14px;
+}
+
+.dato{
+    border:1px solid #111;
+    padding:6px;
+}
+
+.tabla-productos{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:12px;
+}
+
+.tabla-productos th{
+    background:#013337;
+    color:white;
+    border:1px solid #111;
+    padding:7px;
+}
+
+.tabla-productos td{
+    border:1px solid #111;
+    padding:7px;
+    text-align:center;
+}
+
+.totales{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:12px;
+}
+
+.caja-totales{
+    width:85mm;
+    border:2px solid #111;
+    padding:8px;
+    font-size:15px;
+}
+
+.linea-total{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:5px;
+}
+
+.total-final{
+    font-size:18px;
+    font-weight:bold;
+    color:#013337;
+    border-top:2px solid #111;
+    padding-top:6px;
 }
 
 .pendiente{
-    color:red;
-    font-size:22px;
+    font-size:20px;
     font-weight:bold;
+    color:red;
+}
+
+.footer{
+    margin-top:15px;
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    border-top:1px solid #111;
+    padding-top:8px;
+}
+
+.estado{
+    font-weight:bold;
+    color:#FA551D;
+}
+
+/* CELULAR */
+@media(max-width:768px){
+    .container{
+        flex-direction:column;
+        padding:14px;
+    }
+
+    .panel,
+    .productos-panel{
+        width:100%;
+    }
+
+    table,
+    tbody,
+    tr,
+    td{
+        display:block;
+        width:100%;
+    }
+
+    #tabla tr:first-child{
+        display:none;
+    }
+
+    #tabla tr{
+        background:#013337;
+        padding:12px;
+        border-radius:16px;
+        margin-bottom:12px;
+    }
+
+    #tabla td::before{
+        display:block;
+        font-size:13px;
+        font-weight:bold;
+        color:#FA551D;
+        margin-bottom:4px;
+    }
+
+    #tabla td:nth-child(1)::before{ content:"Detalle"; }
+    #tabla td:nth-child(2)::before{ content:"Cantidad"; }
+    #tabla td:nth-child(3)::before{ content:"Precio"; }
+    #tabla td:nth-child(4)::before{ content:"Eliminar"; }
+
+    #resultado .hoja{
+        transform:scale(.45);
+        transform-origin:top left;
+    }
 }
 </style>
 </head>
@@ -158,49 +303,73 @@ margin:auto;
 </div>
 
 <div class="container">
-    <div class="panel">
-        Cliente
-        <input id="cliente">
 
-        Vendedor
+    <div class="panel">
+
+        <label>Número de comprobante</label>
+        <input type="number" id="numeroManual" min="1">
+
+        <button class="btn rojo" onclick="reiniciarNumero()">REINICIAR NUMERACIÓN</button>
+
+        <label>Cliente</label>
+        <input id="cliente" placeholder="Nombre del cliente">
+
+        <label>Vendedor</label>
         <select id="vendedor">
             <option value="03">03 Lucas A.Grafica</option>
             <option value="02">02 Analia A.Papeleria</option>
         </select>
 
-        Seña
+        <label>Forma de pago</label>
+        <select id="formaPago">
+            <option>Efectivo</option>
+            <option>Transferencia</option>
+            <option>Mercado Pago</option>
+            <option>Tarjeta</option>
+            <option>Cuenta corriente</option>
+        </select>
+
+        <label>Estado del trabajo</label>
+        <select id="estadoTrabajo">
+            <option>Pendiente</option>
+            <option>En producción</option>
+            <option>Terminado</option>
+            <option>Entregado</option>
+            <option>Cancelado</option>
+        </select>
+
+        <label>Seña</label>
         <input type="number" id="sena" value="0" min="0">
 
-        Descuento %
+        <label>Descuento %</label>
         <input type="number" id="descuento" value="0" min="0" max="100">
 
-        <button class="btn-accion" onclick="generar()">
-            GENERAR COMPROBANTE
-        </button>
+        <button class="btn azul" onclick="generar()">GENERAR COMPROBANTE</button>
+        <button class="btn verde" onclick="imprimirComprobante()">IMPRIMIR COMPROBANTE</button>
+        <button class="btn azul" onclick="guardarPDF()">GUARDAR PDF</button>
+        <button class="btn verde" onclick="compartirWhatsApp()">COMPARTIR POR WHATSAPP</button>
 
-        <button class="btn-accion" onclick="guardarPDF()">
-            GUARDAR PDF
-        </button>
     </div>
 
-    <div style="flex:1;background:#21273F;padding:20px;border-radius:15px;">
+    <div class="productos-panel">
         <table id="tabla">
             <tr>
                 <th>Detalle</th>
                 <th>Cantidad</th>
                 <th>Precio</th>
+                <th>Eliminar</th>
             </tr>
             <tr>
-                <td><input class="detalle"></td>
+                <td><input class="detalle" placeholder="Producto"></td>
                 <td><input class="cantidad" type="number" value="1" min="1"></td>
                 <td><input class="precio" type="number" value="0" min="0"></td>
+                <td><button class="btn-eliminar" onclick="eliminarFila(this)">X</button></td>
             </tr>
         </table>
 
-        <button class="btn-agregar" onclick="agregarFila()">
-            AGREGAR PRODUCTO
-        </button>
+        <button class="btn naranja" onclick="agregarFila()">AGREGAR PRODUCTO</button>
     </div>
+
 </div>
 
 <div id="resultado"></div>
@@ -208,6 +377,7 @@ margin:auto;
 <script>
 let numero = localStorage.getItem("numeroYikun");
 numero = numero ? parseInt(numero, 10) : 1;
+document.getElementById("numeroManual").value = numero;
 
 function formatoARS(num){
     return "$ " + num.toLocaleString("es-AR", {
@@ -230,13 +400,69 @@ function agregarFila(){
     let fila = tabla.insertRow();
 
     fila.innerHTML = `
-        <td><input class="detalle"></td>
+        <td><input class="detalle" placeholder="Producto"></td>
         <td><input class="cantidad" type="number" value="1" min="1"></td>
         <td><input class="precio" type="number" value="0" min="0"></td>
+        <td><button class="btn-eliminar" onclick="eliminarFila(this)">X</button></td>
     `;
 }
 
+function eliminarFila(boton){
+    let tabla = document.getElementById("tabla");
+
+    if(tabla.rows.length <= 2){
+        alert("Debe quedar al menos un producto.");
+        return;
+    }
+
+    boton.closest("tr").remove();
+}
+
+function reiniciarNumero(){
+    let nuevo = prompt("Ingrese el nuevo número inicial:", "1");
+
+    if(nuevo === null) return;
+
+    nuevo = parseInt(nuevo, 10);
+
+    if(isNaN(nuevo) || nuevo <= 0){
+        alert("Número inválido.");
+        return;
+    }
+
+    numero = nuevo;
+    localStorage.setItem("numeroYikun", numero);
+    document.getElementById("numeroManual").value = numero;
+
+    alert("Numeración reiniciada correctamente.");
+}
+
+function obtenerVendedor(){
+    let vendedorSeleccionado = document.getElementById("vendedor").value;
+
+    if(vendedorSeleccionado === "03"){
+        return {
+            nombre:"03 Lucas A.Grafica",
+            datos:"Salta - Ayacucho 1621 / Cel: 3876340685"
+        };
+    }
+
+    return {
+        nombre:"02 Analia A.Papeleria",
+        datos:"Salta - Ayacucho 1621 / Cel: 3872254054"
+    };
+}
+
 function generar(){
+    let numeroManual = parseInt(document.getElementById("numeroManual").value, 10);
+
+    if(isNaN(numeroManual) || numeroManual <= 0){
+        alert("Ingrese un número de comprobante válido.");
+        return;
+    }
+
+    numero = numeroManual;
+
     let cliente = document.getElementById("cliente").value.trim();
 
     if(cliente === ""){
@@ -259,7 +485,7 @@ function generar(){
             let precio = Number(precios[i].value);
 
             if(cant <= 0 || precio < 0 || isNaN(cant) || isNaN(precio)){
-                alert("Revise cantidades y precios. No pueden ser inválidos.");
+                alert("Revise cantidades y precios.");
                 return;
             }
 
@@ -271,6 +497,7 @@ function generar(){
                     <td>${escaparHTML(detalle)}</td>
                     <td>${cant}</td>
                     <td>${formatoARS(precio)}</td>
+                    <td>${formatoARS(subtotal)}</td>
                 </tr>
             `;
         }
@@ -307,43 +534,35 @@ function generar(){
     let fecha = new Date().toLocaleDateString("es-AR");
     let numeroFormateado = numero.toString().padStart(6, "0");
 
-    let vendedorSeleccionado = document.getElementById("vendedor").value;
+    let vendedor = obtenerVendedor();
+    let formaPago = document.getElementById("formaPago").value;
+    let estadoTrabajo = document.getElementById("estadoTrabajo").value;
 
-    let nombreVendedor = "";
-    let datosVendedor = "";
-
-    if(vendedorSeleccionado === "03"){
-        nombreVendedor = "03 Lucas A.Grafica";
-        datosVendedor = "Salta - Ayacucho 1621 / Cel: 3875729428";
-    } else {
-        nombreVendedor = "02 Analia A.Papeleria";
-        datosVendedor = "Salta - Ayacucho 1621 / Cel: 3872254054";
-    }
-
-    const hoja = `
-    <div style="width:210mm;height:297mm;display:flex;justify-content:center;align-items:flex-start;padding-top:20mm;background:white;">
+    let hoja = `
+    <div class="hoja">
         <div class="comprobante">
-            <div class="top">
-                <div>
-                     Recibo<br>
-                    <b>C ${numeroFormateado}</b>
-                      </div>
 
-                <div class="logo-centro">
+            <div class="comp-header">
+                <div class="comp-logo">
                     <img src="logo.png" alt="Logo Yikun">
                 </div>
 
-                <div>
-                    <div class="fecha">${fecha}</div>
-                    <div class="vendedor-top">
-                        ${nombreVendedor}<br>
-                        ${datosVendedor}
-                    </div>
+                <div class="comp-titulo">
+                    <h2>COMPROBANTE</h2>
+                    <p>Recibo de pedido / trabajo</p>
+                </div>
+
+                <div class="comp-numero">
+                    <b>N° C ${numeroFormateado}</b><br>
+                    Fecha: ${fecha}
                 </div>
             </div>
 
-            <div class="cliente">
-                Cliente: <b>${escaparHTML(cliente)}</b>
+            <div class="datos">
+                <div class="dato">Cliente: <b>${escaparHTML(cliente)}</b></div>
+                <div class="dato">Vendedor: <b>${vendedor.nombre}</b></div>
+                <div class="dato">Forma de pago: <b>${formaPago}</b></div>
+                <div class="dato">Estado: <span class="estado">${estadoTrabajo}</span></div>
             </div>
 
             <table class="tabla-productos">
@@ -351,26 +570,50 @@ function generar(){
                     <th>Detalle</th>
                     <th>Cantidad</th>
                     <th>Precio Unit.</th>
+                    <th>Subtotal</th>
                 </tr>
                 ${filas}
             </table>
 
-            <div class="inferior">
-                <div class="inferior-izq">
-                    ${nombreVendedor}<br>
-                    ${datosVendedor}
-                </div>
+            <div class="totales">
+                <div class="caja-totales">
+                    <div class="linea-total">
+                        <span>Subtotal:</span>
+                        <b>${formatoARS(total)}</b>
+                    </div>
 
-                <div class="inferior-der">
-                    Subtotal: ${formatoARS(total)}<br>
-                    Descuento: ${descuento}% (${formatoARS(descuentoMonto)})<br>
-                    Total final: ${formatoARS(totalFinal)}<br>
-                    Seña: ${formatoARS(sena)}<br>
-                    <div class="pendiente">
-                        Saldo Pendiente: ${formatoARS(pendiente)}
+                    <div class="linea-total">
+                        <span>Descuento:</span>
+                        <b>${descuento}% / ${formatoARS(descuentoMonto)}</b>
+                    </div>
+
+                    <div class="linea-total total-final">
+                        <span>Total final:</span>
+                        <span>${formatoARS(totalFinal)}</span>
+                    </div>
+
+                    <div class="linea-total">
+                        <span>Seña:</span>
+                        <b>${formatoARS(sena)}</b>
+                    </div>
+
+                    <div class="linea-total pendiente">
+                        <span>Saldo:</span>
+                        <span>${formatoARS(pendiente)}</span>
                     </div>
                 </div>
             </div>
+
+            <div class="footer">
+                <div>
+                    ${vendedor.nombre}<br>
+                    ${vendedor.datos}
+                </div>
+                <div>
+                    Gracias por confiar en Yikun
+                </div>
+            </div>
+
         </div>
     </div>
     `;
@@ -387,17 +630,209 @@ function guardarPDF(){
     }
 
     let opt = {
-        margin: 0,
-        filename: "Comprobante_Yikun.pdf",
-        image: { type: "jpeg", quality: 1 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+        margin:0,
+        filename:"Comprobante_Yikun.pdf",
+        image:{ type:"jpeg", quality:1 },
+        html2canvas:{ scale:2 },
+        jsPDF:{ unit:"mm", format:"a4", orientation:"portrait" }
     };
 
     html2pdf().set(opt).from(elemento).save().then(() => {
         numero++;
         localStorage.setItem("numeroYikun", numero);
+        document.getElementById("numeroManual").value = numero;
     });
+}
+
+function imprimirComprobante(){
+    let contenido = document.getElementById("resultado").innerHTML;
+
+    if(contenido.trim() === ""){
+        alert("Primero genere un comprobante");
+        return;
+    }
+
+    let ventana = window.open("", "_blank");
+
+    ventana.document.write(`
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <title>Imprimir comprobante</title>
+            <style>
+                body{
+                    margin:0;
+                    background:white;
+                    font-family:Arial, sans-serif;
+                }
+
+                @page{
+                    size:A4 portrait;
+                    margin:0;
+                }
+
+                .hoja{
+                    width:210mm;
+                    min-height:297mm;
+                    display:flex;
+                    justify-content:center;
+                    align-items:flex-start;
+                    padding-top:18mm;
+                    background:white;
+                }
+
+                .comprobante{
+                    width:190mm;
+                    min-height:130mm;
+                    background:white;
+                    color:#111;
+                    border:2px solid #111;
+                    padding:8mm;
+                    box-sizing:border-box;
+                }
+
+                .comp-header{
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    border-bottom:3px solid #FA551D;
+                    padding-bottom:8px;
+                }
+
+                .comp-logo img{ width:115px; }
+
+                .comp-titulo{text-align:center;}
+
+                .comp-titulo h2{
+                    margin:0;
+                    font-size:24px;
+                    color:#013337;
+                }
+
+                .comp-titulo p{
+                    margin:3px 0 0;
+                    font-size:12px;
+                }
+
+                .comp-numero{
+                    text-align:right;
+                    font-size:14px;
+                }
+
+                .datos{
+                    display:grid;
+                    grid-template-columns:1fr 1fr;
+                    gap:8px;
+                    margin-top:12px;
+                    font-size:14px;
+                }
+
+                .dato{
+                    border:1px solid #111;
+                    padding:6px;
+                }
+
+                .tabla-productos{
+                    width:100%;
+                    border-collapse:collapse;
+                    margin-top:12px;
+                }
+
+                .tabla-productos th{
+                    background:#013337;
+                    color:white;
+                    border:1px solid #111;
+                    padding:7px;
+                }
+
+                .tabla-productos td{
+                    border:1px solid #111;
+                    padding:7px;
+                    text-align:center;
+                }
+
+                .totales{
+                    display:flex;
+                    justify-content:flex-end;
+                    margin-top:12px;
+                }
+
+                .caja-totales{
+                    width:85mm;
+                    border:2px solid #111;
+                    padding:8px;
+                    font-size:15px;
+                }
+
+                .linea-total{
+                    display:flex;
+                    justify-content:space-between;
+                    margin-bottom:5px;
+                }
+
+                .total-final{
+                    font-size:18px;
+                    font-weight:bold;
+                    color:#013337;
+                    border-top:2px solid #111;
+                    padding-top:6px;
+                }
+
+                .pendiente{
+                    font-size:20px;
+                    font-weight:bold;
+                    color:red;
+                }
+
+                .footer{
+                    margin-top:15px;
+                    display:flex;
+                    justify-content:space-between;
+                    font-size:12px;
+                    border-top:1px solid #111;
+                    padding-top:8px;
+                }
+
+                .estado{
+                    font-weight:bold;
+                    color:#FA551D;
+                }
+            </style>
+        </head>
+        <body>
+            ${contenido}
+            <script>
+                window.onload = function(){
+                    window.print();
+                }
+            <\/script>
+        </body>
+        </html>
+    `);
+
+    ventana.document.close();
+}
+
+function compartirWhatsApp(){
+    if(document.getElementById("resultado").innerHTML.trim() === ""){
+        alert("Primero genere el comprobante.");
+        return;
+    }
+
+    let cliente = document.getElementById("cliente").value.trim();
+    let numeroComprobante = document.getElementById("numeroManual").value;
+    let formaPago = document.getElementById("formaPago").value;
+    let estadoTrabajo = document.getElementById("estadoTrabajo").value;
+
+    let mensaje =
+        `Hola ${cliente}, te compartimos tu comprobante Yikun.%0A%0A` +
+        `Comprobante N°: C ${numeroComprobante.padStart(6, "0")}%0A` +
+        `Estado del trabajo: ${estadoTrabajo}%0A` +
+        `Forma de pago: ${formaPago}%0A%0A` +
+        `Muchas gracias por confiar en Yikun.`;
+
+    window.open(`https://wa.me/?text=${mensaje}`, "_blank");
 }
 </script>
 
