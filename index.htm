@@ -4,23 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Yikun - Comprobantes</title>
+<title>Yikun Impresiones - Comprobantes</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
-*{ box-sizing:border-box; }
+:root{
+    --azul:#00A8E8;
+    --azul-oscuro:#007EA7;
+    --fucsia:#F72585;
+    --amarillo:#FFD166;
+    --verde:#06D6A0;
+    --oscuro:#023047;
+    --blanco:#ffffff;
+}
+
+*{
+    box-sizing:border-box;
+}
 
 body{
     margin:0;
     font-family:Arial, sans-serif;
-    background:linear-gradient(180deg,#FA551D,#bb350d);
+    background:linear-gradient(180deg,var(--azul),var(--azul-oscuro));
     color:white;
 }
 
 .header{
     text-align:center;
-    padding:20px 0 10px;
+    padding:22px 0 8px;
 }
 
 .header img{
@@ -28,23 +40,34 @@ body{
     max-width:80%;
 }
 
-.container{
+.app{
     display:flex;
-    gap:20px;
-    padding:20px;
+    gap:18px;
+    padding:18px;
     align-items:flex-start;
 }
 
 .panel,
 .productos-panel{
-    background:#013337;
+    background:white;
+    color:#111;
     padding:20px;
-    border-radius:22px;
-    box-shadow:0 8px 25px rgba(0,0,0,.25);
+    border-radius:24px;
+    box-shadow:0 12px 35px rgba(0,0,0,.25);
 }
 
-.panel{ width:390px; }
-.productos-panel{ flex:1; background:#21273F; }
+.panel{
+    width:390px;
+}
+
+.productos-panel{
+    flex:1;
+}
+
+h3{
+    margin-top:0;
+    color:var(--azul-oscuro);
+}
 
 label{
     font-weight:bold;
@@ -56,23 +79,24 @@ input,select{
     padding:14px;
     margin-top:6px;
     margin-bottom:14px;
-    border:none;
-    border-radius:12px;
-    background:#21273F;
-    color:white;
+    border:2px solid #e5e5e5;
+    border-radius:14px;
+    background:#f7f7f7;
+    color:#111;
     font-size:16px;
     outline:none;
 }
 
-.productos-panel input{
-    background:#013337;
+input:focus,
+select:focus{
+    border-color:var(--azul);
 }
 
 button{
     border:none;
     cursor:pointer;
     font-weight:bold;
-    border-radius:14px;
+    border-radius:16px;
     font-size:15px;
 }
 
@@ -83,25 +107,30 @@ button{
     margin-top:10px;
 }
 
-.azul{ background:#149EF6; }
-.verde{ background:#00B86B; }
-.naranja{ background:#FA551D; }
-.rojo{ background:#D93025; }
+.azul{ background:var(--azul); }
+.verde{ background:var(--verde); color:#003b2d; }
+.fucsia{ background:var(--fucsia); }
+.amarillo{ background:var(--amarillo); color:#111; }
 
-table{
-    width:100%;
-    border-collapse:collapse;
+.product-card{
+    background:#f7f7f7;
+    border:2px solid #eee;
+    padding:14px;
+    border-radius:18px;
+    margin-bottom:12px;
 }
 
-th{
-    font-size:14px;
-    padding-bottom:8px;
+.product-grid{
+    display:grid;
+    grid-template-columns:1fr 120px 150px 90px;
+    gap:10px;
+    align-items:end;
 }
 
 .btn-eliminar{
-    background:#D93025;
+    background:var(--fucsia);
     color:white;
-    padding:10px;
+    padding:13px;
     width:100%;
 }
 
@@ -112,37 +141,53 @@ th{
     max-width:100%;
 }
 
-/* COMPROBANTE */
-.hoja{
+/* HOJA A4 DOBLE */
+.hoja-doble{
     width:210mm;
-    min-height:297mm;
-    display:flex;
-    justify-content:center;
-    align-items:flex-start;
-    padding-top:18mm;
+    height:297mm;
     background:white;
+    color:black;
+    padding:7mm;
+    box-sizing:border-box;
 }
 
 .comprobante{
-    width:190mm;
-    min-height:130mm;
-    background:white;
-    color:#111;
+    width:100%;
+    height:133mm;
     border:2px solid #111;
-    padding:8mm;
+    padding:5mm;
+    position:relative;
+    overflow:hidden;
     box-sizing:border-box;
+}
+
+.linea-corte{
+    border-top:2px dashed #999;
+    margin:4mm 0;
+}
+
+.marca{
+    position:absolute;
+    top:4mm;
+    right:5mm;
+    background:var(--amarillo);
+    color:#111;
+    padding:4px 12px;
+    border-radius:20px;
+    font-weight:bold;
+    font-size:13px;
 }
 
 .comp-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    border-bottom:3px solid #FA551D;
-    padding-bottom:8px;
+    border-bottom:4px solid var(--azul-oscuro);
+    padding-bottom:7px;
 }
 
 .comp-logo img{
-    width:115px;
+    width:90px;
 }
 
 .comp-titulo{
@@ -151,102 +196,106 @@ th{
 
 .comp-titulo h2{
     margin:0;
-    font-size:24px;
-    color:#013337;
+    font-size:22px;
+    color:var(--azul-oscuro);
 }
 
 .comp-titulo p{
-    margin:3px 0 0;
-    font-size:12px;
+    margin:2px 0 0;
+    font-size:11px;
 }
 
 .comp-numero{
     text-align:right;
-    font-size:14px;
+    font-size:13px;
 }
 
 .datos{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:8px;
-    margin-top:12px;
-    font-size:14px;
+    gap:6px;
+    margin-top:8px;
+    font-size:12px;
 }
 
 .dato{
     border:1px solid #111;
-    padding:6px;
+    padding:5px;
+}
+
+.estado{
+    font-weight:bold;
+    color:var(--fucsia);
 }
 
 .tabla-productos{
     width:100%;
     border-collapse:collapse;
-    margin-top:12px;
+    margin-top:8px;
+    font-size:12px;
 }
 
 .tabla-productos th{
-    background:#013337;
+    background:var(--azul-oscuro);
     color:white;
     border:1px solid #111;
-    padding:7px;
+    padding:5px;
 }
 
 .tabla-productos td{
     border:1px solid #111;
-    padding:7px;
+    padding:5px;
     text-align:center;
 }
 
 .totales{
     display:flex;
     justify-content:flex-end;
-    margin-top:12px;
+    margin-top:8px;
 }
 
 .caja-totales{
-    width:85mm;
+    width:78mm;
     border:2px solid #111;
-    padding:8px;
-    font-size:15px;
+    padding:6px;
+    font-size:13px;
 }
 
 .linea-total{
     display:flex;
     justify-content:space-between;
-    margin-bottom:5px;
+    margin-bottom:4px;
 }
 
 .total-final{
-    font-size:18px;
+    font-size:16px;
     font-weight:bold;
-    color:#013337;
+    color:var(--azul-oscuro);
     border-top:2px solid #111;
-    padding-top:6px;
+    padding-top:5px;
 }
 
 .pendiente{
-    font-size:20px;
+    background:var(--amarillo);
+    color:#111;
+    padding:5px;
+    border-radius:8px;
+    font-size:17px;
     font-weight:bold;
-    color:red;
 }
 
 .footer{
-    margin-top:15px;
+    margin-top:8px;
     display:flex;
     justify-content:space-between;
-    font-size:12px;
+    font-size:10px;
     border-top:1px solid #111;
-    padding-top:8px;
-}
-
-.estado{
-    font-weight:bold;
-    color:#FA551D;
+    padding-top:6px;
 }
 
 /* CELULAR */
 @media(max-width:768px){
-    .container{
+    .app{
         flex-direction:column;
         padding:14px;
     }
@@ -256,39 +305,11 @@ th{
         width:100%;
     }
 
-    table,
-    tbody,
-    tr,
-    td{
-        display:block;
-        width:100%;
+    .product-grid{
+        grid-template-columns:1fr;
     }
 
-    #tabla tr:first-child{
-        display:none;
-    }
-
-    #tabla tr{
-        background:#013337;
-        padding:12px;
-        border-radius:16px;
-        margin-bottom:12px;
-    }
-
-    #tabla td::before{
-        display:block;
-        font-size:13px;
-        font-weight:bold;
-        color:#FA551D;
-        margin-bottom:4px;
-    }
-
-    #tabla td:nth-child(1)::before{ content:"Detalle"; }
-    #tabla td:nth-child(2)::before{ content:"Cantidad"; }
-    #tabla td:nth-child(3)::before{ content:"Precio"; }
-    #tabla td:nth-child(4)::before{ content:"Eliminar"; }
-
-    #resultado .hoja{
+    #resultado .hoja-doble{
         transform:scale(.45);
         transform-origin:top left;
     }
@@ -302,14 +323,15 @@ th{
     <img src="logo.png" alt="Logo Yikun">
 </div>
 
-<div class="container">
+<div class="app">
 
     <div class="panel">
+        <h3>Datos del comprobante</h3>
 
         <label>Número de comprobante</label>
         <input type="number" id="numeroManual" min="1">
 
-        <button class="btn rojo" onclick="reiniciarNumero()">REINICIAR NUMERACIÓN</button>
+        <button class="btn fucsia" onclick="reiniciarNumero()">REINICIAR NUMERACIÓN</button>
 
         <label>Cliente</label>
         <input id="cliente" placeholder="Nombre del cliente">
@@ -345,29 +367,37 @@ th{
         <input type="number" id="descuento" value="0" min="0" max="100">
 
         <button class="btn azul" onclick="generar()">GENERAR COMPROBANTE</button>
-        <button class="btn verde" onclick="imprimirComprobante()">IMPRIMIR COMPROBANTE</button>
+        <button class="btn verde" onclick="imprimirComprobante()">IMPRIMIR</button>
         <button class="btn azul" onclick="guardarPDF()">GUARDAR PDF</button>
         <button class="btn verde" onclick="compartirWhatsApp()">COMPARTIR POR WHATSAPP</button>
-
     </div>
 
     <div class="productos-panel">
-        <table id="tabla">
-            <tr>
-                <th>Detalle</th>
-                <th>Cantidad</th>
-                <th>Precio</th>
-                <th>Eliminar</th>
-            </tr>
-            <tr>
-                <td><input class="detalle" placeholder="Producto"></td>
-                <td><input class="cantidad" type="number" value="1" min="1"></td>
-                <td><input class="precio" type="number" value="0" min="0"></td>
-                <td><button class="btn-eliminar" onclick="eliminarFila(this)">X</button></td>
-            </tr>
-        </table>
+        <h3>Productos</h3>
 
-        <button class="btn naranja" onclick="agregarFila()">AGREGAR PRODUCTO</button>
+        <div id="productos">
+            <div class="product-card">
+                <div class="product-grid">
+                    <div>
+                        <label>Detalle</label>
+                        <input class="detalle" placeholder="Producto">
+                    </div>
+                    <div>
+                        <label>Cantidad</label>
+                        <input class="cantidad" type="number" value="1" min="1">
+                    </div>
+                    <div>
+                        <label>Precio</label>
+                        <input class="precio" type="number" value="0" min="0">
+                    </div>
+                    <div>
+                        <button class="btn-eliminar" onclick="eliminarProducto(this)">X</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn amarillo" onclick="agregarProducto()">AGREGAR PRODUCTO</button>
     </div>
 
 </div>
@@ -381,41 +411,58 @@ document.getElementById("numeroManual").value = numero;
 
 function formatoARS(num){
     return "$ " + num.toLocaleString("es-AR", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2
+        minimumFractionDigits:0,
+        maximumFractionDigits:2
     });
 }
 
 function escaparHTML(texto){
     return texto
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 }
 
-function agregarFila(){
-    let tabla = document.getElementById("tabla");
-    let fila = tabla.insertRow();
+function agregarProducto(){
+    let contenedor = document.getElementById("productos");
 
-    fila.innerHTML = `
-        <td><input class="detalle" placeholder="Producto"></td>
-        <td><input class="cantidad" type="number" value="1" min="1"></td>
-        <td><input class="precio" type="number" value="0" min="0"></td>
-        <td><button class="btn-eliminar" onclick="eliminarFila(this)">X</button></td>
+    let div = document.createElement("div");
+    div.className = "product-card";
+
+    div.innerHTML = `
+        <div class="product-grid">
+            <div>
+                <label>Detalle</label>
+                <input class="detalle" placeholder="Producto">
+            </div>
+            <div>
+                <label>Cantidad</label>
+                <input class="cantidad" type="number" value="1" min="1">
+            </div>
+            <div>
+                <label>Precio</label>
+                <input class="precio" type="number" value="0" min="0">
+            </div>
+            <div>
+                <button class="btn-eliminar" onclick="eliminarProducto(this)">X</button>
+            </div>
+        </div>
     `;
+
+    contenedor.appendChild(div);
 }
 
-function eliminarFila(boton){
-    let tabla = document.getElementById("tabla");
+function eliminarProducto(boton){
+    let productos = document.querySelectorAll(".product-card");
 
-    if(tabla.rows.length <= 2){
+    if(productos.length <= 1){
         alert("Debe quedar al menos un producto.");
         return;
     }
 
-    boton.closest("tr").remove();
+    boton.closest(".product-card").remove();
 }
 
 function reiniciarNumero(){
@@ -433,17 +480,15 @@ function reiniciarNumero(){
     numero = nuevo;
     localStorage.setItem("numeroYikun", numero);
     document.getElementById("numeroManual").value = numero;
-
-    alert("Numeración reiniciada correctamente.");
 }
 
 function obtenerVendedor(){
-    let vendedorSeleccionado = document.getElementById("vendedor").value;
+    let vendedor = document.getElementById("vendedor").value;
 
-    if(vendedorSeleccionado === "03"){
+    if(vendedor === "03"){
         return {
             nombre:"03 Lucas A.Grafica",
-            datos:"Salta - Ayacucho 1621 / Cel: 3876340685"
+            datos:"Salta - Ayacucho 1621 / Cel: 3875729428"
         };
     }
 
@@ -466,18 +511,18 @@ function generar(){
     let cliente = document.getElementById("cliente").value.trim();
 
     if(cliente === ""){
-        alert("Ingrese cliente");
+        alert("Ingrese cliente.");
         return;
     }
 
-    let detalles = document.getElementsByClassName("detalle");
-    let cantidades = document.getElementsByClassName("cantidad");
-    let precios = document.getElementsByClassName("precio");
+    let detalles = document.querySelectorAll(".detalle");
+    let cantidades = document.querySelectorAll(".cantidad");
+    let precios = document.querySelectorAll(".precio");
 
     let total = 0;
     let filas = "";
 
-    for(let i = 0; i < detalles.length; i++){
+    for(let i=0; i<detalles.length; i++){
         let detalle = detalles[i].value.trim();
 
         if(detalle !== ""){
@@ -504,7 +549,7 @@ function generar(){
     }
 
     if(total === 0){
-        alert("Agregue productos");
+        alert("Agregue productos.");
         return;
     }
 
@@ -530,92 +575,95 @@ function generar(){
     }
 
     let pendiente = totalFinal - sena;
-
     let fecha = new Date().toLocaleDateString("es-AR");
     let numeroFormateado = numero.toString().padStart(6, "0");
-
     let vendedor = obtenerVendedor();
     let formaPago = document.getElementById("formaPago").value;
     let estadoTrabajo = document.getElementById("estadoTrabajo").value;
 
-    let hoja = `
-    <div class="hoja">
-        <div class="comprobante">
-
-            <div class="comp-header">
-                <div class="comp-logo">
-                    <img src="logo.png" alt="Logo Yikun">
-                </div>
-
-                <div class="comp-titulo">
-                    <h2>COMPROBANTE</h2>
-                    <p>Recibo de pedido / trabajo</p>
-                </div>
-
-                <div class="comp-numero">
-                    <b>N° C ${numeroFormateado}</b><br>
-                    Fecha: ${fecha}
-                </div>
+    let comprobanteContenido = `
+        <div class="comp-header">
+            <div class="comp-logo">
+                <img src="logo.png" alt="Logo Yikun">
             </div>
 
-            <div class="datos">
-                <div class="dato">Cliente: <b>${escaparHTML(cliente)}</b></div>
-                <div class="dato">Vendedor: <b>${vendedor.nombre}</b></div>
-                <div class="dato">Forma de pago: <b>${formaPago}</b></div>
-                <div class="dato">Estado: <span class="estado">${estadoTrabajo}</span></div>
+            <div class="comp-titulo">
+                <h2>COMPROBANTE</h2>
+                <p>Yikun Impresiones</p>
             </div>
 
-            <table class="tabla-productos">
-                <tr>
-                    <th>Detalle</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unit.</th>
-                    <th>Subtotal</th>
-                </tr>
-                ${filas}
-            </table>
-
-            <div class="totales">
-                <div class="caja-totales">
-                    <div class="linea-total">
-                        <span>Subtotal:</span>
-                        <b>${formatoARS(total)}</b>
-                    </div>
-
-                    <div class="linea-total">
-                        <span>Descuento:</span>
-                        <b>${descuento}% / ${formatoARS(descuentoMonto)}</b>
-                    </div>
-
-                    <div class="linea-total total-final">
-                        <span>Total final:</span>
-                        <span>${formatoARS(totalFinal)}</span>
-                    </div>
-
-                    <div class="linea-total">
-                        <span>Seña:</span>
-                        <b>${formatoARS(sena)}</b>
-                    </div>
-
-                    <div class="linea-total pendiente">
-                        <span>Saldo:</span>
-                        <span>${formatoARS(pendiente)}</span>
-                    </div>
-                </div>
+            <div class="comp-numero">
+                <b>N° C ${numeroFormateado}</b><br>
+                Fecha: ${fecha}
             </div>
-
-            <div class="footer">
-                <div>
-                    ${vendedor.nombre}<br>
-                    ${vendedor.datos}
-                </div>
-                <div>
-                    Gracias por confiar en Yikun
-                </div>
-            </div>
-
         </div>
-    </div>
+
+        <div class="datos">
+            <div class="dato">Cliente: <b>${escaparHTML(cliente)}</b></div>
+            <div class="dato">Vendedor: <b>${vendedor.nombre}</b></div>
+            <div class="dato">Forma de pago: <b>${formaPago}</b></div>
+            <div class="dato">Estado: <span class="estado">${estadoTrabajo}</span></div>
+        </div>
+
+        <table class="tabla-productos">
+            <tr>
+                <th>Detalle</th>
+                <th>Cantidad</th>
+                <th>Precio Unit.</th>
+                <th>Subtotal</th>
+            </tr>
+            ${filas}
+        </table>
+
+        <div class="totales">
+            <div class="caja-totales">
+                <div class="linea-total">
+                    <span>Subtotal:</span>
+                    <b>${formatoARS(total)}</b>
+                </div>
+
+                <div class="linea-total total-final">
+                    <span>Total final:</span>
+                    <span>${formatoARS(totalFinal)}</span>
+                </div>
+
+                <div class="linea-total">
+                    <span>Seña:</span>
+                    <b>${formatoARS(sena)}</b>
+                </div>
+
+                <div class="linea-total pendiente">
+                    <span>Saldo:</span>
+                    <span>${formatoARS(pendiente)}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>
+                ${vendedor.nombre}<br>
+                ${vendedor.datos}
+            </div>
+            <div>
+                Gracias por confiar en Yikun Impresiones
+            </div>
+        </div>
+    `;
+
+    let hoja = `
+        <div class="hoja-doble">
+            <div class="comprobante">
+                <div class="marca">ORIGINAL</div>
+                ${comprobanteContenido}
+            </div>
+
+            <div class="linea-corte"></div>
+
+            <div class="comprobante">
+                <div class="marca">COPIA</div>
+                ${comprobanteContenido}
+            </div>
+        </div>
     `;
 
     document.getElementById("resultado").innerHTML = hoja;
@@ -625,7 +673,7 @@ function guardarPDF(){
     let elemento = document.getElementById("resultado");
 
     if(elemento.innerHTML.trim() === ""){
-        alert("Primero genere un comprobante");
+        alert("Primero genere un comprobante.");
         return;
     }
 
@@ -648,7 +696,7 @@ function imprimirComprobante(){
     let contenido = document.getElementById("resultado").innerHTML;
 
     if(contenido.trim() === ""){
-        alert("Primero genere un comprobante");
+        alert("Primero genere un comprobante.");
         return;
     }
 
@@ -661,142 +709,22 @@ function imprimirComprobante(){
             <meta charset="UTF-8">
             <title>Imprimir comprobante</title>
             <style>
+                ${document.querySelector("style").innerHTML}
+
                 body{
-                    margin:0;
                     background:white;
-                    font-family:Arial, sans-serif;
+                    margin:0;
+                }
+
+                .header,
+                .app,
+                #resultado{
+                    display:none;
                 }
 
                 @page{
                     size:A4 portrait;
                     margin:0;
-                }
-
-                .hoja{
-                    width:210mm;
-                    min-height:297mm;
-                    display:flex;
-                    justify-content:center;
-                    align-items:flex-start;
-                    padding-top:18mm;
-                    background:white;
-                }
-
-                .comprobante{
-                    width:190mm;
-                    min-height:130mm;
-                    background:white;
-                    color:#111;
-                    border:2px solid #111;
-                    padding:8mm;
-                    box-sizing:border-box;
-                }
-
-                .comp-header{
-                    display:flex;
-                    justify-content:space-between;
-                    align-items:center;
-                    border-bottom:3px solid #FA551D;
-                    padding-bottom:8px;
-                }
-
-                .comp-logo img{ width:115px; }
-
-                .comp-titulo{text-align:center;}
-
-                .comp-titulo h2{
-                    margin:0;
-                    font-size:24px;
-                    color:#013337;
-                }
-
-                .comp-titulo p{
-                    margin:3px 0 0;
-                    font-size:12px;
-                }
-
-                .comp-numero{
-                    text-align:right;
-                    font-size:14px;
-                }
-
-                .datos{
-                    display:grid;
-                    grid-template-columns:1fr 1fr;
-                    gap:8px;
-                    margin-top:12px;
-                    font-size:14px;
-                }
-
-                .dato{
-                    border:1px solid #111;
-                    padding:6px;
-                }
-
-                .tabla-productos{
-                    width:100%;
-                    border-collapse:collapse;
-                    margin-top:12px;
-                }
-
-                .tabla-productos th{
-                    background:#013337;
-                    color:white;
-                    border:1px solid #111;
-                    padding:7px;
-                }
-
-                .tabla-productos td{
-                    border:1px solid #111;
-                    padding:7px;
-                    text-align:center;
-                }
-
-                .totales{
-                    display:flex;
-                    justify-content:flex-end;
-                    margin-top:12px;
-                }
-
-                .caja-totales{
-                    width:85mm;
-                    border:2px solid #111;
-                    padding:8px;
-                    font-size:15px;
-                }
-
-                .linea-total{
-                    display:flex;
-                    justify-content:space-between;
-                    margin-bottom:5px;
-                }
-
-                .total-final{
-                    font-size:18px;
-                    font-weight:bold;
-                    color:#013337;
-                    border-top:2px solid #111;
-                    padding-top:6px;
-                }
-
-                .pendiente{
-                    font-size:20px;
-                    font-weight:bold;
-                    color:red;
-                }
-
-                .footer{
-                    margin-top:15px;
-                    display:flex;
-                    justify-content:space-between;
-                    font-size:12px;
-                    border-top:1px solid #111;
-                    padding-top:8px;
-                }
-
-                .estado{
-                    font-weight:bold;
-                    color:#FA551D;
                 }
             </style>
         </head>
@@ -820,19 +748,22 @@ function compartirWhatsApp(){
         return;
     }
 
-    let cliente = document.getElementById("cliente").value.trim();
-    let numeroComprobante = document.getElementById("numeroManual").value;
+    let cliente = document.getElementById("cliente").value.trim().toUpperCase();
+    let numeroComprobante = document.getElementById("numeroManual").value.toString().padStart(6, "0");
     let formaPago = document.getElementById("formaPago").value;
     let estadoTrabajo = document.getElementById("estadoTrabajo").value;
 
     let mensaje =
-        `Hola ${cliente}, te compartimos tu comprobante Yikun.%0A%0A` +
-        `Comprobante N°: C ${numeroComprobante.padStart(6, "0")}%0A` +
-        `Estado del trabajo: ${estadoTrabajo}%0A` +
-        `Forma de pago: ${formaPago}%0A%0A` +
-        `Muchas gracias por confiar en Yikun.`;
+        `*Hola* ${cliente}\n` +
+        `Te compartimos los datos de tu pedido\n\n` +
+        `*Comprobante N°*: C ${numeroComprobante}\n` +
+        `*Estado del Trabajo*: ${estadoTrabajo}\n` +
+        `*Forma de Pago*: ${formaPago}\n\n` +
+        `Muchas gracias por confiar en Yikun Impresiones.`;
 
-    window.open(`https://wa.me/?text=${mensaje}`, "_blank");
+    let url = "https://wa.me/?text=" + encodeURIComponent(mensaje);
+
+    window.open(url, "_blank");
 }
 </script>
 
