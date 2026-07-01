@@ -19,9 +19,7 @@
     --blanco:#ffffff;
 }
 
-*{
-    box-sizing:border-box;
-}
+*{ box-sizing:border-box; }
 
 body{
     margin:0;
@@ -56,13 +54,8 @@ body{
     box-shadow:0 12px 35px rgba(0,0,0,.25);
 }
 
-.panel{
-    width:390px;
-}
-
-.productos-panel{
-    flex:1;
-}
+.panel{ width:390px; }
+.productos-panel{ flex:1; }
 
 h3{
     margin-top:0;
@@ -132,6 +125,22 @@ button{
     color:white;
     padding:13px;
     width:100%;
+}
+
+.historial{
+    margin-top:20px;
+    background:#f7f7f7;
+    padding:14px;
+    border-radius:18px;
+}
+
+.item-historial{
+    background:white;
+    border:1px solid #ddd;
+    padding:10px;
+    border-radius:12px;
+    margin-bottom:8px;
+    font-size:13px;
 }
 
 #resultado{
@@ -293,7 +302,6 @@ button{
     padding-top:6px;
 }
 
-/* CELULAR */
 @media(max-width:768px){
     .app{
         flex-direction:column;
@@ -336,6 +344,9 @@ button{
         <label>Cliente</label>
         <input id="cliente" placeholder="Nombre del cliente">
 
+        <label>CUIT / CUIL / DNI</label>
+        <input id="dniCuil" placeholder="Ej: 20-12345678-9 o 12345678">
+
         <label>Vendedor</label>
         <select id="vendedor">
             <option value="03">03 Lucas A.Grafica</option>
@@ -370,6 +381,11 @@ button{
         <button class="btn verde" onclick="imprimirComprobante()">IMPRIMIR</button>
         <button class="btn azul" onclick="guardarPDF()">GUARDAR PDF</button>
         <button class="btn verde" onclick="compartirWhatsApp()">COMPARTIR POR WHATSAPP</button>
+
+        <div class="historial">
+            <h3>Últimos 5 comprobantes</h3>
+            <div id="listaHistorial"></div>
+        </div>
     </div>
 
     <div class="productos-panel">
@@ -488,7 +504,7 @@ function obtenerVendedor(){
     if(vendedor === "03"){
         return {
             nombre:"03 Lucas A.Grafica",
-            datos:"Salta - Ayacucho 1621 / Cel: 3875729428"
+            datos:"Salta - Ayacucho 1621 / Cel: 3876340685"
         };
     }
 
@@ -509,6 +525,7 @@ function generar(){
     numero = numeroManual;
 
     let cliente = document.getElementById("cliente").value.trim();
+    let dniCuil = document.getElementById("dniCuil").value.trim();
 
     if(cliente === ""){
         alert("Ingrese cliente.");
@@ -600,6 +617,7 @@ function generar(){
 
         <div class="datos">
             <div class="dato">Cliente: <b>${escaparHTML(cliente)}</b></div>
+            <div class="dato">CUIT / CUIL / DNI: <b>${escaparHTML(dniCuil || "-")}</b></div>
             <div class="dato">Vendedor: <b>${vendedor.nombre}</b></div>
             <div class="dato">Forma de pago: <b>${formaPago}</b></div>
             <div class="dato">Estado: <span class="estado">${estadoTrabajo}</span></div>
@@ -667,6 +685,16 @@ function generar(){
     `;
 
     document.getElementById("resultado").innerHTML = hoja;
+
+    guardarHistorial({
+        numero: numeroFormateado,
+        cliente: cliente,
+        dniCuil: dniCuil,
+        fecha: fecha,
+        total: formatoARS(totalFinal),
+        estado: estadoTrabajo,
+        pago: formaPago
+    });
 }
 
 function guardarPDF(){
@@ -762,9 +790,41 @@ function compartirWhatsApp(){
         `Muchas gracias por confiar en Yikun Impresiones.`;
 
     let url = "https://wa.me/?text=" + encodeURIComponent(mensaje);
-
     window.open(url, "_blank");
 }
+
+function guardarHistorial(item){
+    let historial = JSON.parse(localStorage.getItem("historialYikun")) || [];
+
+    historial.unshift(item);
+    historial = historial.slice(0, 5);
+
+    localStorage.setItem("historialYikun", JSON.stringify(historial));
+    mostrarHistorial();
+}
+
+function mostrarHistorial(){
+    let historial = JSON.parse(localStorage.getItem("historialYikun")) || [];
+    let lista = document.getElementById("listaHistorial");
+
+    if(historial.length === 0){
+        lista.innerHTML = "<p>No hay comprobantes todavía.</p>";
+        return;
+    }
+
+    lista.innerHTML = historial.map(item => `
+        <div class="item-historial">
+            <b>C ${item.numero}</b> - ${item.fecha}<br>
+            Cliente: ${escaparHTML(item.cliente)}<br>
+            CUIT/CUIL/DNI: ${escaparHTML(item.dniCuil || "-")}<br>
+            Total: <b>${item.total}</b><br>
+            Estado: ${item.estado}<br>
+            Pago: ${item.pago}
+        </div>
+    `).join("");
+}
+
+mostrarHistorial();
 </script>
 
 </body>
